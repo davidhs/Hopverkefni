@@ -1,15 +1,82 @@
 # Hugmyndir
 
+## Leikjahönnun
 
-## Pathfinding
+* https://en.wikipedia.org/wiki/Game_design
+
+* Leikreglur...
+
+* Á leikurinn að hafa quest/verkefni/missions/goal?
+* Á leikurinn að samanstanda af mismunandi borðum?
+
+  * Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
+
+* Getur hvert borð samanstaðið af mismunandi hæðum?
+* "Open-world"?
+
+  * Procedurally generated
+  
+* Óvinir/NPC í leiknum?
+* Resource-ar í leiknum.
+
+  * Líf (HP)?
+  * Peningur?
+  * XP
+  * Mismunandi vopn í leiknum?
+  
+* Hægt að svindla?
+
+## Tækni
+
+### Hljóð
+
+* Ef hljóðgjafi er langt í burtu frá karakternum á þá að lækka í því?  Eða ef hljóðgjafinn er fyrir aftan vegg.
+
+### AI
+
+### Pathfinding
 
 * https://en.wikipedia.org/wiki/Pathfinding
 * https://en.wikipedia.org/wiki/Navigation_mesh
 
-## Shadows
+* Vandamál:
+
+  * Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
+  
+    * http://www.valvesoftware.com/publications/2009/ai_systems_of_l4d_mike_booth.pdf
+
+### Collision detection/handling
+
+### Shadows
 
 * https://en.wikipedia.org/wiki/Ray_casting
 * http://ncase.me/sight-and-light/
 
-## Lighting
+### Lighting
+
+Hægt að nota sambærilega ray casting aðferð og notað er til að búa til skugga.
+
+### Multiplayer (mæli ekki með)
+
+Davíð:
+
+Ég mæli ekki með multiplayer.  Ég var að skoða hvernig það hefur verið útfært.  Ef maður ætlar að útfæra leikinn svo hann bjóði upp á multiplayer þá þarf að gera ráð fyrir því frá upphafi og hanna leikinn með tillit til þess. 
+
+Vandamál sem maður lendir í:
+
+* Það er mismikið latency milli hverra véla og servera.  Klukkur slá ekki á sama hraða / í sama fasa og aðrar vélar, á endanum er tíminn mismunandi milli véla, sem þyrfti að samstilla (https://en.wikipedia.org/wiki/Clock_synchronization).  
+
+* Það er latency milli notandan og server/notanda.  Þetta getur verið óhemju mikið í rauntímaleikjum, hvað þá ef það er rosalega mikið að gerast á hverri stundu.
+
+  * T.d. ef maður smellir á músahnapp til að skjóta, þá væri hægt að senda þessa skipun sem skilaboð á þjóninn. Þjóninn sendir svo skilaboð til baka hvort maður megi halda áfram með þessa skipunina.  Eða þjónninn sendir heartbeat hvenær megi uppfæra leikinn.  Þetta myndi tryggja að allir sæju sama ástand á heimnum.  
+  
+    * Ókosturinn þá væri mikið latency.  Slæmt í fast-paced leikjum.
+  
+  * Eða það er hægt að framkvæma skipunina og bakka til baka ef þjóninn segir til um það.
+  
+    * Hinsvegar væri maður ekki búinn að fá uppfærslu hvað annar leikmaður væri að gera, hvort hann haldi áfram að gera það sem hann var að gera eða stöðvi.  Þá þarf að notast við interpolation/extrapolation.
+
+* Tölva A er hraðvirkari en tölva B, þannig tölva A update-ast oftar en B.  T.d. A sér leikmaður á tölvu B hefur orðið fyrir skoti en B sér sig hafa sloppið frá skotinu.  Þá er kominn conflict sem þarf að díla við
+
+  * Lendir í vandamálum með numerical integration ef mismunandi vélar update-ast á mismunandi tímum.
 
