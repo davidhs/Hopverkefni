@@ -4,51 +4,58 @@
 
 * https://en.wikipedia.org/wiki/Game_design
 
-* Leikreglur...
+### Leikreglur...
 
 * Á leikurinn að hafa quest/verkefni/missions/goal?
 
-    Daníel: Gætum skoðað það að hafa waves, sem verða alltaf erfiðar og erfiðar. 
+**Daníel:** Gætum skoðað það að hafa waves, sem verða alltaf erfiðar og erfiðar. Frekar easy að implementa og kominn survival fýlingur. Getum einnig leyft spilaranum að velja milli survival eða eitthvað annað.
 
-* Á leikurinn að samanstanda af mismunandi borðum?
+### Á leikurinn að samanstanda af mismunandi borðum?
 
-    Daníel: Væri mega töff að hafa mismunandi borð, sjáum hvernig það gengur með fyrsta borðið. Ef það gengur vel getum við bætt við endalaust of borðum. :)
+**Daníel:** Væri mega töff að hafa mismunandi borð, sjáum hvernig það gengur með fyrsta borðið. Ef það gengur vel getum við bætt við endalaust of borðum. :)
 
--Alexander:
+**Alexander**:
   Mín skoðun er sú að þetta ætti að vera eitt stórt map, sem er endalaust og
   verður erfiðara með tímanumm, s.s. fleiri óvinir í einu og erfiðari
 
-  * Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
+* Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
+
+**Daniel:** Ekki með neina skoðun. :)
 
 * Getur hvert borð samanstaðið af mismunandi hæðum?
+
+**Daníel:** Hef ekki kynnt mér þetta næginlega vel.
+
 * "Open-world"?
 
-  * Procedurally generated
+**Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
+
+* Procedurally generated
   
 * Óvinir/NPC í leiknum?
 
-  -Alexander:
+**Alexander:**
   Dæmi um óvini:
   Terrorist, eða óvinur sem reynir að hlaupa að þér og sprengja sig, sprengjan
   er með áhveðin radíus, ef þú skítur hann springur hann líka í sama radíus og
   óvinir meiðast líka af sprenginunni.
 
-- Daníel: Mjög töff hugmynd. Getum haft óvini mis hraða, mis sterka etc.
+**Daníel:** Mjög töff hugmynd. Getum haft óvini mis hraða, mis sterka etc. Og að hafa NPC gæti verið töff til að hafa fleiri "element" í leiknum. NPC sem selur vopn, annar sem selur powerups etc. Klárlega skoða þetta betur!
+ 
+### Resource-ar í leiknum
 
-* Resource-ar í leiknum.
+* Líf (HP)?
+* Peningur?
+* XP
+* Mismunandi vopn í leiknum?
 
-  * Líf (HP)?
-  * Peningur?
-  * XP
-  * Mismunandi vopn í leiknum?
-  -Alexander:
-  ef það væru crates sem þú getur fundið og fengið mismundandi vopn sem eru með
-  x mikið ammo, svo er defult bissan alltaf með infinit ammo.
-  - Daníel: Væri geggjað að hafa crates, með X% drop chance á e-h úrvali af vopnum. Getum látið ívini gefa stig og $. Gætum skoðað það að hafa buy takka sem stoppar leikinn og maður getur keypt powerups?
+**Alexander:** Ef það væru crates sem þú getur fundið og fengið mismundandi vopn sem eru með x mikið ammo, svo er defult bissan alltaf með infinit ammo.
 
-* Hægt að svindla?
+**Daníel:** Væri geggjað að hafa crates, með X% drop chance á e-h úrvali af vopnum. Getum látið ívini gefa stig og $. Gætum skoðað það að hafa buy takka sem stoppar leikinn og maður getur keypt powerups?
 
-    - Getum gert það. Ótrúlega easy að bæta inní og strax orðið svona "öðruvísi" og klárlega +1 í lokaeinkun.
+### Hægt að svindla?
+
+**Daníel:** Getum gert það. Ótrúlega easy að bæta inní og strax orðið svona "öðruvísi" og klárlega plús í kladdann.
 
 ## Tækni
 
@@ -60,24 +67,22 @@
 
 ### AI
 
-- Daníel: Byrjum á algjörri dummy AI. Epic ef við náum að gera e-h betra!
+- Daníel: Byrjum á algjörri dummy AI. Epic ef við náum að gera e-h betra! Nema þið séuð með e-h pælingar, ég var bara að pæla í að láta óvini "elta" með að uppfæra cords +/- cords á player.
 
 ### Pathfinding
 
 * https://en.wikipedia.org/wiki/Pathfinding
 * https://en.wikipedia.org/wiki/Navigation_mesh
 
-* Vandamál:
+#### Vandamál:
+* Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
+* http://www.valvesoftware.com/publications/2009/ai_systems_of_l4d_mike_booth.pdf
 
-  * Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
-
-    * http://www.valvesoftware.com/publications/2009/ai_systems_of_l4d_mike_booth.pdf
-
-- Daniel: Skal kíkja á þetta, sjá hvað ég finn.
+**Daniel:** Skal kíkja á þetta, sjá hvað ég finn.
 
 ### Collision detection/handling
 
-- Daníel: Erum við að gera detection fyrir eitthvað sem hreyfist f. utan skotin? 
+**Daníel:** Erum við að gera detection fyrir eitthvað sem hreyfist f. utan skotin? 
 
 ### Shadows
 
@@ -90,8 +95,7 @@ Hægt að nota sambærilega ray casting aðferð og notað er til að búa til s
 
 ### Multiplayer (mæli ekki með)
 
-Davíð:
-
+**Davíð:**
 Ég mæli ekki með multiplayer.  Ég var að skoða hvernig það hefur verið útfært.  Ef maður ætlar að útfæra leikinn svo hann bjóði upp á multiplayer þá þarf að gera ráð fyrir því frá upphafi og hanna leikinn með tillit til þess.
 
 Vandamál sem maður lendir í:
@@ -112,4 +116,4 @@ Vandamál sem maður lendir í:
 
   * Lendir í vandamálum með numerical integration ef mismunandi vélar update-ast á mismunandi tímum.
  
- Daníel: Sammála. Nema við náum að gera leikinn alveg epic viku fyrir skil, að þá skal multiplayer mæti algjörum afgangi.
+ **Daníel:** Sammála. Nema við náum að gera leikinn alveg epic viku fyrir skil, að þá skal multiplayer mæti algjörum afgangi.
