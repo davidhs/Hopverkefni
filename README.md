@@ -29,7 +29,7 @@ git branch Notandi
 git checkout Notandi
 ### Gera prufu skrá og commit-a
 touch test.txt
-git add test.txt
+git add -A
 git commit -m "Prufuskrá bætt við"
 
 Núna er búið að bæta við og commit-a test.txt á local branchinu, ekki master.
