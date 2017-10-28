@@ -8,7 +8,7 @@
 
 * Á leikurinn að hafa quest/verkefni/missions/goal?
 
-**Daníel:** Gætum skoðað það að hafa waves, sem verða alltaf erfiðar og erfiðar. Frekar easy að implementa og kominn survival fýlingur. Getum einnig leyft spilaranum að velja milli survival eða eitthvað annað.
+    * **Daníel:** Gætum skoðað það að hafa waves, sem verða alltaf erfiðar og erfiðar. Frekar easy að implementa og kominn survival fýlingur. Getum einnig leyft spilaranum að velja milli survival eða eitthvað annað.
 
 ### Á leikurinn að samanstanda af mismunandi borðum?
 
