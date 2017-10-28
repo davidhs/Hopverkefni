@@ -75,6 +75,7 @@
 
 #### Vandamál:
 * Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
+
 * http://www.valvesoftware.com/publications/2009/ai_systems_of_l4d_mike_booth.pdf
 
     * **Daniel:** Skal kíkja á þetta, sjá hvað ég finn.
