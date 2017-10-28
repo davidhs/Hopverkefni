@@ -1,0 +1,16 @@
+{
+  "name": "poc1",
+  "version": "1.0.0",
+  "description": "lokaverkefni",
+  "main": "index.html",
+  "scripts": {
+    "browser-sync": "browser-sync start --server --files index.html js/*.js css/*.css img/*.png audio/*.ogg",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "1.7.4",
+    "standard": "^10.0.3"
+  }
+}
