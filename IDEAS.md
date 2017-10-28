@@ -20,27 +20,26 @@
 
 * Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
 
-**Daniel:** Ekki með neina skoðun. :)
+    * **Daniel:** Ekki með neina skoðun. :)
 
 * Getur hvert borð samanstaðið af mismunandi hæðum?
 
-**Daníel:** Hef ekki kynnt mér þetta næginlega vel.
+    * **Daníel:** Hef ekki kynnt mér þetta næginlega vel.
 
 * "Open-world"?
 
-**Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
+    * **Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
 
 * Procedurally generated
   
 * Óvinir/NPC í leiknum?
 
-**Alexander:**
-  Dæmi um óvini:
-  Terrorist, eða óvinur sem reynir að hlaupa að þér og sprengja sig, sprengjan
-  er með áhveðin radíus, ef þú skítur hann springur hann líka í sama radíus og
-  óvinir meiðast líka af sprenginunni.
+    * **Alexander:**
+        Dæmi um óvini: Terrorist, eða óvinur sem reynir að hlaupa að þér og sprengja sig, sprengjan
+        er með áhveðin radíus, ef þú skítur hann springur hann líka í sama radíus og
+        óvinir meiðast líka af sprenginunni.
 
-**Daníel:** Mjög töff hugmynd. Getum haft óvini mis hraða, mis sterka etc. Og að hafa NPC gæti verið töff til að hafa fleiri "element" í leiknum. NPC sem selur vopn, annar sem selur powerups etc. Klárlega skoða þetta betur!
+    * **Daníel:** Mjög töff hugmynd. Getum haft óvini mis hraða, mis sterka etc. Og að hafa NPC gæti verið töff til að hafa fleiri "element" í leiknum. NPC sem selur vopn, annar sem selur powerups etc. Klárlega skoða þetta betur!
  
 ### Resource-ar í leiknum
 
@@ -49,9 +48,9 @@
 * XP
 * Mismunandi vopn í leiknum?
 
-**Alexander:** Ef það væru crates sem þú getur fundið og fengið mismundandi vopn sem eru með x mikið ammo, svo er defult bissan alltaf með infinit ammo.
+    * **Alexander:** Ef það væru crates sem þú getur fundið og fengið mismundandi vopn sem eru með x mikið ammo, svo er defult bissan alltaf með infinit ammo.
 
-**Daníel:** Væri geggjað að hafa crates, með X% drop chance á e-h úrvali af vopnum. Getum látið ívini gefa stig og $. Gætum skoðað það að hafa buy takka sem stoppar leikinn og maður getur keypt powerups?
+    * **Daníel:** Væri geggjað að hafa crates, með X% drop chance á e-h úrvali af vopnum. Getum látið ívini gefa stig og $. Gætum skoðað það að hafa buy takka sem stoppar leikinn og maður getur keypt powerups?
 
 ### Hægt að svindla?
 
@@ -63,11 +62,11 @@
 
 * Ef hljóðgjafi er langt í burtu frá karakternum á þá að lækka í því?  Eða ef hljóðgjafinn er fyrir aftan vegg.
 
-- Daníel: Okey, geggjuð hugmynd! Er einhver með hugmynd hvernig væri best að innleiða þetta?
+    * **Daníel:** Okey, geggjuð hugmynd! Er einhver með hugmynd hvernig væri best að innleiða þetta?
 
 ### AI
 
-- Daníel: Byrjum á algjörri dummy AI. Epic ef við náum að gera e-h betra! Nema þið séuð með e-h pælingar, ég var bara að pæla í að láta óvini "elta" með að uppfæra cords +/- cords á player.
+**Daníel:** Byrjum á algjörri dummy AI. Epic ef við náum að gera e-h betra! Nema þið séuð með e-h pælingar, ég var bara að pæla í að láta óvini "elta" með að uppfæra cords +/- cords á player.
 
 ### Pathfinding
 
@@ -78,7 +77,7 @@
 * Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
 * http://www.valvesoftware.com/publications/2009/ai_systems_of_l4d_mike_booth.pdf
 
-**Daniel:** Skal kíkja á þetta, sjá hvað ég finn.
+    * **Daniel:** Skal kíkja á þetta, sjá hvað ég finn.
 
 ### Collision detection/handling
 
