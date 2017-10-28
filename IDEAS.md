@@ -18,28 +18,28 @@
   Mín skoðun er sú að þetta ætti að vera eitt stórt map, sem er endalaust og
   verður erfiðara með tímanumm, s.s. fleiri óvinir í einu og erfiðari
 
-* Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
+#### Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
 
-    * **Daniel:** Ekki með neina skoðun. :)
+* **Daniel:** Ekki með neina skoðun. :)
 
-* Getur hvert borð samanstaðið af mismunandi hæðum?
+#### Getur hvert borð samanstaðið af mismunandi hæðum?
 
-    * **Daníel:** Hef ekki kynnt mér þetta næginlega vel.
+* **Daníel:** Hef ekki kynnt mér þetta næginlega vel.
 
-* "Open-world"?
+#### "Open-world"?
 
-    * **Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
+* **Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
 
-* Procedurally generated
+#### Procedurally generated
   
-* Óvinir/NPC í leiknum?
+#### Óvinir/NPC í leiknum?
 
-    * **Alexander:**
+* **Alexander:**
         Dæmi um óvini: Terrorist, eða óvinur sem reynir að hlaupa að þér og sprengja sig, sprengjan
         er með áhveðin radíus, ef þú skítur hann springur hann líka í sama radíus og
         óvinir meiðast líka af sprenginunni.
 
-    * **Daníel:** Mjög töff hugmynd. Getum haft óvini mis hraða, mis sterka etc. Og að hafa NPC gæti verið töff til að hafa fleiri "element" í leiknum. NPC sem selur vopn, annar sem selur powerups etc. Klárlega skoða þetta betur!
+* **Daníel:** Mjög töff hugmynd. Getum haft óvini mis hraða, mis sterka etc. Og að hafa NPC gæti verið töff til að hafa fleiri "element" í leiknum. NPC sem selur vopn, annar sem selur powerups etc. Klárlega skoða þetta betur!
  
 ### Resource-ar í leiknum
 
@@ -116,3 +116,4 @@ Vandamál sem maður lendir í:
   * Lendir í vandamálum með numerical integration ef mismunandi vélar update-ast á mismunandi tímum.
  
  **Daníel:** Sammála. Nema við náum að gera leikinn alveg epic viku fyrir skil, að þá skal multiplayer mæti algjörum afgangi.
+
