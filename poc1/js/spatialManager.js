@@ -17,92 +17,83 @@ e.g. general collision detection.
 */
 
 var spatialManager = {
+	// "PRIVATE" DATA
 
-// "PRIVATE" DATA
+	_nextSpatialID: 1, // make all valid IDs non-falsey (i.e. don't start at 0)
 
-_nextSpatialID : 1, // make all valid IDs non-falsey (i.e. don't start at 0)
+	_entities: [],
 
-_entities : [],
+	// "PRIVATE" METHODS
+	//
+	// <none yet>
 
-// "PRIVATE" METHODS
-//
-// <none yet>
+	// PUBLIC METHODS
 
+	getNewSpatialID: function() {
+		// TODO: YOUR STUFF HERE!
+		return this._nextSpatialID++;
+	},
 
-// PUBLIC METHODS
+	register: function(entity) {
+		var pos = entity.getPos();
+		var spatialID = entity.getSpatialID();
 
-getNewSpatialID : function() {
+		// TODO: YOUR STUFF HERE!
+		this._entities[spatialID] = {
+			posX: pos.posX,
+			posY: pos.posY,
+			radius: entity.getRadius(),
+			entity: entity
+		};
+	},
 
-    // TODO: YOUR STUFF HERE!
-    return this._nextSpatialID++;
-},
+	unregister: function(entity) {
+		var spatialID = entity.getSpatialID();
 
-register: function(entity) {
-    var pos = entity.getPos();
-    var spatialID = entity.getSpatialID();
+		//this._entities[spatialID] = undefined;
 
+		// TODO: YOUR STUFF HERE!
+		//this._entities.splice(spatialID, 1);
+		delete this._entities[spatialID];
+	},
 
-    
-    // TODO: YOUR STUFF HERE!
-    this._entities[spatialID] = {
-        posX: pos.posX,
-        posY: pos.posY,
-        radius: entity.getRadius(),
-        entity: entity
-    };
-},
+	findEntityInRange: function(posX, posY, radius) {
+		// TODO: YOUR STUFF HERE!
+		let result = null;
 
-unregister: function(entity) {
-    var spatialID = entity.getSpatialID();
+		let best_distanceSq = Number.POSITIVE_INFINITY;
+		let best_spatialID = null;
 
+		for (let spatialID in this._entities) {
+			if (!this._entities.hasOwnProperty(spatialID)) continue;
 
-    //this._entities[spatialID] = undefined;
+			let entity = this._entities[spatialID];
 
-    // TODO: YOUR STUFF HERE!
-    //this._entities.splice(spatialID, 1);
-    delete this._entities[spatialID];
-},
+			let r2 = util.square(radius + entity.radius);
 
-findEntityInRange: function(posX, posY, radius) {
+			let d2 = util.wrappedDistSq(posX, posY, entity.posX, entity.posY);
 
-    // TODO: YOUR STUFF HERE!
-    let result = null;
+			let td = Math.max(0, d2 - r2);
 
-    let best_distanceSq = Number.POSITIVE_INFINITY;
-    let best_spatialID = null;
-    
-    for (let spatialID in this._entities) {
-        if (!this._entities.hasOwnProperty(spatialID)) continue;
+			if (d2 > 0 && d2 <= r2 && td < best_distanceSq) {
+				best_distanceSq = td;
+				best_spatialID = spatialID;
+			}
+		}
 
-        let entity = this._entities[spatialID];
+		if (!best_spatialID) return null;
 
-        let r2 = util.square(radius + entity.radius);
+		return this._entities[best_spatialID].entity;
+	},
 
-        let d2 = util.wrappedDistSq(posX, posY, entity.posX, entity.posY);
+	render: function(ctx) {
+		var oldStyle = ctx.strokeStyle;
+		ctx.strokeStyle = "red";
 
-        let td = Math.max(0, d2 - r2);
-
-        if (d2 > 0 && d2 <= r2 && td < best_distanceSq) {
-            best_distanceSq = td;
-            best_spatialID = spatialID;
-        }
-    }
-
-    if (!best_spatialID) return null;
-
-    return this._entities[best_spatialID].entity;
-},
-
-render: function(ctx) {
-    var oldStyle = ctx.strokeStyle;
-    ctx.strokeStyle = "red";
-    
-    for (var ID in this._entities) {
-        
-        var e = this._entities[ID];
-        util.strokeCircle(ctx, e.posX, e.posY, e.radius);
-    }
-    ctx.strokeStyle = oldStyle;
-}
-
-}
+		for (var ID in this._entities) {
+			var e = this._entities[ID];
+			util.strokeCircle(ctx, e.posX, e.posY, e.radius);
+		}
+		ctx.strokeStyle = oldStyle;
+	}
+};
