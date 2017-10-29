@@ -1,163 +1,153 @@
 "use strict";
 
-var assetManager = (function () {
+var assetManager = (function() {
+	let CATEGORY_IMAGE = "image";
+	let CATEGORY_AUDIO = "audio";
 
-    let CATEGORY_IMAGE = "image";
-    let CATEGORY_AUDIO = "audio";
+	let bundles = [];
 
-    let bundles = [];
+	var processor = {};
+	processor[CATEGORY_IMAGE] = getImage;
+	processor[CATEGORY_AUDIO] = getAudio;
 
-    var processor = {};
-    processor[CATEGORY_IMAGE] = getImage;
-    processor[CATEGORY_AUDIO] = getAudio;
+	// Boolean String Memebership Look-Up Table
+	function createBSMLUT(categories) {
+		let lut = {};
 
+		for (let categoryName in categories) {
+			if (!categories.hasOwnProperty(categoryName)) continue;
 
-    // Boolean String Memebership Look-Up Table
-    function createBSMLUT(categories) {
-      
-        let lut = {};
-        
-        for (let categoryName in categories) {
-            if (!categories.hasOwnProperty(categoryName)) continue;
+			let category = categories[categoryName];
 
-            let category = categories[categoryName];
+			for (let itemName in category) {
+				if (!category.hasOwnProperty(itemName)) continue;
 
-            for (let itemName in category) {
-                if (!category.hasOwnProperty(itemName)) continue;
+				let item = category[itemName];
+				let url = item.url;
 
-                let item = category[itemName];
-                let url = item.url;
+				if (!lut[url]) {
+					lut[url] = {
+						asset: null
+					};
+				}
+			}
+		}
 
-                if (!lut[url]) {
-                    lut[url] = {
-                        asset: null
-                    };
-                }
-            }
-        }
-        
-        return lut;
-    }
+		return lut;
+	}
 
+	function getImage(url, callback) {
+		var img = new Image();
 
-    function getImage(url, callback) {
-    
-        var img = new Image();
-    
-        img.onload = function (evt) { 
-            callback(CATEGORY_IMAGE, img, url);
-        };
-    
-        img.onerror = function (evt) {
-            callback(CATEGORY_IMAGE, null, url);
-        };
-        
-        img.src = url;
-    }
+		img.onload = function(evt) {
+			callback(CATEGORY_IMAGE, img, url);
+		};
 
+		img.onerror = function(evt) {
+			callback(CATEGORY_IMAGE, null, url);
+		};
 
-    function getAudio(url, callback) {
-        var audio = new Audio(url);
-        callback(CATEGORY_AUDIO, audio, url);
-    }
+		img.src = url;
+	}
 
+	function getAudio(url, callback) {
+		var audio = new Audio(url);
+		callback(CATEGORY_AUDIO, audio, url);
+	}
 
-    function assetTick(category, asset, url) {
+	function assetTick(category, asset, url) {
+		// Iterate through bundles
+		for (let i = 0; i < bundles.length; i++) {
+			let bundle = bundles[i];
 
-        // Iterate through bundles
-        for (let i = 0; i < bundles.length; i++) {
-            let bundle = bundles[i];
+			let lut = bundle.bsmlut;
 
-            let lut = bundle.bsmlut;
-            
+			if (lut[url]) {
+				lut[url].asset = asset;
+				bundle.count++;
+			}
 
-            if (lut[url]) {
-                lut[url].asset = asset;
-                bundle.count++;
-            }
+			if (bundle.count === bundle.size) {
+				bundles.splice(i, 1);
+				i--;
 
-            if (bundle.count === bundle.size) {
-                bundles.splice(i, 1);
-                i--;
+				let categories = bundle.categories;
+				let callback = bundle.callback;
 
-                let categories = bundle.categories;
-                let callback = bundle.callback;
+				for (let categoryName in categories) {
+					if (!categories.hasOwnProperty(categoryName)) continue;
 
-                for (let categoryName in categories) {
-                    if (!categories.hasOwnProperty(categoryName)) continue;
+					let category = categories[categoryName];
 
-                    let category = categories[categoryName];
-                    
-                    for (let itemName in category) {
-                        if (!category.hasOwnProperty(itemName)) continue;
+					for (let itemName in category) {
+						if (!category.hasOwnProperty(itemName)) continue;
 
-                        let item = category[itemName];
+						let item = category[itemName];
 
-                        item.asset = lut[item.url].asset;
-                    }
-                }
+						item.asset = lut[item.url].asset;
+					}
+				}
 
-                callback();
-            }
-        }
-    }
+				callback();
+			}
+		}
+	}
 
-    /**
+	/**
      * Assets are of form
      *
      * { images: [urls...], audio: [urls...]
      */
-    function load(categories, callback) {
+	function load(categories, callback) {
+		if (!categories) {
+			if (callback) {
+				callback();
+			}
+			return;
+		}
 
-        if (!categories) {
-            if (callback) {
-                callback();
-            }
-            return;
-        }
+		var size = 0;
 
-        var size = 0;
+		for (let categoryName in categories) {
+			if (!categories.hasOwnProperty(categoryName)) continue;
+			let category = categories[categoryName];
 
-        for (let categoryName in categories) {
-            if (!categories.hasOwnProperty(categoryName)) continue;
-            let category = categories[categoryName];
-                
-            for (let itemName in category) {
-                if (!category.hasOwnProperty(itemName)) continue;
+			for (let itemName in category) {
+				if (!category.hasOwnProperty(itemName)) continue;
 
-                let item = category[itemName];
-                size++;
-            }
-        }
+				let item = category[itemName];
+				size++;
+			}
+		}
 
-        if (size === 0) {
-            if (callback) callback();
-            return;
-        }
+		if (size === 0) {
+			if (callback) callback();
+			return;
+		}
 
-        bundles.push({
-            categories: categories,
-            bsmlut: createBSMLUT(categories),
-            size: size,
-            count: 0,
-            callback: callback
-        });
+		bundles.push({
+			categories: categories,
+			bsmlut: createBSMLUT(categories),
+			size: size,
+			count: 0,
+			callback: callback
+		});
 
-        for (let categoryName in categories) {
-            if (!categories.hasOwnProperty(categoryName)) continue;
+		for (let categoryName in categories) {
+			if (!categories.hasOwnProperty(categoryName)) continue;
 
-            let category = categories[categoryName];
+			let category = categories[categoryName];
 
-            for (let itemName in category) {
-                if (!category.hasOwnProperty(itemName)) continue;
+			for (let itemName in category) {
+				if (!category.hasOwnProperty(itemName)) continue;
 
-                let item = category[itemName];
-                processor[categoryName](item.url, assetTick);
-            }
-        }
-    }
+				let item = category[itemName];
+				processor[categoryName](item.url, assetTick);
+			}
+		}
+	}
 
-    return {
-        load: load
-    };
+	return {
+		load: load
+	};
 })();
