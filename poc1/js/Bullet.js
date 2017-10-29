@@ -1,7 +1,7 @@
 'use strict';
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Bullet(descr) {
+function Bullet(descr){
 
     // Common inherited setup logic from Entity
     this.setup(descr);
