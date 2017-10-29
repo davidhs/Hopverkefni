@@ -29,11 +29,8 @@ Núna ætti ´git remote´ að sýna "origin" á skjánum.
 
 ´git pull origin master´ sækir öll ný skjöl og uppfærir þau sem þú ert með.
 
-## Dæmi með git branch
-### Gera nýtt branch
-git branch Notandi 
-### Fara á nýja branchið
-git checkout Notandi
+## Dæmi með git branch og fara i tad
+git branch -b Notandi 
 ### Gera prufu skrá og commit-a
 touch test.txt
 
