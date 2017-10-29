@@ -3,7 +3,7 @@
 // Animation
 
 function AnimatedImage(descr) {
-    util.extendObject(this, descr);
+	util.extendObject(this, descr);
 }
 
 AnimatedImage.prototype.cx = 50;
@@ -13,29 +13,25 @@ AnimatedImage.prototype.dt = 0;
 AnimatedImage.prototype.rate = 1.5;
 AnimatedImage.prototype.sequence = [];
 
-AnimatedImage.prototype.update = function (du) {
+AnimatedImage.prototype.update = function(du) {
+	if (this.done) return entityManager.KILL_ME_NOW;
 
-    if (this.done) return entityManager.KILL_ME_NOW;;
-
-    this.dt += du;
+	this.dt += du;
 };
 
-AnimatedImage.prototype.render = function (ctx) {
+AnimatedImage.prototype.render = function(ctx) {
+	if (this.done) return;
 
-    if (this.done) return;
+	let idx = ~~(this.dt * this.rate);
 
+	if (idx >= this.sequence.length) {
+		this.done = true;
+		return;
+	}
 
-    let idx = ~~(this.dt * this.rate);
+	let img = this.sequence[idx];
+	let w = img.width;
+	let h = img.height;
 
-    if (idx >= this.sequence.length) {
-        this.done = true;
-        return;
-    }
-
-
-    let img = this.sequence[idx];
-    let w = img.width;
-    let h = img.height;
-
-    ctx.drawImage(img.getImage(), this.cx - w / 2, this.cy - h / 2, w, h);
+	ctx.drawImage(img.getImage(), this.cx - w / 2, this.cy - h / 2, w, h);
 };
