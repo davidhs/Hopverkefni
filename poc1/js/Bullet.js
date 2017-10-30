@@ -57,11 +57,11 @@ Bullet.prototype.update = function(du) {
 	spatialManager.register(this);
 };
 
-Bullet.prototype.getRadius = function() {
-	return 4;
+Bullet.prototype.getRadius = function () {
+  return 4;
 };
 
-Bullet.prototype.takeBulletHit = function() {
+Bullet.prototype.takeBulletHit = function () {
 	this.kill();
 
 	var sound = new Audio("audio/bulletZapped.ogg");

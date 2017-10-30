@@ -1,6 +1,7 @@
 module.exports = {
     "extends": "airbnb-base",
     "rules": {
-        "no-unused-vars": [0, { "vars": "local" }]
+        "no-unused-vars": [0, { "vars": "local" }],
+        "func-names": ["error", "never"]
     }
 };
