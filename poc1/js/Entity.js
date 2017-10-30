@@ -6,7 +6,7 @@
 Provides a set of common functions which can be "inherited" by all other
 game Entities.
 
-JavaScript's prototype-based inheritance system is unusual, and requires
+JavaScript's prototype-based inheritance system is unusual, and requires 
 some care in use. In particular, this "base" should only provide shared
 functions... shared data properties are potentially quite confusing.
 
@@ -21,67 +21,69 @@ functions... shared data properties are potentially quite confusing.
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
 function Entity() {
-	/*
+
+/*
     // Diagnostics to check inheritance stuff
     this._entityProperty = true;
     console.dir(this);
 */
-}
 
-Entity.prototype.setup = function(descriptor) {
-	// Apply all setup properies from the (optional) descriptor
-	for (var property in descriptor) {
-		if (!descriptor.hasOwnProperty(property)) continue;
-		this[property] = descriptor[property];
-	}
-
-	// Get my (unique) spatial ID
-	this._spatialID = spatialManager.getNewSpatialID();
-
-	// I am not dead yet!
-	this._isDeadNow = false;
 };
 
-Entity.prototype.setPos = function(cx, cy) {
-	this.cx = cx;
-	this.cy = cy;
+Entity.prototype.setup = function (descriptor) {
+
+    // Apply all setup properies from the (optional) descriptor
+    for (var property in descriptor) {
+        if (!descriptor.hasOwnProperty(property)) continue;
+        this[property] = descriptor[property];
+    }
+    
+    // Get my (unique) spatial ID
+    this._spatialID = spatialManager.getNewSpatialID();
+    
+    // I am not dead yet!
+    this._isDeadNow = false;
 };
 
-Entity.prototype.getPos = function() {
-	return { posX: this.cx, posY: this.cy };
+Entity.prototype.setPos = function (cx, cy) {
+    this.cx = cx;
+    this.cy = cy;
 };
 
-Entity.prototype.getRadius = function() {
-	return 0;
+Entity.prototype.getPos = function () {
+    return {posX : this.cx, posY : this.cy};
 };
 
-Entity.prototype.getSpatialID = function() {
-	return this._spatialID;
+Entity.prototype.getRadius = function () {
+    return 0;
 };
 
-Entity.prototype.kill = function() {
-	this._isDeadNow = true;
+Entity.prototype.getSpatialID = function () {
+    return this._spatialID;
 };
 
-Entity.prototype.findHitEntity = function() {
-	var pos = this.getPos();
+Entity.prototype.kill = function () {
+    this._isDeadNow = true;
+};
 
-	let hitEntry = spatialManager.findEntityInRange(
-		pos.posX,
-		pos.posY,
-		this.getRadius()
-	);
+Entity.prototype.findHitEntity = function () {
+    var pos = this.getPos();
 
-	return hitEntry;
+    let hitEntry = spatialManager.findEntityInRange(
+        pos.posX, pos.posY, this.getRadius()
+    );
+
+    return hitEntry;
 };
 
 // This is just little "convenience wrapper"
-Entity.prototype.isColliding = function() {
-	return this.findHitEntity();
+Entity.prototype.isColliding = function () {
+    return this.findHitEntity();
 };
 
-Entity.prototype.wrapPosition = function() {
-	this.cx = util.wrapRange(this.cx, 0, g_world.width);
-	this.cy = util.wrapRange(this.cy, 0, g_world.height);
+Entity.prototype.wrapPosition = function () {
+    this.cx = util.wrapRange(this.cx, 0, g_world.width);
+    this.cy = util.wrapRange(this.cy, 0, g_world.height);
 };

@@ -57,11 +57,11 @@ Bullet.prototype.update = function(du) {
 	spatialManager.register(this);
 };
 
-Bullet.prototype.getRadius = function () {
-  return 4;
+Bullet.prototype.getRadius = function() {
+	return 4;
 };
 
-Bullet.prototype.takeBulletHit = function () {
+Bullet.prototype.takeBulletHit = function() {
 	this.kill();
 
 	var sound = new Audio("audio/bulletZapped.ogg");
@@ -71,14 +71,18 @@ Bullet.prototype.takeBulletHit = function () {
 	//this.zappedSound.play();
 };
 
-Bullet.prototype.render = function(ctx) {
+Bullet.prototype.render = function(ctx, cfg) {
+	
+	if (cfg && cfg.occlusion) return;
+	
 	var fadeThresh = Bullet.prototype.lifeSpan / 3;
+	
 
 	if (this.lifeSpan < fadeThresh) {
 		ctx.globalAlpha = this.lifeSpan / fadeThresh;
 	}
 
-	g_asset.sprite.bullet.drawCentredAt(ctx, this.cx, this.cy, this.rotation);
+	g_asset.sprite.bullet.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
 
 	ctx.globalAlpha = 1;
 };

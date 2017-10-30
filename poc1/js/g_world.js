@@ -1,22 +1,30 @@
-"use strict";
+'use strict';
 
-var g_world = (function() {
-	var world = {};
+var g_world = (function () {
 
-	world.width = 1000;
-	world.height = 1000;
+    var world = {};
 
-	world.canvas = document.createElement("canvas");
-	world.canvas.width = world.width;
-	world.canvas.height = world.height;
-	world.ctx = world.canvas.getContext("2d");
+    world.width = 1000;
+    world.height = 1000;
 
-	world.inBounds = function(cx, cy, radius) {
-		var cond1 = cx > 0 && cx < world.width;
-		var cond2 = cy > 0 && cy < world.height;
+    world.canvas = document.createElement('canvas');
+    world.canvas.width = world.width;
+    world.canvas.height = world.height;
+    world.ctx = world.canvas.getContext('2d');
 
-		return cond1 && cond2;
-	};
+    world.inBounds = function (cx, cy, radius) {
+        var cond1 = cx > 0 && cx < world.width;
+        var cond2 = cy > 0 && cy < world.height;
 
-	return world;
+        return cond1 && cond2;
+    };
+
+    world.getWidth = function () {
+        return world.width;
+    };
+    world.getHeight = function () {
+        return world.height;
+    };
+
+    return world;
 })();
