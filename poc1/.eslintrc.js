@@ -3,6 +3,6 @@ module.exports = {
     "rules": {
         "no-unused-vars": [0, { "vars": "local" }],
         "func-names": ["error", "never"],
-        "strict": ["error", "global"]
+        "strict": ["error", "all"]
     }
 };
