@@ -4,7 +4,7 @@
   "description": "lokaverkefni",
   "main": "index.html",
   "scripts": {
-    "browser-sync": "browser-sync start --server --files index.html js/*.js css/*.css img/*.png audio/*.ogg",
+    "browser-sync": "browser-sync start --server --files index.html glsl/*.* js/*.js css/*.css img/*.png audio/*.ogg",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,6 +13,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-airbnb": "^2.4.0",
     "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.18.13",
     "eslint": "^4.10.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-airbnb-base": "^12.1.0",
