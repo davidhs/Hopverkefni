@@ -1,3 +1,4 @@
 .DS_Store
 poc1/node_modules
 *.swp
+package-lock.json
