@@ -1,23 +1,24 @@
 "use strict";
 
 function Player(descriptor) {
-	// Common inherited setup logic from Entity
-	this.setup(descriptor);
 
-	// Default sprite
-	this.sprite = this.sprite || g_asset.sprite.player;
+    // Common inherited setup logic from Entity
+    this.setup(descriptor);
 
-	// Set normal drawing scale, and warp state off
-	this._scale = 0.25;
+    // Default sprite
+    this.sprite = this.sprite || g_asset.sprite.player;
+
+    // Set normal drawing scale, and warp state off
+    this._scale = 0.25;
 }
 
 // Inherit from Entity
 Player.prototype = new Entity();
 
-Player.prototype.KEY_UP = keyCode("W");
-Player.prototype.KEY_DOWN = keyCode("S");
-Player.prototype.KEY_LEFT = keyCode("A");
-Player.prototype.KEY_RIGHT = keyCode("D");
+Player.prototype.KEY_UP = keyCode('W');
+Player.prototype.KEY_DOWN = keyCode('S');
+Player.prototype.KEY_LEFT = keyCode('A');
+Player.prototype.KEY_RIGHT  = keyCode('D');
 
 Player.prototype.rotation = 0;
 Player.prototype.cx = 200;
@@ -27,110 +28,137 @@ Player.prototype.velY = 0;
 
 Player.prototype.bulletCooldown = 0;
 
-Player.prototype.update = function(du) {
-	this.bulletCooldown = Math.max(this.bulletCooldown - 10, 0);
+Player.prototype.update = function (du) {
 
-	// Convert Viewport/Canvas coordinates to World coordinates.
-	var mx = g_viewport.cx + g_mouse.x - g_canvas.width / 2;
-	var my = g_viewport.cy + g_mouse.y - g_canvas.height / 2;
 
-	var dx = mx - this.cx;
-	var dy = my - this.cy;
+    this.bulletCooldown = Math.max(this.bulletCooldown - 10, 0);
 
-	this.rotation = Math.atan2(dy, dx);
+    // Convert Viewport/Canvas coordinates to World coordinates.
+    var mx = g_viewport.cx + g_mouse.x - g_canvas.width / 2;
+    var my = g_viewport.cy + g_mouse.y - g_canvas.height / 2;
 
-	// TODO: unregister
-	// spatialManager.unregister(this);
+    
+    var dx = mx - this.cx;
+    var dy = my - this.cy;
 
-	// TODO: check for death
-	// if (this._isDeadNow) return entityManager.KILL_ME_NOW;
+    this.rotation = Math.atan2(dy, dx);
 
-	let speed = 10;
 
-	this.velX = 0;
-	this.velY = 0;
 
-	// TODO: do movement
 
-	if (g_keys[this.KEY_UP]) {
-		this.velY = -speed;
-	}
+    // TODO: unregister
+    // spatialManager.unregister(this);
 
-	if (g_keys[this.KEY_DOWN]) {
-		this.velY = +speed;
-	}
 
-	if (g_keys[this.KEY_LEFT]) {
-		this.velX = -speed;
-	}
+    // TODO: check for death
+    // if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 
-	if (g_keys[this.KEY_RIGHT]) {
-		this.velX = +speed;
-	}
+    let speed = 10;
 
-	var new_x = this.cx + du * this.velX;
-	var new_y = this.cy + du * this.velY;
+    this.velX = 0;
+    this.velY = 0;
 
-	if (g_world.inBounds(new_x, new_y, 0)) {
-		this.cx = new_x;
-		this.cy = new_y;
-	}
+    // TODO: do movement
 
-	// TODO: Handle firitng
+    if (g_keys[this.KEY_UP]) {
+        this.velY = -speed;
+    }
 
-	if (g_mouse.isDown) {
-		this.fireBullet();
-	}
+    if (g_keys[this.KEY_DOWN]) {
+        this.velY = +speed;
+    }
 
-	// this.maybeFireBullet();
+    if (g_keys[this.KEY_LEFT]) {
+        this.velX = -speed;
+    }
 
-	// TODO: YOUR STUFF HERE! --- Warp if isColliding, otherwise Register
+    if (g_keys[this.KEY_RIGHT]) {
+        this.velX = +speed;
+    }
 
-	// TODO: check if colliding.
 
-	// TODO: re-register with spatial manager.
-	//spatialManager.register(this);
+    var new_x = this.cx + du * this.velX;
+    var new_y = this.cy + du * this.velY;
+    
+
+    if (g_world.inBounds(new_x, new_y, 0)) {
+
+        this.cx = new_x;
+        this.cy = new_y;
+    }
+
+
+
+    // TODO: Handle firitng
+
+    if (g_mouse.isDown) {
+        this.fireBullet();
+    }
+
+    // this.maybeFireBullet();
+
+    
+    // TODO: YOUR STUFF HERE! --- Warp if isColliding, otherwise Register
+
+    // TODO: check if colliding.
+    
+    // TODO: re-register with spatial manager.
+    //spatialManager.register(this);
 };
 
-Player.prototype.getRadius = function() {
-	return this._scale * this.sprite.width / 2 * 0.9;
+Player.prototype.getRadius = function () {
+    return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
-Player.prototype.fireBullet = function() {
-	if (!g_mouse.isDown) return;
+Player.prototype.fireBullet = function () {
 
-	if (this.bulletCooldown > 0) return;
+    if (!g_mouse.isDown) return;
 
-	this.bulletCooldown += 100;
+    if (this.bulletCooldown > 0) return;
 
-	var angle = Math.PI / 2 + this.rotation;
+    this.bulletCooldown += 100;
 
-	var dX = +Math.sin(angle);
-	var dY = -Math.cos(angle);
+    var angle = Math.PI / 2 + this.rotation;
 
-	var launchDist = this.getRadius() * 1.2;
 
-	var relVel = Math.max(this.velX, this.velY);
+    var dX = +Math.sin(angle);
+    var dY = -Math.cos(angle);
 
-	var speed = 15;
+    var launchDist = this.getRadius() * 1.2;
+    
+    var relVel = Math.max(this.velX, this.velY);
 
-	var red = 0.01;
+    var speed = 15;
 
-	var cx = this.cx + dX * launchDist;
-	var cy = this.cy + dY * launchDist;
+    var red = 0.01;
 
-	var velX = dX * speed;
-	var velY = dY * speed;
+    var cx = this.cx + dX * launchDist;
+    var cy = this.cy + dY * launchDist;
 
-	var rotation = this.rotation;
+    var velX = dX * speed;
+    var velY = dY * speed;
 
-	entityManager.fireBullet(cx, cy, velX, velY, rotation);
+    var rotation = this.rotation;
+
+    entityManager.fireBullet(
+       cx,
+       cy,
+       velX,
+       velY,
+       rotation
+    );
 };
 
-Player.prototype.render = function(ctx) {
-	var origScale = this.sprite.scale;
-	// pass my scale into the sprite, for drawing
-	this.sprite.scale = this._scale;
-	this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation);
-	this.sprite.scale = origScale;
+
+Player.prototype.render = function (ctx, cfg) {
+
+    if (cfg && cfg.occlusion) return;
+
+    var origScale = this.sprite.scale;
+    // pass my scale into the sprite, for drawing
+    this.sprite.scale = this._scale;
+    this.sprite.drawCentredAt(
+        ctx, this.cx, this.cy, this.rotation, cfg
+    );
+    this.sprite.scale = origScale;
 };

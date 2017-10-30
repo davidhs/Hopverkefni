@@ -9,12 +9,46 @@
 <body>
 
     <div class="center" style="width: 100%">
-        <canvas id="myCanvas" width="800" height="600">
-            Sorry, your browser does not support the HTML5 canvas tag.
-        </canvas>
+        <div id="canvi">
+            <canvas id="myCanvas" width="800" height="600">
+                Sorry, your browser does not support the HTML5 canvas tag.
+            </canvas>
+        </div>
+        <p>
+            W: move up<br>
+            A: move left<br>
+            S: move down<br>
+            D: move right<br>
+        </p>
+        <p>
+            T: toggle timer <br>
+
+            <br>
+
+            O: toggle step mode<br>
+            N: next frame in step mode<br>
+
+            <br>
+
+            P: toggle pause mode <br>
+        </p>
+
+            C: toggle clear <br>
+            B: toggle box <br>
+            U: toggle undo box <br>
+            F: toggle flip flop <br>
+            R: toggle render <br>
+        </p>
     </div>
+
     
     <!-- L6 -->
+
+    <script src="js/lib/lighting.js"></script>
+    <script src="js/lib/shadows.js"></script>
+    <script src="js/lib/util.js"></script>
+    <script src="js/lib/webglutil.js"></script>
+    <script src="js/lib/assetManager.js"></script>
 
     <script src="js/AudioManager.js"></script>
     
@@ -26,7 +60,7 @@
     <!-- L6 -->    
     <script src="js/globals.js"></script>
     <script src="js/consts.js"></script>
-    <script src="js/util.js"></script>
+    <script src="js/lib/util.js"></script>
 
     <!-- L6 -->
     <script src="js/mouse.js"></script>
@@ -54,7 +88,7 @@
     <script src="js/render.js"></script>
 
     <!-- L1 -->
-    <script src="js/AssetManager.js"></script>
+    <!--<script src="js/AssetManager.js"></script>-->
     <script src="js/main.js"></script>
 
     <script src="js/g_world.js"></script>
