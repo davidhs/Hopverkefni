@@ -1,56 +1,49 @@
-"use strict";
+'use strict';
 
 // TODO this crap is useless
 
-var audioManager = (function () {
+const audioManager = (function () {
+  const assets = {};
 
 
-    let assets = {};
-
-
-
-
-    function play(url) {
-
-        if (!assets[url]) {
-            add([{
-                url: url,
-                volume: 0.5
-            }]);
-        }
-
-        let audio = assets[url].audio;
-
-        audio.currentTime = 0;
-        audio.play();
+  function play(url) {
+    if (!assets[url]) {
+      add([{
+        url,
+        volume: 0.5,
+      }]);
     }
 
-    function add(arr) {
+    const audio = assets[url].audio;
 
-        for (let i = 0; i < arr.length; i++) {
+    audio.currentTime = 0;
+    audio.play();
+  }
 
-            let obj = arr[i];
+  function add(arr) {
+    for (let i = 0; i < arr.length; i++) {
+      const obj = arr[i];
 
-            let url = obj.url;
+      const url = obj.url;
 
-            if (assets[url]) continue;
+      if (assets[url]) continue;
 
-            let volume = obj.volume;
+      const volume = obj.volume;
 
-            let audio = new Audio(url);
-            audio.volume = volume;
+      const audio = new Audio(url);
+      audio.volume = volume;
 
-            assets[url] = {
-                url: url,
-                volume: volume,
-                audio: audio
-            };
-        }
+      assets[url] = {
+        url,
+        volume,
+        audio,
+      };
     }
+  }
 
 
-    return {
-        add: add,
-        play: play
-    };
-})();
+  return {
+    add,
+    play,
+  };
+}());

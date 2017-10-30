@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 // Animation
 
 function AnimatedImage(descr) {
-    util.extendObject(this, descr);
+  util.extendObject(this, descr);
 }
 
 AnimatedImage.prototype.cx = 50;
@@ -14,40 +14,36 @@ AnimatedImage.prototype.rate = 1.5;
 AnimatedImage.prototype.sequence = [];
 
 AnimatedImage.prototype.update = function (du) {
+  if (this.done) return entityManager.KILL_ME_NOW;
 
-    if (this.done) return entityManager.KILL_ME_NOW;;
-
-    this.dt += du;
+  this.dt += du;
 };
 
 AnimatedImage.prototype.render = function (ctx, cfg) {
+  if (this.done) return;
 
-    if (this.done) return;
+  cfg = cfg || {};
 
-    cfg = cfg || {};
-
-    if (cfg.occlusion) return;
-
-
-    let idx = ~~(this.dt * this.rate);
-
-    if (idx >= this.sequence.length) {
-        this.done = true;
-        return;
-    }
+  if (cfg.occlusion) return;
 
 
+  const idx = ~~(this.dt * this.rate);
+
+  if (idx >= this.sequence.length) {
+    this.done = true;
+    return;
+  }
 
 
-    let img = this.sequence[idx];
-    let w = img.width;
-    let h = img.height;
+  const img = this.sequence[idx];
+  const w = img.width;
+  const h = img.height;
 
-    let x = this.cx - w / 2;
-    let y = this.cy - h / 2;
+  let x = this.cx - w / 2;
+  let y = this.cy - h / 2;
 
-    x = x -g_viewport.getX();
-    y = y -g_viewport.getY();
+  x -= g_viewport.getX();
+  y -= g_viewport.getY();
 
-    ctx.drawImage(img.getImage(), x, y, w, h);
+  ctx.drawImage(img.getImage(), x, y, w, h);
 };

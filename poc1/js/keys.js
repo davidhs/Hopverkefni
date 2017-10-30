@@ -1,23 +1,22 @@
-"use strict";
+'use strict';
 
 // =================
 // KEYBOARD HANDLING
 // =================
 
-var g_keys = [];
+const g_keys = [];
 
 function handleKeydown(evt) {
+  // Prevent browser scrolling down when pressing SPACE
+  if (evt.keyCode === 32 && evt.target === document.body) {
+    evt.preventDefault();
+  }
 
-    // Prevent browser scrolling down when pressing SPACE
-    if (evt.keyCode == 32 && evt.target == document.body) {
-        evt.preventDefault();
-    }
-    
-    g_keys[evt.keyCode] = true;
+  g_keys[evt.keyCode] = true;
 }
 
 function handleKeyup(evt) {
-    g_keys[evt.keyCode] = false;
+  g_keys[evt.keyCode] = false;
 }
 
 // Inspects, and then clears, a key's state
@@ -26,15 +25,15 @@ function handleKeyup(evt) {
 // ..until the auto-repeat kicks in, that is.
 //
 function eatKey(keyCode) {
-    var isDown = g_keys[keyCode];
-    g_keys[keyCode] = false;
-    return isDown;
+  const isDown = g_keys[keyCode];
+  g_keys[keyCode] = false;
+  return isDown;
 }
 
 // A tiny little convenience function
 function keyCode(keyChar) {
-    return keyChar.charCodeAt(0);
+  return keyChar.charCodeAt(0);
 }
 
-window.addEventListener("keydown", handleKeydown);
-window.addEventListener("keyup", handleKeyup);
+window.addEventListener('keydown', handleKeydown);
+window.addEventListener('keyup', handleKeyup);
