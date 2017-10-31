@@ -1,5 +1,8 @@
 'use strict';
 
+/* global audioManager g_url Entity NOMINAL_UPDATE_INTERVAL spatialManager
+ g_world entityManager g_asset :true */
+
 // A generic contructor which accepts an arbitrary descriptor object
 function Bullet(descr) {
   // Common inherited setup logic from Entity
@@ -21,8 +24,6 @@ Bullet.prototype.velY = 1;
 Bullet.prototype.lifeSpan = 3000 / NOMINAL_UPDATE_INTERVAL;
 
 Bullet.prototype.update = function (du) {
-  
-
   spatialManager.unregister(this);
 
   if (!g_world.inBounds(this.cx, this.cy)) return entityManager.KILL_ME_NOW;
@@ -30,14 +31,14 @@ Bullet.prototype.update = function (du) {
   this.lifeSpan -= du;
   if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
-  let oldCX = this.cx;
-  let oldCY = this.cy;
+  const oldCX = this.cx;
+  const oldCY = this.cy;
 
   this.cx += this.velX * du;
   this.cy += this.velY * du;
 
 
-  let potentialCollision = spatialManager.register(this);
+  const potentialCollision = spatialManager.register(this);
 
   if (potentialCollision) {
     spatialManager.unregister(this);
@@ -55,7 +56,7 @@ Bullet.prototype.update = function (du) {
     }
   }
 
-  
+  return entityManager.OK;
 };
 
 Bullet.prototype.getRadius = function () {

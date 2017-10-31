@@ -1,9 +1,20 @@
 'use strict';
 
+/* global document util g_viewport g_canvas window :true */
+
 document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 
 
-var g_mouse = (function () {
+const g_mouse = (function () {
+  let theImage = null;
+
+  const mouse = {};
+
+  mouse.cursorLock = false;
+
+
+  let lockedObject = null;
+
   const setMousePos = (obj, evt, target) => {
     if (mouse.cursorLock) {
       target.x = util.clamp(target.x + evt.movementX, 0, obj.width);
@@ -15,14 +26,6 @@ var g_mouse = (function () {
     }
   };
 
-  let theImage = null;
-
-  let mouse = {};
-
-  mouse.cursorLock = false;
-
-
-  let lockedObject = null;
 
   util.extendObject(mouse, {
 
@@ -115,4 +118,3 @@ if (false) {
     g_mouse.handleEvent('mozpointerlockchange', evt, g_canvas);
   }, false);
 }
-

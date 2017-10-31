@@ -1,5 +1,7 @@
 'use strict';
 
+/* global glutil document :true */
+
 const shadows = (function () {
   const DEBUG = true;
 
@@ -20,18 +22,6 @@ const shadows = (function () {
     canvas: document.createElement('canvas'),
   };
 
-  function init(glslLights, glslShadowMap, glslShadowMask) {
-    src.lights = glslLights;
-    src.shadowMap = glslShadowMap;
-    src.shadowMask = glslShadowMask;
-
-    ctxOccluders = canvasOccluders.getContext('2d');
-
-    initShadowMap();
-    initShadowMask();
-
-    initialized = true;
-  }
 
   function initShadowMap() {
     gShadowMap.gl = gShadowMap.canvas.getContext('webgl');
@@ -148,7 +138,7 @@ const shadows = (function () {
 
 
   function getShadowMap(occluders) {
-    if (!initialized) return;
+    if (!initialized) return null;
 
     const canvas = gShadowMap.canvas;
     const gl = gShadowMap.gl;
@@ -233,7 +223,7 @@ const shadows = (function () {
 
 
   function getShadowMask(cfg) {
-    if (!initialized) return;
+    if (!initialized) return null;
 
     cfg.x = cfg.x || 0;
     cfg.y = cfg.y || 0;
@@ -356,6 +346,19 @@ const shadows = (function () {
       dx: -x,
       dy: -y,
     };
+  }
+
+  function init(glslLights, glslShadowMap, glslShadowMask) {
+    src.lights = glslLights;
+    src.shadowMap = glslShadowMap;
+    src.shadowMask = glslShadowMask;
+
+    ctxOccluders = canvasOccluders.getContext('2d');
+
+    initShadowMap();
+    initShadowMask();
+
+    initialized = true;
   }
 
   return {

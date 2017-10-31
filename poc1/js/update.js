@@ -1,11 +1,13 @@
 'use strict';
 
+/* global eatKey updateSimulation NOMINAL_UPDATE_INTERVAL:true */
+
 // GENERIC UPDATE LOGIC
 
 // The "nominal interval" is the one that all of our time-based units are
 // calibrated to e.g. a velocity unit is "pixels per nominal interval"
 //
-//const NOMINAL_UPDATE_INTERVAL = 16.666;
+// const NOMINAL_UPDATE_INTERVAL = 16.666;
 
 // Dt means "delta time" and is in units of the timer-system (i.e. milliseconds)
 //
@@ -19,6 +21,21 @@ let g_prevUpdateDu = null;
 //
 let g_isUpdateOdd = false;
 
+
+// Togglable Pause Mode
+//
+const KEY_PAUSE = 'P'.charCodeAt(0);
+const KEY_STEP = 'O'.charCodeAt(0);
+
+let g_isUpdatePaused = false;
+
+
+function shouldSkipUpdate() {
+  if (eatKey(KEY_PAUSE)) {
+    g_isUpdatePaused = !g_isUpdatePaused;
+  }
+  return g_isUpdatePaused && !eatKey(KEY_STEP);
+}
 
 function update(dt) {
   // Get out if skipping (e.g. due to pause-mode)
@@ -47,18 +64,4 @@ function update(dt) {
   g_prevUpdateDu = du;
 
   g_isUpdateOdd = !g_isUpdateOdd;
-}
-
-// Togglable Pause Mode
-//
-const KEY_PAUSE = 'P'.charCodeAt(0);
-const KEY_STEP = 'O'.charCodeAt(0);
-
-let g_isUpdatePaused = false;
-
-function shouldSkipUpdate() {
-  if (eatKey(KEY_PAUSE)) {
-    g_isUpdatePaused = !g_isUpdatePaused;
-  }
-  return g_isUpdatePaused && !eatKey(KEY_STEP);
 }

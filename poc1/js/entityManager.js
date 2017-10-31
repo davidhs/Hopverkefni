@@ -1,27 +1,12 @@
-/*
-
-entityManager.js
-
-A module which handles arbitrary entity-management for "Asteroids"
-
-
-We create this module as a single global object, and initialise it
-with suitable 'data' and 'methods'.
-
-"Private" properties are denoted by an underscore prefix convention.
-
-*/
-
-
 'use strict';
 
+/* global Rock Bullet Player g_asset AnimatedImage :true */
 
-// Tell jslint not to complain about my use of underscore prefixes (nomen),
-// my flattening of some indentation (white), or my use of incr/decr ops
-// (plusplus).
-//
-/* jslint nomen: true, white: true, plusplus: true */
+// ==============
+// Entity Manager
+// ==============
 
+// A "module" that handles arbitrary entity-management.
 
 const entityManager = (function () {
   // "PRIVATE" DATA
@@ -43,17 +28,8 @@ const entityManager = (function () {
   // "PRIVATE" METHODS
 
 
-  function _generateRocks() {
-    let i,
-      NUM_ROCKS = 20;
-
-    for (i = 0; i < NUM_ROCKS; ++i) {
-      generateRock();
-    }
-  }
-
   function _forEachOf(aCategory, fn) {
-    for (let i = 0; i < aCategory.length; ++i) {
+    for (let i = 0; i < aCategory.length; i += 1) {
       fn.call(aCategory[i]);
     }
   }
@@ -64,13 +40,9 @@ const entityManager = (function () {
   // A special return value, used by other objects,
   // to request the blessed release of death!
   //
+  const OK = 1;
   const KILL_ME_NOW = -1;
 
-
-  function init() {
-    generatePlayer();
-    _generateRocks();
-  }
 
   function fireBullet(cx, cy, velX, velY, rotation) {
     _bullets.push(new Bullet({
@@ -97,6 +69,15 @@ const entityManager = (function () {
     _rocks.push(new Rock(descr));
   }
 
+  function _generateRocks() {
+    const NUM_ROCKS = 20;
+
+    for (let i = 0; i < NUM_ROCKS; i += 1) {
+      generateRock();
+    }
+  }
+
+
   function toggleRocks() {
     _bShowRocks = !_bShowRocks;
   }
@@ -104,7 +85,7 @@ const entityManager = (function () {
   // UPDATE ///////////////////////////////////////////////
 
   function update(du) {
-    for (let c = 0; c < _categories.length; ++c) {
+    for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
       let i = 0;
 
@@ -116,7 +97,7 @@ const entityManager = (function () {
           // prevent a confusing gap from appearing in the array
           aCategory.splice(i, 1);
         } else {
-          ++i;
+          i += 1;
         }
       }
     }
@@ -127,21 +108,26 @@ const entityManager = (function () {
   // RENDER ///////////////////////////////////////////////
 
   function render(ctx, cfg) {
-    let debugX = 10,
-      debugY = 100;
+    const debugX = 10;
+    let debugY = 100;
 
-    for (let c = 0; c < _categories.length; ++c) {
+    for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
 
       if (!_bShowRocks &&
-                aCategory == _rocks) { continue; }
+                aCategory === _rocks) { continue; }
 
-      for (let i = 0; i < aCategory.length; ++i) {
+      for (let i = 0; i < aCategory.length; i += 1) {
         aCategory[i].render(ctx, cfg);
         // debug.text(".", debugX + i * 10, debugY);
       }
       debugY += 10;
     }
+  }
+
+  function init() {
+    generatePlayer();
+    _generateRocks();
   }
 
   return {
@@ -151,12 +137,13 @@ const entityManager = (function () {
     fireBullet,
     generateRock,
     generateExplosion,
+    OK,
     KILL_ME_NOW,
     getPos: () => {
       if (_players.length > 0) {
         return _players[0];
       }
+      return null;
     },
   };
 }());
-

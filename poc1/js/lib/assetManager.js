@@ -1,6 +1,6 @@
-// Asset manager
-
 'use strict';
+
+/* global Image Audio XMLHttpRequest  :true */
 
 /* jslint browser: true, devel: true, white: true */
 
@@ -9,11 +9,17 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+// =============
+// Asset manager
+// ============
+
 // The asset manager lets you load multiple assets of different types,
 // here image and text are useful types.  Once all assets have been loaded
 // the supplied callback is called.
 const assetManager = (function () {
   // Types of assets this manager supports.
+  // const _catname = ['image', 'audio', 'text'];
+
   const _catname = ['image', 'audio', 'text'];
 
   // Each load invocation creates a bundle.  A bundle
@@ -65,7 +71,7 @@ const assetManager = (function () {
   // Each time an asset has been loaded this function
   // is called.
   function assetTick(asset, url) {
-    for (let i = 0; i < bundles.length; i++) {
+    for (let i = 0; i < bundles.length; i += 1) {
       const bundle = bundles[i];
       const lut = bundle.lut;
 
@@ -73,7 +79,7 @@ const assetManager = (function () {
       // for this URL
       if (lut[url]) {
         lut[url] = false;
-        bundle.count++;
+        bundle.count += 1;
         bundle.asset[url] = asset;
       }
 
@@ -84,7 +90,7 @@ const assetManager = (function () {
         delete bundles[i];
 
         bundles.splice(i, 1);
-        i--;
+        i -= 1;
 
         bundle.callback(bundle.asset);
       }
@@ -116,13 +122,15 @@ const assetManager = (function () {
     };
 
     // Load into bundle
-    for (let i = 0; i < _catname.length; i++) {
+    for (let i = 0; i < _catname.length; i += 1) {
       const catname = _catname[i];
-
-      if (!categories.hasOwnProperty(catname)) continue;
-
       const urls = categories[catname];
-      for (let j = 0; j < urls.length; j++) {
+
+      if (!urls) continue;
+
+      // if (!categories.hasOwnProperty(catname)) continue;
+
+      for (let j = 0; j < urls.length; j += 1) {
         bundle.lut[urls[j]] = true;
       }
 
@@ -136,15 +144,15 @@ const assetManager = (function () {
       return;
     }
 
+
     // Push to bundles.
     bundles.push(bundle);
 
-    // Process bundle
-    for (const categoryName in bundle.category) {
-      if (!bundle.category.hasOwnProperty(categoryName)) continue;
+    for (let i = 0, keys = Object.keys(bundle.category); i < keys.length; i += 1) {
+      const categoryName = keys[i];
 
       const urls = bundle.category[categoryName];
-      for (let i = 0; i < urls.length; i++) {
+      for (let i = 0; i < urls.length; i += 1) {
         const url = urls[i];
         processor[categoryName](url, assetTick);
       }

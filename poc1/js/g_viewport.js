@@ -1,6 +1,7 @@
 'use strict';
 
-// Assumes g_world
+/* global g_world :true */
+
 
 // TODO: split into extrinsic and intrinsic components.
 //
@@ -68,4 +69,3 @@ const g_viewport = (function () {
 
   return viewport;
 }());
-

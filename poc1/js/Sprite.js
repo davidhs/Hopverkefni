@@ -4,6 +4,8 @@
 
 'use strict';
 
+/* global document fOcclusionMap g_viewport:true */
+
 /* jshint browser: true, devel: true, globalstrict: true */
 
 /*
@@ -40,7 +42,7 @@ Sprite.prototype.drawAt = function (ctx, x, y) {
 Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation, cfg) {
   if (rotation === undefined) rotation = 0;
 
-  cfg = cfg || {};
+  cfg = cfg || {};
 
   const w = this.width;
   const h = this.height;

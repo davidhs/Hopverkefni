@@ -1,16 +1,40 @@
 'use strict';
 
-function Texture(obj) {
-  obj.scale = obj.scale || 1;
+/* jshint browser: true, devel: true, globalstrict: true */
 
-  this._ = {
-    image: obj.image,
-    scale: obj.scale,
-  };
+/*
+0        1         2         3         4         5         6         7         8
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+*/
+
+/* global document FastImage g_viewport:true */
+
+// =======
+// TEXTURE
+// =======
+
+// The name is probably a misnomer, since it ought to be named `RepeatingImage'
+// or something like that.  Currently it takes an image and repeatedly draws
+// it into a larger image to form a pattern.
+
+
+/**
+ *
+ * @param {{scale: number, image: [Image|HTMLCanvasElement], width: number, height: number}} obj
+ */
+function Texture(obj) {
+  const scale = obj.scale || 1;
+
+  this._ = { image: obj.image, scale };
 
   this.resize(obj.width, obj.height);
 }
 
+
+/**
+ * @param {number} textureWidth
+ * @param {number} textureHeight
+ */
 Texture.prototype.resize = function (textureWidth, textureHeight) {
   this._.width = textureWidth;
   this._.height = textureHeight;
@@ -24,8 +48,8 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
   const dw = scale * w;
   const dh = scale * h;
 
-  const m = 1 + ~~(textureHeight / dh);
-  const n = 1 + ~~(textureWidth / dw);
+  const m = 1 + Math.floor(textureHeight / dh);
+  const n = 1 + Math.floor(textureWidth / dw);
 
   const canvas = document.createElement('canvas');
   canvas.width = textureWidth;
@@ -34,9 +58,9 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
 
-  for (let i = 0; i < m; i++) {
+  for (let i = 0; i < m; i += 1) {
     const y = i * dh;
-    for (let j = 0; j < n; j++) {
+    for (let j = 0; j < n; j += 1) {
       const x = j * dw;
 
       ctx.drawImage(
@@ -50,23 +74,25 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
   this._.texture = new FastImage(canvas);
 };
 
+
+/**
+ * @returns {HTMLCanvasElement}
+ */
 Texture.prototype.getTexture = function () {
   return this._.texture;
 };
 
+
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {*} cfg
+ */
 Texture.prototype.render = function (ctx, cfg) {
-  var x = x || 0;
-  var y = y || 0;
+  const w = this._.texture.width;
+  const h = this._.texture.height;
 
-  var w = w || this._.texture.width;
-  var h = h || this._.texture.height;
-
-
-  var x = -g_viewport.getX();
-  var y = -g_viewport.getY();
-
-
-  // console.log(g_viewport.getX(), g_viewport.getY());
+  const x = -g_viewport.getX();
+  const y = -g_viewport.getY();
 
   ctx.drawImage(this._.texture.getImage(), x, y);
 };

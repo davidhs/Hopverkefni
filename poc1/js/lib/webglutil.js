@@ -2,6 +2,8 @@
 
 'use strict';
 
+/* global  :true */
+
 /* jslint browser: true, devel: true, white: true */
 
 /*
@@ -33,6 +35,8 @@ const glutil = (function () {
     );
     gl.deleteShader(shader);
     if (false) throw Error();
+
+    return null;
   };
 
   /**
@@ -56,13 +60,13 @@ const glutil = (function () {
         gl.getProgramInfoLog(program),
       );
       gl.deleteProgram(program);
-      return;
+      return null;
     }
 
     if (validate) {
-      const status = lutil.validateProgram(gl, program);
+      const status = glutil.validateProgram(gl, program);
       if (!status) {
-        return;
+        return null;
       }
     }
 
@@ -136,4 +140,3 @@ const glutil = (function () {
 
   return glutil;
 }());
-

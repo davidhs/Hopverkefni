@@ -1,7 +1,11 @@
+'use strict';
+
+/* global  :true */
+
 // consts.js
 //
 // A module of generic constants
-"use strict";
+
 
 const consts = {
   TAU: 2 * Math.PI,

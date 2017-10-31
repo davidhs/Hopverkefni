@@ -1,5 +1,8 @@
 'use strict';
 
+/* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
+spatialManager entityManager g_world :true */
+
 function Player(descriptor) {
   // Common inherited setup logic from Entity
   this.setup(descriptor);
@@ -73,8 +76,8 @@ Player.prototype.update = function (du) {
     this.velX = +speed;
   }
 
-  let oldX = this.cx;
-  let oldY = this.cy;
+  const oldX = this.cx;
+  const oldY = this.cy;
 
   this.cx += du * this.velX;
   this.cy += du * this.velY;
@@ -95,22 +98,18 @@ Player.prototype.update = function (du) {
   // this.maybeFireBullet();
 
 
-
-
   // TODO: re-register with spatial manager.
   // spatialManager.register(this);
 
 
-  let flags = spatialManager.register(this);
+  const flags = spatialManager.register(this);
 
 
   if (flags) {
     spatialManager.unregister(this);
     this.cx = oldX;
     this.cy = oldY;
-    
   }
-
 };
 
 Player.prototype.getRadius = function () {

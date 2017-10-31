@@ -1,8 +1,7 @@
-// ====
-// ROCK
-// ====
-
 'use strict';
+
+/* global g_asset Entity util consts g_world SECS_TO_NOMINALS
+spatialManager entityManager g_url audioManager :true */
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
@@ -11,6 +10,10 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
+// ====
+// ROCK
+// ====
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Rock(descr) {
@@ -41,8 +44,8 @@ Rock.prototype.randomisePosition = function () {
 };
 
 Rock.prototype.randomiseVelocity = function () {
-  let MIN_SPEED = 20,
-    MAX_SPEED = 70;
+  const MIN_SPEED = 20;
+  const MAX_SPEED = 70;
 
   const speed = util.randRange(MIN_SPEED, MAX_SPEED) / SECS_TO_NOMINALS;
   const dirn = Math.random() * consts.FULL_CIRCLE;
@@ -50,8 +53,8 @@ Rock.prototype.randomiseVelocity = function () {
   this.velX = this.velX || speed * Math.cos(dirn);
   this.velY = this.velY || speed * Math.sin(dirn);
 
-  let MIN_ROT_SPEED = 0.5,
-    MAX_ROT_SPEED = 2.5;
+  const MIN_ROT_SPEED = 0.5;
+  const MAX_ROT_SPEED = 2.5;
 
   this.velRot = this.velRot ||
         util.randRange(MIN_ROT_SPEED, MAX_ROT_SPEED) / SECS_TO_NOMINALS;
@@ -63,8 +66,8 @@ Rock.prototype.update = function (du) {
 
   if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 
-  let oldX = this.cx;
-  let oldY = this.cy;
+  const oldX = this.cx;
+  const oldY = this.cy;
 
   this.cx += this.velX * du;
   this.cy += this.velY * du;
@@ -84,8 +87,8 @@ Rock.prototype.update = function (du) {
     0, consts.FULL_CIRCLE,
   );
 
-  
-  let status = spatialManager.register(this);
+
+  const status = spatialManager.register(this);
 
   if (status) {
     spatialManager.unregister(this);
@@ -95,6 +98,8 @@ Rock.prototype.update = function (du) {
     this.velY = -this.velY;
   }
   spatialManager.register(this);
+
+  return entityManager.OK;
 };
 
 Rock.prototype.getRadius = function () {
