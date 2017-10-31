@@ -5,18 +5,10 @@ function Bullet(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
 
-  // Make a noise when I am created (i.e. fired)
-  // this.fireSound.play();
-
-  const sound = new Audio('audio/bulletFire.ogg');
-  sound.play();
+  audioManager.play(g_url.bulletFire);
 }
 
 Bullet.prototype = new Entity();
-
-// TODO: Move Audio to Preloader
-Bullet.prototype.fireSound = new Audio('audio/bulletFire.ogg');
-Bullet.prototype.zappedSound = new Audio('audio/bulletZapped.ogg');
 
 // Initial, inheritable, default values
 Bullet.prototype.rotation = 0;
@@ -29,7 +21,8 @@ Bullet.prototype.velY = 1;
 Bullet.prototype.lifeSpan = 3000 / NOMINAL_UPDATE_INTERVAL;
 
 Bullet.prototype.update = function (du) {
-  // TODO: YOUR STUFF HERE! --- Unregister and check for death
+  
+
   spatialManager.unregister(this);
 
   if (!g_world.inBounds(this.cx, this.cy)) return entityManager.KILL_ME_NOW;
@@ -37,24 +30,32 @@ Bullet.prototype.update = function (du) {
   this.lifeSpan -= du;
   if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
+  let oldCX = this.cx;
+  let oldCY = this.cy;
+
   this.cx += this.velX * du;
   this.cy += this.velY * du;
 
-  const hitEntity = this.findHitEntity();
-  if (hitEntity) {
-    const canTakeHit = hitEntity.takeBulletHit;
-    if (canTakeHit) canTakeHit.call(hitEntity);
 
-    entityManager.generateExplosion({
-      cx: this.cx,
-      cy: this.cy,
-    });
+  let potentialCollision = spatialManager.register(this);
 
-    return entityManager.KILL_ME_NOW;
+  if (potentialCollision) {
+    spatialManager.unregister(this);
+    const hitEntity = this.findHitEntity();
+    if (hitEntity) {
+      const canTakeHit = hitEntity.takeBulletHit;
+      if (canTakeHit) canTakeHit.call(hitEntity);
+
+      entityManager.generateExplosion({
+        cx: this.cx,
+        cy: this.cy,
+      });
+
+      return entityManager.KILL_ME_NOW;
+    }
   }
 
-  // TODO: YOUR STUFF HERE! --- (Re-)Register
-  spatialManager.register(this);
+  
 };
 
 Bullet.prototype.getRadius = function () {
@@ -64,11 +65,7 @@ Bullet.prototype.getRadius = function () {
 Bullet.prototype.takeBulletHit = function () {
   this.kill();
 
-  const sound = new Audio('audio/bulletZapped.ogg');
-  sound.play();
-
-  // Make a noise when I am zapped by another bullet
-  // this.zappedSound.play();
+  audioManager.play(g_url.bulletZapped);
 };
 
 Bullet.prototype.render = function (ctx, cfg) {

@@ -317,6 +317,9 @@ function processAssets(resp) {
     g_asset.shadowMask,
   );
 
+
+  spatialManager.init();
+
   g_main.mainInit();
 }
 
@@ -355,6 +358,7 @@ function setup() {
       rock: 'rock.png',
       bullet: 'bullet.png',
       rifle: 'survivor-shoot_rifle_0.png',
+      blockMap: 'block-map.png'
     }),
   );
 
@@ -362,7 +366,12 @@ function setup() {
 
   util.extendObject(
     url_audio,
-    util.prefixStrings('audio/', {}),
+    util.prefixStrings('audio/', {
+      bulletFire: 'bulletFire.ogg',
+      bulletZapped: 'bulletZapped.ogg',
+      rockEvapoate: 'rockEvaporate.ogg',
+      rockSplit: 'rockSplit.ogg'
+    }),
   );
 
   util.extendObject(g_url, url_text);

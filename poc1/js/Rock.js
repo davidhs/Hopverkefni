@@ -63,8 +63,20 @@ Rock.prototype.update = function (du) {
 
   if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 
+  let oldX = this.cx;
+  let oldY = this.cy;
+
   this.cx += this.velX * du;
   this.cy += this.velY * du;
+
+
+  if (!g_world.inBounds(this.cx, this.cy, 0)) {
+    this.cx = oldX;
+    this.cy = oldY;
+    this.velX = -this.velX;
+    this.velY = -this.velY;
+  }
+
 
   this.rotation += 1 * this.velRot;
   this.rotation = util.wrapRange(
@@ -72,9 +84,16 @@ Rock.prototype.update = function (du) {
     0, consts.FULL_CIRCLE,
   );
 
-  this.wrapPosition();
+  
+  let status = spatialManager.register(this);
 
-  // TODO: YOUR STUFF HERE! --- (Re-)Register
+  if (status) {
+    spatialManager.unregister(this);
+    this.cx = oldX;
+    this.cy = oldY;
+    this.velX = -this.velX;
+    this.velY = -this.velY;
+  }
   spatialManager.register(this);
 };
 
@@ -82,26 +101,15 @@ Rock.prototype.getRadius = function () {
   return this.scale * (this.sprite.width / 2) * 0.9;
 };
 
-// HACKED-IN AUDIO (no preloading)
-Rock.prototype.splitSound = new Audio('audio/rockSplit.ogg');
-Rock.prototype.evaporateSound = new Audio('audio/rockEvaporate.ogg');
-
 Rock.prototype.takeBulletHit = function () {
   this.kill();
 
   if (this.scale > 0.25) {
     this._spawnFragment();
     this._spawnFragment();
-
-    var sound = new Audio('audio/rockSplit.ogg');
-    sound.play();
-
-    // this.splitSound.play();
+    audioManager.play(g_url.rockSplit);
   } else {
-    var sound = new Audio('audio/rockEvaporate.ogg');
-    sound.play();
-
-    // this.evaporateSound.play();
+    audioManager.play(g_url.rockEvaporate);
   }
 };
 

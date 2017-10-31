@@ -44,6 +44,8 @@ Player.prototype.update = function (du) {
   // TODO: unregister
   // spatialManager.unregister(this);
 
+  spatialManager.unregister(this);
+
 
   // TODO: check for death
   // if (this._isDeadNow) return entityManager.KILL_ME_NOW;
@@ -71,14 +73,16 @@ Player.prototype.update = function (du) {
     this.velX = +speed;
   }
 
+  let oldX = this.cx;
+  let oldY = this.cy;
 
-  const new_x = this.cx + du * this.velX;
-  const new_y = this.cy + du * this.velY;
+  this.cx += du * this.velX;
+  this.cy += du * this.velY;
 
 
-  if (g_world.inBounds(new_x, new_y, 0)) {
-    this.cx = new_x;
-    this.cy = new_y;
+  if (!g_world.inBounds(this.cx, this.cy, 0)) {
+    this.cx = oldX;
+    this.cy = oldY;
   }
 
 
@@ -91,12 +95,22 @@ Player.prototype.update = function (du) {
   // this.maybeFireBullet();
 
 
-  // TODO: YOUR STUFF HERE! --- Warp if isColliding, otherwise Register
 
-  // TODO: check if colliding.
 
   // TODO: re-register with spatial manager.
   // spatialManager.register(this);
+
+
+  let flags = spatialManager.register(this);
+
+
+  if (flags) {
+    spatialManager.unregister(this);
+    this.cx = oldX;
+    this.cy = oldY;
+    
+  }
+
 };
 
 Player.prototype.getRadius = function () {
@@ -108,7 +122,7 @@ Player.prototype.fireBullet = function () {
 
   if (this.bulletCooldown > 0) return;
 
-  this.bulletCooldown += 100;
+  this.bulletCooldown += 25;
 
   const angle = Math.PI / 2 + this.rotation;
 
