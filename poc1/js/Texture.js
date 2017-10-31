@@ -24,8 +24,8 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
   const dw = scale * w;
   const dh = scale * h;
 
-  const m = 1 + ~~(textureHeight / dh);
-  const n = 1 + ~~(textureWidth / dw);
+  const m = 1 + (textureHeight / dh);
+  const n = 1 + (textureWidth / dw);
 
   const canvas = document.createElement('canvas');
   canvas.width = textureWidth;
@@ -64,9 +64,6 @@ Texture.prototype.render = function (ctx, cfg) {
 
   var x = -g_viewport.getX();
   var y = -g_viewport.getY();
-
-
-  // console.log(g_viewport.getX(), g_viewport.getY());
 
   ctx.drawImage(this._.texture.getImage(), x, y);
 };

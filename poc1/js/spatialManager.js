@@ -33,7 +33,8 @@ const spatialManager = {
 
   getNewSpatialID() {
     // TODO: YOUR STUFF HERE!
-    return this._nextSpatialID++;
+    this._nextSpatialID += 1;
+    return this._nextSpatialID;
   },
 
   register(entity) {

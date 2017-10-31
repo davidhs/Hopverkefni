@@ -83,7 +83,7 @@ TextureAtlas.prototype.getSequence = function (description) {
 
     for (let i = 0; i < m; i++) {
       for (let j = 0; j < n; j++) {
-        count++;
+        count += 1;
 
         sequence.push(this.subimages[i][j]);
 
@@ -135,4 +135,3 @@ TextureAtlas.prototype.renderSubimage = function (ctx, row, col, x, y, w, h) {
     );
   }
 };
-

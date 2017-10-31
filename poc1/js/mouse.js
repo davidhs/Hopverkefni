@@ -3,7 +3,7 @@
 document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 
 
-var g_mouse = (function () {
+let g_mouse = (function () {
   const setMousePos = (obj, evt, target) => {
     if (mouse.cursorLock) {
       target.x = util.clamp(target.x + evt.movementX, 0, obj.width);
@@ -115,4 +115,3 @@ if (false) {
     g_mouse.handleEvent('mozpointerlockchange', evt, g_canvas);
   }, false);
 }
-

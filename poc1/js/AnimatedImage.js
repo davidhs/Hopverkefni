@@ -26,7 +26,7 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
 
   if (cfg.occlusion) return;
 
-
+  // TODO: Spyrja hvers vegna ad fjarlaegja ~~ crashar leiknum
   const idx = ~~(this.dt * this.rate);
 
   if (idx >= this.sequence.length) {
@@ -39,8 +39,8 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
   const w = img.width;
   const h = img.height;
 
-  let x = this.cx - w / 2;
-  let y = this.cy - h / 2;
+  let x = this.cx - (w / 2);
+  let y = this.cy - (h / 2);
 
   x -= g_viewport.getX();
   y -= g_viewport.getY();
