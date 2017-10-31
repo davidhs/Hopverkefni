@@ -267,10 +267,9 @@ const spatialManager = (function () {
 
     for (let i = 0, keys = Object.keys(tiles); i < keys.length; i += 1) {
       const rowNumber = keys[i];
-      const row = tiles[rowNumber];
-      for (let j = 0, keys2 = Object.keys(row); j < keys2.length; j += 1) {
+      for (let j = 0, keys2 = Object.keys(tiles[rowNumber]); j < keys2.length; j += 1) {
         const colNumber = keys2[j];
-        const id = row[colNumber];
+        const id = tiles[rowNumber][colNumber];
 
         if (id >= 10) {
           ctx.strokeStyle = 'red';
@@ -278,8 +277,8 @@ const spatialManager = (function () {
           ctx.strokeStyle = 'green';
         }
 
-        const x = j * tileSize;
-        const y = i * tileSize;
+        const x = colNumber * tileSize;
+        const y = rowNumber * tileSize;
 
         util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
       }
