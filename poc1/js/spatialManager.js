@@ -266,9 +266,11 @@ const spatialManager = (function () {
 
 
     for (let i = 0, keys = Object.keys(tiles); i < keys.length; i += 1) {
-      const tileRow = tiles[keys[i]];
-      for (let j = 0, keys2 = Object.keys(tileRow); j < keys2.length; j += 1) {
-        const id = tileRow[keys2[j]];
+      const rowNumber = keys[i];
+      const row = tiles[rowNumber];
+      for (let j = 0, keys2 = Object.keys(row); j < keys2.length; j += 1) {
+        const colNumber = keys2[j];
+        const id = row[colNumber];
 
         if (id >= 10) {
           ctx.strokeStyle = 'red';
