@@ -73,7 +73,8 @@ const assetManager = (function () {
   function assetTick(asset, url) {
     for (let i = 0; i < bundles.length; i += 1) {
       const bundle = bundles[i];
-      const lut = bundle.lut;
+      const bundleLut = bundle.lut;
+      const lut = bundleLut;
 
       // Check if this bundle has been waiting
       // for this URL

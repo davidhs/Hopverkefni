@@ -114,8 +114,7 @@ const entityManager = (function () {
     for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
 
-      if (!_bShowRocks &&
-                aCategory === _rocks) { continue; }
+      if (!_bShowRocks && aCategory === _rocks) { continue; }
 
       for (let i = 0; i < aCategory.length; i += 1) {
         aCategory[i].render(ctx, cfg);

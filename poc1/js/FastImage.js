@@ -28,7 +28,7 @@ FastImage.prototype.crop = function (x, y, w, h) {
   const iw = this._.canvas.width;
   const ih = this._.canvas.height;
 
-
+  // Muna ad fjarlaegja true
   if (true) {
     // All of these should be true
     const condArr = [
@@ -61,11 +61,12 @@ FastImage.prototype.crop = function (x, y, w, h) {
 
 
 FastImage.prototype.update = function (obj) {
-  const canvas = this._.canvas;
+  const thisCanvas = this._.canvas;
+  const canvas = thisCanvas;
   let ctx = this._.ctx;
 
-  const width = obj.width;
-  const height = obj.height;
+  const objProp = [obj.width, obj.height];
+  const [width, height] = objProp;
 
 
   if (canvas.width !== width || canvas.height !== height) {
