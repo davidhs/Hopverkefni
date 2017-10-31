@@ -51,8 +51,8 @@ function render(ctx) {
   // e.g. in pathological cases, we might only see the "even" frames.
   //
   if (g_doFlipFlop) {
-    let boxX = 250,
-      boxY = g_isUpdateOdd ? 100 : 200;
+    const boxX = 250;
+    const boxY = g_isUpdateOdd ? 100 : 200;
 
     // Draw flip-flop box
     util.fillBox(ctx, boxX, boxY, 50, 50, 'green');
@@ -69,5 +69,5 @@ function render(ctx) {
   //
   if (g_undoBox) ctx.clearRect(200, 200, 50, 50);
 
-  ++g_frameCounter;
+  g_frameCounter += 1;
 }

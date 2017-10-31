@@ -15,8 +15,8 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
   this._.width = textureWidth;
   this._.height = textureHeight;
 
-  const image = this._.image;
-  const scale = this._.scale;
+  const tIS = [this._.image, this._.scale];
+  const [image, scale] = tIS;
 
   const w = image.width;
   const h = image.height;

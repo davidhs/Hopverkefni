@@ -31,8 +31,8 @@ Player.prototype.update = function (du) {
   this.bulletCooldown = Math.max(this.bulletCooldown - 10, 0);
 
   // Convert Viewport/Canvas coordinates to World coordinates.
-  const mx = g_viewport.cx + g_mouse.x - g_canvas.width / 2;
-  const my = g_viewport.cy + g_mouse.y - g_canvas.height / 2;
+  const mx = g_viewport.cx + (g_mouse.x - (g_canvas.width / 2));
+  const my = g_viewport.cy + (g_mouse.y - (g_canvas.height / 2));
 
 
   const dx = mx - this.cx;
@@ -72,8 +72,8 @@ Player.prototype.update = function (du) {
   }
 
 
-  const new_x = this.cx + du * this.velX;
-  const new_y = this.cy + du * this.velY;
+  const new_x = this.cx + (du * this.velX);
+  const new_y = this.cy + (du * this.velY);
 
 
   if (g_world.inBounds(new_x, new_y, 0)) {
@@ -100,7 +100,7 @@ Player.prototype.update = function (du) {
 };
 
 Player.prototype.getRadius = function () {
-  return (this._scale * this.sprite.width / 2) * 0.9;
+  return (this._scale * (this.sprite.width / 2) * 0.9);
 };
 
 Player.prototype.fireBullet = function () {
@@ -110,7 +110,7 @@ Player.prototype.fireBullet = function () {
 
   this.bulletCooldown += 100;
 
-  const angle = Math.PI / 2 + this.rotation;
+  const angle = (Math.PI / 2) + this.rotation;
 
 
   const dX = +Math.sin(angle);
@@ -124,13 +124,14 @@ Player.prototype.fireBullet = function () {
 
   const red = 0.01;
 
-  const cx = this.cx + dX * launchDist;
-  const cy = this.cy + dY * launchDist;
+  const cx = this.cx + (dX * launchDist);
+  const cy = this.cy + (dY * launchDist);
 
   const velX = dX * speed;
   const velY = dY * speed;
 
-  const rotation = this.rotation;
+  const tRotation = this.rotation;
+  const rotation = tRotation;
 
   entityManager.fireBullet(
     cx,

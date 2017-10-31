@@ -22,11 +22,11 @@ const g_viewport = (function () {
   };
 
   viewport.getX = function () {
-    return viewport.cx - viewport.width / 2;
+    return viewport.cx - (viewport.width / 2);
   };
 
   viewport.getY = function () {
-    return viewport.cy - viewport.height / 2;
+    return viewport.cy - (viewport.height / 2);
   };
 
   viewport.setCenterX = function (cx) {
@@ -58,14 +58,13 @@ const g_viewport = (function () {
 
   // Viewport 2 world
   viewport.v2wX = function (x) {
-    return x * (g_world.width / viewport.getWidth()) + viewport.getX();
+    return x * (g_world.width / (viewport.getWidth() + viewport.getX()));
   };
 
   viewport.v2wY = function (y) {
-    return y * (g_world.height / viewport.getHeight()) + viewport.getY();
+    return y * (g_world.height / (viewport.getHeight() + viewport.getY()));
   };
 
 
   return viewport;
 }());
-

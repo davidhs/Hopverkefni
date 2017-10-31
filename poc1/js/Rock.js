@@ -41,8 +41,8 @@ Rock.prototype.randomisePosition = function () {
 };
 
 Rock.prototype.randomiseVelocity = function () {
-  let MIN_SPEED = 20,
-    MAX_SPEED = 70;
+  const MIN_SPEED = 20;
+  const MAX_SPEED = 70;
 
   const speed = util.randRange(MIN_SPEED, MAX_SPEED) / SECS_TO_NOMINALS;
   const dirn = Math.random() * consts.FULL_CIRCLE;
@@ -50,8 +50,8 @@ Rock.prototype.randomiseVelocity = function () {
   this.velX = this.velX || speed * Math.cos(dirn);
   this.velY = this.velY || speed * Math.sin(dirn);
 
-  let MIN_ROT_SPEED = 0.5,
-    MAX_ROT_SPEED = 2.5;
+  const MIN_ROT_SPEED = 0.5;
+  const MAX_ROT_SPEED = 2.5;
 
   this.velRot = this.velRot ||
         util.randRange(MIN_ROT_SPEED, MAX_ROT_SPEED) / SECS_TO_NOMINALS;
@@ -93,12 +93,12 @@ Rock.prototype.takeBulletHit = function () {
     this._spawnFragment();
     this._spawnFragment();
 
-    var sound = new Audio('audio/rockSplit.ogg');
+    let sound = new Audio('audio/rockSplit.ogg');
     sound.play();
 
     // this.splitSound.play();
   } else {
-    var sound = new Audio('audio/rockEvaporate.ogg');
+    let sound = new Audio('audio/rockEvaporate.ogg');
     sound.play();
 
     // this.evaporateSound.play();

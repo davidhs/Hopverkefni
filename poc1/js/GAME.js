@@ -11,10 +11,8 @@ const DEBUG = false;
 
 const fOcclusionMap = function (canvas) {
   function occluder(rgba1, rgba2) {
-    const r = rgba1.r;
-    const g = rgba1.g;
-    const b = rgba1.b;
-    const a = rgba1.a;
+    const rgbaInit = [rgba1.r, rgba1.g, rgba1.b, rgba1.a];
+    const [r, g, b, a] = rgbaInit;
 
     const threshold = 1;
 
@@ -24,11 +22,8 @@ const fOcclusionMap = function (canvas) {
       brightness = 0;
     }
 
-
-    const tr = 0;
-    const tg = 0;
-    const tb = 0;
-    const ta = brightness;
+    const tRgba = [0, 0, 0, brightness];
+    const [tr, tg, tb, ta] = tRgba;
 
     rgba2.r = tr;
     rgba2.g = tg;
@@ -269,7 +264,9 @@ function processAssets(resp) {
 
   g_asset.textureAtlas.dungeon = new TextureAtlas(g_asset.dungeon, 16, 16);
 
-  g_asset.textureAtlas.explosion = new TextureAtlas(g_asset.explosion, 100, 100, 9 * 9 - 7);
+  g_asset.textureAtlas.explosion = new TextureAtlas(g_asset.explosion, 100, 100, (9 * 9) - 7);
+
+  g_asset.textureAtlas.blood = new TextureAtlas(g_asset.blood, 512, 512);
 
   // TEXTURE
 
@@ -307,6 +304,7 @@ function processAssets(resp) {
   g_asset.sprite.player = new Sprite(g_asset.rifle);
   g_asset.sprite.player.scale = 0.1;
 
+  g_asset.sprite.blood = new Sprite(g_asset.blood);
 
   entityManager.init();
 
@@ -353,6 +351,7 @@ function setup() {
       dungeon: 'dungeonTileset.png',
       explosion: 'spritesheet1.png',
       rock: 'rock.png',
+      blood: 'blood.png',
       bullet: 'bullet.png',
       rifle: 'survivor-shoot_rifle_0.png',
     }),

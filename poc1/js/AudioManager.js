@@ -14,7 +14,8 @@ const audioManager = (function () {
       }]);
     }
 
-    const audio = assets[url].audio;
+    const assetsAudio = assets[url].audio;
+    const audio = assetsAudio;
 
     audio.currentTime = 0;
     audio.play();
@@ -24,11 +25,13 @@ const audioManager = (function () {
     for (let i = 0; i < arr.length; i++) {
       const obj = arr[i];
 
-      const url = obj.url;
+      const objUrl = obj.url;
+      const url = objUrl;
 
       if (assets[url]) continue;
 
-      const volume = obj.volume;
+      const objVolume = obj.volume;
+      const volume = objVolume;
 
       const audio = new Audio(url);
       audio.volume = volume;
