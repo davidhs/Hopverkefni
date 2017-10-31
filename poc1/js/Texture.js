@@ -1,5 +1,7 @@
 'use strict';
 
+/* global document FastImage g_viewport:true */
+
 /* jshint browser: true, devel: true, globalstrict: true */
 
 /*
@@ -7,7 +9,6 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-/* global document FastImage g_viewport:true */
 
 // =======
 // TEXTURE

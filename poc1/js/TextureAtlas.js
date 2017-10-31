@@ -1,11 +1,12 @@
 'use strict';
 
-// https://en.wikipedia.org/wiki/Texture_atlas
-
 /* global FastImage:true */
+
 
 /**
  * Uniformly-sized sub-images.
+ *
+ * https://en.wikipedia.org/wiki/Texture_atlas
  */
 function TextureAtlas(image, subimageWidth, subimageHeight, nrOfSubimages) {
   image = new FastImage(image);

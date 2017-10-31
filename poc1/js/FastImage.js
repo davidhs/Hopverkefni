@@ -1,6 +1,6 @@
 'use strict';
 
-/* global document util  :true */
+/* global document util :true */
 
 // obj can be canvas or image
 function FastImage(obj) {

@@ -1,5 +1,3 @@
-// Web GL utilities
-
 'use strict';
 
 /* global  :true */
@@ -11,6 +9,7 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+// Web GL utilities
 
 const glutil = (function () {
   const glutil = {};

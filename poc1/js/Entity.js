@@ -1,5 +1,6 @@
 'use strict';
 
+/* global spatialManager util g_world :true */
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
@@ -7,8 +8,6 @@
 0        1         2         3         4         5         6         7         8
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
-
-/* global spatialManager util g_world :true */
 
 // ======
 // ENTITY
@@ -24,7 +23,6 @@ some care in use. In particular, this "base" should only provide shared
 functions... shared data properties are potentially quite confusing.
 
 */
-
 
 function Entity() {
 

@@ -1,7 +1,3 @@
-// ============
-// SPRITE STUFF
-// ============
-
 'use strict';
 
 /* global document fOcclusionMap g_viewport:true */
@@ -13,6 +9,10 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
+// ============
+// SPRITE STUFF
+// ============
 
 // Construct a "sprite" from the given `image`,
 //
