@@ -20,18 +20,31 @@ function Rock(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
 
-  this.randomisePosition();
-  this.randomiseVelocity();
 
   // Default sprite and scale, if not otherwise specified
   this.sprite = this.sprite || g_asset.sprite.rock;
   this.scale = this.scale || 1;
 
-/*
+  /*
     // Diagnostics to check inheritance stuff
     this._rockProperty = true;
     console.dir(this);
 */
+  this.randomisePosition();
+  const cond = spatialManager.register(this);
+
+  let ITER = 0;
+  const MAX_ITER = 100;
+
+  // TODO scary
+  while (cond && ITER < MAX_ITER) {
+    ITER += 1;
+    spatialManager.unregister(this);
+    this.randomisePosition();
+    spatialManager.register(this);
+  }
+
+  this.randomiseVelocity();
 }
 
 Rock.prototype = new Entity();

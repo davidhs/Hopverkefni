@@ -15,11 +15,9 @@
 // haven't adopted it here.
 //
 const g_main = {
-
   // "Frame Time" is a (potentially high-precision) frame-clock for animations
   _frameTime_ms: null,
   _frameTimeDelta_ms: null,
-
 };
 
 // Step mode
@@ -114,13 +112,16 @@ g_main._debugRender = function (ctx) {
 
   if (!this._doTimerShow) return;
 
+  const x = 50;
   const y = 350;
+  const fps = 1000 / this._frameTimeDelta_ms;
   const oldFillStyle = ctx.fillStyle;
   ctx.fillStyle = '#0f0';
-  ctx.fillText(`FT ${this._frameTime_ms}`, 50, y + 10);
-  ctx.fillText(`FD ${this._frameTimeDelta_ms}`, 50, y + 20);
-  ctx.fillText(`UU ${g_prevUpdateDu}`, 50, y + 30);
-  ctx.fillText('FrameSync ON', 50, y + 40);
+  ctx.fillText(`FT ${this._frameTime_ms}`, x, y + 10);
+  ctx.fillText(`FD ${this._frameTimeDelta_ms}`, x, y + 20);
+  ctx.fillText(`UU ${g_prevUpdateDu}`, x, y + 30);
+  ctx.fillText('FrameSync ON', x, y + 40);
+  ctx.fillText(`FPS: ${fps}`, x, y + 50);
   ctx.fillStyle = oldFillStyle;
 };
 

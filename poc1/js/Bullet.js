@@ -31,6 +31,11 @@ Bullet.prototype.update = function (du) {
   this.lifeSpan -= du;
   if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
+
+  // ==================
+  // COLLISION HANDLING
+  // ==================
+
   const oldCX = this.cx;
   const oldCY = this.cy;
 
@@ -54,7 +59,19 @@ Bullet.prototype.update = function (du) {
 
       return entityManager.KILL_ME_NOW;
     }
+
+    if (potentialCollision < 10) {
+      entityManager.generateExplosion({
+        cx: this.cx,
+        cy: this.cy,
+      });
+      return entityManager.KILL_ME_NOW;
+    }
+
+    // Reregister
+    spatialManager.register(this);
   }
+
 
   return entityManager.OK;
 };

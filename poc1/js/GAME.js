@@ -5,12 +5,9 @@ shadows TextureAtlas Sprite g_main spatialManager FastImage assetManager
 g_world Texture  :true */
 
 const g_sprites = {};
-
-
 const g_debugCanvas = document.createElement('canvas');
-
-
-const DEBUG = false;
+const DEBUG = true;
+const g_shadowSize = 256;
 
 
 // Global URLs
@@ -148,12 +145,8 @@ function renderSimulation(ctx) {
 
   const cfg = {
     occluder: g_occlusion,
-    x: g_canvas.width / 2,
-    y: g_canvas.height / 2,
-    // x: g_mouse.x,
-    // y: g_mouse.y,
-    w,
-    h,
+    x: g_mouse.x,
+    y: g_mouse.y,
     scaler: 0.25,
   };
 
@@ -166,14 +159,28 @@ function renderSimulation(ctx) {
 
   lighting.radialLight(bctx, color, cfg);
 
-  const selection = 3;
+  const DEBUG_MODE = {
+    UNKNOWN1: 0,
+    UNKNOWN2: 1,
+    UNKNOWN3: 3,
+
+    ORIGINAL_OCCLUSION_MAP: 10,
+    PROJECTED_OCCLUSION_MAP: 11,
+    SHADOW_MAP: 12,
+    SHADOW_MASK: 13,
+  };
+
+  const selection = DEBUG_MODE.PROJECTED_OCCLUSION_MAP;
 
   if (DEBUG) {
+    let _w = g_debugCanvas.width;
+    let _h = g_debugCanvas.height;
+
     const dctx = g_debugCanvas.getContext('2d');
     dctx.fillStyle = '#f00';
-    dctx.fillRect(0, 0, w, h);
+    dctx.fillRect(0, 0, _w, _h);
 
-    if (selection === 0) {
+    if (selection === DEBUG_MODE.UNKNOWN1) {
       dctx.globalCompositeOperation = 'source-over';
       dctx.drawImage(g_background, 0, 0);
 
@@ -184,28 +191,73 @@ function renderSimulation(ctx) {
       dctx.globalCompositeOperation = 'source-over';
       dctx.drawImage(g_midground, 0, 0);
       dctx.drawImage(g_foreground, 0, 0);
-    } else if (selection === 1) {
+    }
+
+    if (selection === DEBUG_MODE.UNKNOWN2) {
+      // Only look at shadow mask
       const shadowMask = shadows.getShadowMask(cfg);
-      const shadowCanvas = shadowMask.canvas;
-
       dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(g_background, 0, 0);
+      dctx.drawImage(shadowMask, 0, 0, g_debugCanvas.width, g_debugCanvas.height);
+    }
 
 
-      dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(g_midground, 0, 0);
-      dctx.drawImage(g_foreground, 0, 0);
-
-
-      dctx.globalCompositeOperation = 'exclusion';
-      dctx.drawImage(shadowCanvas, 0, 0);
-    } else if (selection === 2) {
-      dctx.globalAlpha = 1.0;
-      dctx.drawImage(g_occlusion, 0, 0);
-    } else if (selection === 3) {
+    if (selection === DEBUG_MODE.UNKNOWN3) {
       dctx.globalAlpha = 1.0;
       dctx.globalCompositeOperation = 'source-over';
       dctx.drawImage(buffer, 0, 0);
+    }
+
+    // Look at original occlusion map.
+    if (selection === DEBUG_MODE.ORIGINAL_OCCLUSION_MAP) {
+      dctx.globalAlpha = 1.0;
+
+      _w = shadows.debug.original.canvas.width;
+      _h = shadows.debug.original.canvas.height;
+
+      dctx.fillStyle = '#00f';
+      dctx.fillRect(0, 0, _w, _h);
+
+      dctx.drawImage(shadows.debug.original.canvas, 0, 0);
+    }
+
+    // Look at projected occlusion map.
+    if (selection === DEBUG_MODE.PROJECTED_OCCLUSION_MAP) {
+      dctx.globalAlpha = 1.0;
+
+      _w = shadows.debug.projected.canvas.width;
+      _h = shadows.debug.projected.canvas.height;
+
+      dctx.fillStyle = '#00f';
+      dctx.fillRect(0, 0, _w, _h);
+
+      dctx.drawImage(shadows.debug.projected.canvas, 0, 0);
+    }
+
+    // Look at shadow map
+    if (selection === DEBUG_MODE.SHADOW_MAP) {
+      dctx.globalAlpha = 1.0;
+
+      _w = shadows.debug.shadowMap.canvas.width;
+      _h = shadows.debug.shadowMap.canvas.height;
+
+
+      dctx.fillStyle = '#00f';
+      dctx.fillRect(0, 0, _w, _h);
+
+      dctx.drawImage(shadows.debug.shadowMap.canvas, 0, 0);
+    }
+
+    // Look at shadow mask
+    if (selection === DEBUG_MODE.SHADOW_MASK) {
+      dctx.globalAlpha = 1.0;
+
+      _w = shadows.debug.shadowMask.canvas.width;
+      _h = shadows.debug.shadowMask.canvas.height;
+
+      dctx.fillStyle = '#00f';
+      dctx.fillRect(0, 0, _w, _h);
+
+      dctx.drawImage(shadows.debug.shadowMask.canvas, 0, 0);
     }
   }
 
@@ -319,6 +371,7 @@ function processAssets(resp) {
     g_asset.lights,
     g_asset.shadowMap,
     g_asset.shadowMask,
+    g_shadowSize,
   );
 
 

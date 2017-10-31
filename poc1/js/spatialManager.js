@@ -22,14 +22,19 @@ const spatialManager = (function () {
   // "PRIVATE" DATA
 
 
+  const NO_CONFLICT = 0;
+  const OUT_OF_BOUNDS = 1;
   const WALL_ID = 2;
 
-  let nextSpatialID = 10; // make all valid IDs non-falsey (i.e. don't start at 0)
+
+  const MIN_ENTITY = 10;
+
+  let nextSpatialID = MIN_ENTITY; // make all valid IDs non-falsey (i.e. don't start at 0)
   const entities = [];
 
   const tiles = [];
 
-  const tileSize = 16;
+  const tileSize = 32;
 
   // PRIVATE METHODS
 
@@ -49,7 +54,7 @@ const spatialManager = (function () {
     const i = Math.max(Math.floor(y / tileSize), 0);
 
 
-    if (i < 0 || j < 0) return true;
+    if (i < 0 || j < 0) return OUT_OF_BOUNDS;
 
     if (!tiles[i]) tiles[i] = [];
 
@@ -57,13 +62,14 @@ const spatialManager = (function () {
 
     if (targetID) {
       if (id !== targetID) {
-        return true;
+        return targetID;
       }
       tiles[i][j] = id;
-      return false;
+      return NO_CONFLICT;
     }
+
     tiles[i][j] = id;
-    return false;
+    return NO_CONFLICT;
   }
 
   /**
@@ -78,13 +84,16 @@ const spatialManager = (function () {
     const j = Math.max(Math.floor(x / tileSize), 0);
     const i = Math.max(Math.floor(y / tileSize), 0);
 
-    if (!tiles[i]) return false;
+    if (!tiles[i]) return NO_CONFLICT;
 
-    if (id === tiles[i][j]) {
+    const targetID = tiles[i][j];
+
+    if (id === targetID) {
       delete tiles[i][j];
-      return false;
+      return NO_CONFLICT;
     }
-    return true;
+
+    return targetID;
   }
 
   /**
@@ -98,16 +107,16 @@ const spatialManager = (function () {
    * @param {Number} h
    */
   function _registerRect(id, x, y, w, h) {
-    let flag = false;
+    let targetID = NO_CONFLICT;
     for (let i = 0; i < w; i += 1) {
       for (let j = 0; j < h; j += 1) {
         const b = _registerTile(id, x + i, y + j);
         if (b) {
-          flag = true;
+          targetID = b;
         }
       }
     }
-    return flag;
+    return targetID;
   }
 
   /**
@@ -121,16 +130,16 @@ const spatialManager = (function () {
    * @param {Number} h
    */
   function _unregisterRect(id, x, y, w, h) {
-    let flag = false;
+    let targetID = NO_CONFLICT;
     for (let i = 0; i < w; i += 1) {
       for (let j = 0; j < h; j += 1) {
         const b = _unregisterTile(id, x + i, y + j);
         if (b) {
-          flag = true;
+          targetID = b;
         }
       }
     }
-    return flag;
+    return targetID;
   }
 
   function setBlockMap(bm) {
@@ -182,7 +191,7 @@ const spatialManager = (function () {
     const cy = pos.posY;
     const radius = entity.getRadius();
 
-    let flag = false;
+    let flag = NO_CONFLICT;
 
     if (true) {
       const x = cx - radius;
@@ -214,7 +223,7 @@ const spatialManager = (function () {
     const cy = pos.posY;
     const radius = entity.getRadius();
 
-    let flag = 0;
+    let flag = NO_CONFLICT;
 
     if (true) {
       const x = cx - radius;
@@ -307,7 +316,7 @@ const spatialManager = (function () {
   }
 
   function init() {
-    setBlockMap(g_asset.blockMap);
+    // setBlockMap(g_asset.blockMap);
   }
 
   // PUBLIC
@@ -325,5 +334,6 @@ const spatialManager = (function () {
       };
     },
     init,
+    MIN_ENTITY,
   };
 })();
