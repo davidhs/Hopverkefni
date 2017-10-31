@@ -1,10 +1,12 @@
 'use strict';
 
-// https://en.wikipedia.org/wiki/Texture_atlas
+/* global FastImage:true */
 
 
 /**
  * Uniformly-sized sub-images.
+ *
+ * https://en.wikipedia.org/wiki/Texture_atlas
  */
 function TextureAtlas(image, subimageWidth, subimageHeight, nrOfSubimages) {
   image = new FastImage(image);
@@ -30,14 +32,14 @@ function TextureAtlas(image, subimageWidth, subimageHeight, nrOfSubimages) {
 
 
   // Rows
-  for (let i = 0; i < m; i++) {
+  for (let i = 0; i < m; i += 1) {
     const ty = th * i;
 
     const row = [];
 
 
     // Columns
-    for (let j = 0; j < n; j++) {
+    for (let j = 0; j < n; j += 1) {
       const tx = tw * j;
 
       const subimage = image.crop(tx, ty, tw, th);
@@ -81,8 +83,8 @@ TextureAtlas.prototype.getSequence = function (description) {
     const m = this.rows;
     const n = this.cols;
 
-    for (let i = 0; i < m; i++) {
-      for (let j = 0; j < n; j++) {
+    for (let i = 0; i < m; i += 1) {
+      for (let j = 0; j < n; j += 1) {
         count += 1;
 
         sequence.push(this.subimages[i][j]);

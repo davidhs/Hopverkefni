@@ -1,56 +1,55 @@
-//'use strict';
+'use strict';
+
+/* global document Image :true */
 
 // =====
 // UTILS
 // =====
 
+const util = (function () {
+  const util = {};
 
-
-var util = {
-  extendObject: (object, extensions) => {
-    for (const property in extensions) {
-      if (extensions.hasOwnProperty(property)) {
-        object[property] = extensions[property];
-      }
+  util.extendObject = (object, extensions) => {
+    for (let i = 0, keys = Object.keys(extensions); i < keys.length; i += 1) {
+      object[keys[i]] = extensions[keys[i]];
     }
-  },
-};
+  };
 
-util.extendObject(util, {
-  createPicker: comparator => function (/* arguments */) {
-    if (arguments.length === 0) {
-      return; // undefined
+
+  util.createPicker = comparator => function (...args) {
+    if (args.length === 0) {
+      return undefined; // undefined
     }
 
     let arr;
 
-    if (arguments.length === 1) {
-      if (Array.isArray(arguments[0])) {
-        arr = arguments[0];
+    if (args.length === 1) {
+      if (Array.isArray(args[0])) {
+        arr = args[0];
       } else {
-        return arguments[0];
+        return args[0];
       }
     } else {
-      arr = arguments;
+      arr = args;
     }
 
     let best = arr[0];
 
-    for (let i = 1; i < arr.length; i++) {
+    for (let i = 1; i < arr.length; i += 1) {
       if (comparator(arr[i], best)) {
         best = arr[i];
       }
     }
 
     return best;
-  },
-});
+  };
 
-util.extendObject(util, {
-  pickMin: util.createPicker((a, b) => a < b),
-  pickMax: util.createPicker((a, b) => a > b),
-  minIndex: (/* arguments */) => arguments.indexOf(util.pickMin(arguments)),
-  cropImage: (image, x, y, w, h) => {
+
+  util.pickMin = util.createPicker((a, b) => a < b);
+  util.pickMax = util.createPicker((a, b) => a > b);
+  util.minIndex = (...args) => args.indexOf(util.pickMin(args));
+
+  util.cropImage = (image, x, y, w, h) => {
     const iw = image.width;
     const ih = image.height;
 
@@ -87,16 +86,18 @@ util.extendObject(util, {
     newImage.src = canvas.toDataURL('image/png');
 
     return newImage;
-  },
-  clampRange: (value, lowBound, highBound) => {
+  };
+
+  util.clampRange = (value, lowBound, highBound) => {
     if (value < lowBound) {
       value = lowBound;
     } else if (value > highBound) {
       value = highBound;
     }
     return value;
-  },
-  wrapRange: (value, lowBound, highBound) => {
+  };
+
+  util.wrapRange = (value, lowBound, highBound) => {
     // TODO: use remainder operator instead of while loop.
     while (value < lowBound) {
       value += (highBound - lowBound);
@@ -105,17 +106,23 @@ util.extendObject(util, {
       value -= (highBound - lowBound);
     }
     return value;
-  },
-  isBetween: (value, lowBound, highBound) => {
+  };
+
+  util.isBetween = (value, lowBound, highBound) => {
     if (value < lowBound) { return false; }
     if (value > highBound) { return false; }
     return true;
-  },
-  randRange: (min, max) => (min + Math.random() * (max - min)),
-  square: x => (x * x),
-  cube: x => (x * x * x),
-  distSq: (x1, y1, x2, y2) => (util.square(x2 - x1) + util.square(y2 - y1)),
-  wrappedDistSq: (x1, y1, x2, y2, xWrap, yWrap) => {
+  };
+
+  util.randRange = (min, max) => (min + Math.random() * (max - min));
+
+  util.square = x => (x * x);
+
+  util.cube = x => (x * x * x);
+
+  util.distSq = (x1, y1, x2, y2) => (util.square(x2 - x1) + util.square(y2 - y1));
+
+  util.wrappedDistSq = (x1, y1, x2, y2, xWrap, yWrap) => {
     let dx = Math.abs(x2 - x1);
     let dy = Math.abs(y2 - y1);
 
@@ -127,86 +134,95 @@ util.extendObject(util, {
       dy = yWrap - dy;
     }
     return util.square(dx) + util.square(dy);
-  },
-  booleanANDArray: (arr) => {
-    for (let i = 0; i < arr.length; i++) {
+  };
+
+  util.booleanANDArray = (arr) => {
+    for (let i = 0; i < arr.length; i += 1) {
       if (!arr[i]) {
         return false;
       }
     }
 
     return true;
-  },
-  booleanORArray: (arr) => {
-    for (let i = 0; i < arr.length; i++) {
+  };
+
+  util.booleanORArray = (arr) => {
+    for (let i = 0; i < arr.length; i += 1) {
       if (arr[i]) {
         return true;
       }
     }
 
     return false;
-  },
-  inBounds: (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue),
-  clearCanvas: (ctx) => {
+  };
+
+  util.inBounds = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
+
+  util.clearCanvas = (ctx) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  },
-  strokeCircle: (ctx, x, y, r) => {
+  };
+
+  util.strokeCircle = (ctx, x, y, r) => {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.stroke();
-  },
-  fillCircle: (ctx, x, y, r) => {
+  };
+
+  util.strokeRect = (ctx, x, y, w, h) => {
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.stroke();
+  };
+
+  util.fillCircle = (ctx, x, y, r) => {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
-  },
-  fillBox: (ctx, x, y, w, h, style) => {
+  };
+
+  util.fillBox = (ctx, x, y, w, h, style) => {
     const oldStyle = ctx.fillStyle;
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
-  },
-  clamp: (value, minValue, maxValue) => (value < minValue ? minValue : value > maxValue ? maxValue : value),
-  rgb2str: (r, g, b) => {
-    r = util.clamp(~~r, 0, 255);
-    g = util.clamp(~~g, 0, 255);
-    b = util.clamp(~~b, 0, 255);
+  };
+
+  util.clamp = (value, minValue, maxValue) => {
+    if (value < minValue) return minValue;
+    if (value > maxValue) return maxValue;
+    return value;
+  };
+
+  util.rgb2str = (r, g, b) => {
+    r = util.clamp(Math.floor(r), 0, 255);
+    g = util.clamp(Math.floor(g), 0, 255);
+    b = util.clamp(Math.floor(b), 0, 255);
 
     return `rgb(${r}, ${g}, ${b})`;
-  },
-  sgn: x => (x < 0 ? -1 : 1),
-});
+  };
 
-util.extendObject(util, {
+  util.sgn = x => (x < 0 ? -1 : 1);
+
+
   // Returns a random integer between 0 and range - 1.
-  randomInt(range) {
-    return Math.floor(Math.random() * range);
-  },
-
-  // Extends object `object' with properties from
-  // object `extensions'.
-  extendObject(object, extensions) {
-    for (const property in extensions) {
-      if (!extensions.hasOwnProperty(property)) continue;
-      object[property] = extensions[property];
-    }
-  },
+  util.randomInt = range => Math.floor(Math.random() * range);
 
   // Concatenates prefix to urls
-  prefixStrings(prefix, strings) {
+  util.prefixStrings = (prefix, strings) => {
     const obj = {};
 
-    for (const key in strings) {
-      if (!strings.hasOwnProperty(key)) continue;
+    for (let i = 0, keys = Object.keys(strings); i < keys.length; i += 1) {
+      const key = keys[i];
       obj[key] = prefix + strings[key];
     }
 
     return obj;
-  },
+  };
+
   // Scale dst according to source but not
   // exceedig max dimensions maxWidth, maxHeight,
   // yet keeping same A/R.
-  scale(src, dst, max_width, max_height) {
+  util.scale = (src, dst, max_width, max_height) => {
     const w = src.width;
     const h = src.height;
 
@@ -223,9 +239,9 @@ util.extendObject(util, {
 
     dst.width = w * s;
     dst.height = h * s;
-  },
+  };
 
-  forAllPixels(canvas, pixelFunction) {
+  util.forAllPixels = (canvas, pixelFunction) => {
     const w = canvas.width;
     const h = canvas.height;
 
@@ -264,16 +280,18 @@ util.extendObject(util, {
     ctx.putImageData(imageData, 0, 0);
 
     return canvas2;
-  },
+  };
 
-  objPropsToList(obj) {
+  util.objPropsToList = (obj) => {
     const l = [];
-    for (const prop in obj) {
-      if (!obj.hasOwnProperty(prop)) continue;
-      l.push(obj[prop]);
+    for (let i = 0, keys = Object.keys(obj); i < keys.length; i += 1) {
+      const key = keys[i];
+      l.push(obj[key]);
     }
+
     return l;
-  },
+  };
 
 
-});
+  return util;
+})();

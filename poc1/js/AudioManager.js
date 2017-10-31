@@ -1,52 +1,35 @@
 'use strict';
 
-// TODO this crap is useless
+/* global Audio :true */
 
+/* jshint browser: true, devel: true, globalstrict: true */
+
+/*
+0        1         2         3         4         5         6         7         8
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+*/
+
+// =============
+// AUDIO MANAGER
+// =============
+
+// The audio manager is responsible for playing sounds.  Currently plays sounds
+// whos URL is passed to the play "method".
+//
+// Later on the URL might take position and occlusion map as parameter to
+// modify the sound, e.g. sound that is farther away isn't as loud,  sound
+// that is blocked by some corner or "outside" is muffled.
 const audioManager = (function () {
-  const assets = {};
-
-
+  // Audio files are initially loaded by the asset manager.
+  // It appears by doing so the audio file is cached, so `new Audio(...)'
+  // appears to play the cached audio file.
   function play(url) {
-    if (!assets[url]) {
-      add([{
-        url,
-        volume: 0.5,
-      }]);
-    }
-
-    const assetsAudio = assets[url].audio;
-    const audio = assetsAudio;
-
-    audio.currentTime = 0;
-    audio.play();
+    const sound = new Audio(url);
+    sound.play();
   }
 
-  function add(arr) {
-    for (let i = 0; i < arr.length; i++) {
-      const obj = arr[i];
-
-      const objUrl = obj.url;
-      const url = objUrl;
-
-      if (assets[url]) continue;
-
-      const objVolume = obj.volume;
-      const volume = objVolume;
-
-      const audio = new Audio(url);
-      audio.volume = volume;
-
-      assets[url] = {
-        url,
-        volume,
-        audio,
-      };
-    }
-  }
-
-
+  // Expose properties and functions.
   return {
-    add,
     play,
   };
 }());

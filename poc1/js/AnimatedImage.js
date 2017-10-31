@@ -1,5 +1,7 @@
 'use strict';
 
+/* global util entityManager g_viewport :true */
+
 // Animation
 
 function AnimatedImage(descr) {
@@ -17,6 +19,8 @@ AnimatedImage.prototype.update = function (du) {
   if (this.done) return entityManager.KILL_ME_NOW;
 
   this.dt += du;
+
+  return entityManager.OK;
 };
 
 AnimatedImage.prototype.render = function (ctx, cfg) {
@@ -26,8 +30,8 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
 
   if (cfg.occlusion) return;
 
-  // TODO: Spyrja hvers vegna ad fjarlaegja ~~ crashar leiknum
-  const idx = ~~(this.dt * this.rate);
+
+  const idx = Math.floor(this.dt * this.rate);
 
   if (idx >= this.sequence.length) {
     this.done = true;
@@ -39,8 +43,8 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
   const w = img.width;
   const h = img.height;
 
-  let x = this.cx - (w / 2);
-  let y = this.cy - (h / 2);
+  let x = this.cx - w / 2;
+  let y = this.cy - h / 2;
 
   x -= g_viewport.getX();
   y -= g_viewport.getY();

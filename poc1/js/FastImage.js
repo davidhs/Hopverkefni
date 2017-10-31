@@ -1,5 +1,7 @@
 'use strict';
 
+/* global document util :true */
+
 // obj can be canvas or image
 function FastImage(obj) {
   const canvas = document.createElement('canvas');
@@ -86,8 +88,8 @@ FastImage.prototype.update = function (obj) {
 };
 
 FastImage.prototype.copy = function () {
-  const h = this._.canvas.width;
-  const ih = this._.canvas.height;
+  const w = this._.canvas.width;
+  const h = this._.canvas.height;
 
   const canvas = document.createElement('canvas');
   canvas.width = w;
@@ -104,7 +106,7 @@ FastImage.prototype.render = function (ctx, x, y, w, h) {
   y = y || 0;
 
   w = w || this._.canvas.width;
-  h = h || this._.canvas.height;
+  h = h || this._.canvas.height;
 
   if (w === this._.canvas.width && h === this._.canvas.height) {
     ctx.drawImage(this._.canvas, x, y);

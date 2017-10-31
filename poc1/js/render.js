@@ -1,5 +1,7 @@
 'use strict';
 
+/* global eatKey util renderSimulation g_isUpdateOdd spatialManager :true */
+
 // GENERIC RENDERING
 
 let g_doClear = true;
@@ -7,6 +9,8 @@ let g_doBox = false;
 let g_undoBox = false;
 let g_doFlipFlop = false;
 let g_doRender = true;
+
+let g_showCollisionVolumes = false;
 
 let g_frameCounter = 1;
 
@@ -16,6 +20,8 @@ const TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
 const TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
 const TOGGLE_RENDER = 'R'.charCodeAt(0);
 
+const TOGGLE_SHOW_COLLISION_VOLUME = 'H'.charCodeAt(0);
+
 function render(ctx) {
   // Process various option toggles
   //
@@ -24,6 +30,7 @@ function render(ctx) {
   if (eatKey(TOGGLE_UNDO_BOX)) g_undoBox = !g_undoBox;
   if (eatKey(TOGGLE_FLIPFLOP)) g_doFlipFlop = !g_doFlipFlop;
   if (eatKey(TOGGLE_RENDER)) g_doRender = !g_doRender;
+  if (eatKey(TOGGLE_SHOW_COLLISION_VOLUME)) g_showCollisionVolumes = !g_showCollisionVolumes;
 
   // I've pulled the clear out of `renderSimulation()` and into
   // here, so that it becomes part of our "diagnostic" wrappers
@@ -68,6 +75,8 @@ function render(ctx) {
   // to illustrate flicker-proof double-buffering
   //
   if (g_undoBox) ctx.clearRect(200, 200, 50, 50);
+
+  if (g_showCollisionVolumes) spatialManager.render(ctx);
 
   g_frameCounter += 1;
 }

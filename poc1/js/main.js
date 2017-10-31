@@ -1,5 +1,7 @@
 'use strict';
 
+/* global eatKey g_ctx update render window g_keys gatherInputs g_prevUpdateDu :true */
+
 // ========
 // MAINLOOP
 // ========
@@ -57,6 +59,13 @@ g_main._updateClocks = function (frameTime) {
   this._frameTime_ms = frameTime;
 };
 
+// Simple voluntary quit mechanism
+//
+const KEY_QUIT = 'Q'.charCodeAt(0);
+function requestedQuit() {
+  return g_keys[KEY_QUIT];
+}
+
 g_main._iterCore = function (dt) {
   // Handle QUIT
   if (requestedQuit()) {
@@ -76,12 +85,6 @@ g_main.gameOver = function () {
   console.log('gameOver: quitting...');
 };
 
-// Simple voluntary quit mechanism
-//
-const KEY_QUIT = 'Q'.charCodeAt(0);
-function requestedQuit() {
-  return g_keys[KEY_QUIT];
-}
 
 // Annoying shim for cross-browser compat
 window.requestAnimationFrame =
@@ -133,4 +136,3 @@ g_main.init = function () {
 g_main.mainInit = function () {
   g_main.init();
 };
-

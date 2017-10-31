@@ -1,4 +1,6 @@
+'use strict';
 
+/* global document shadows  :true */
 
 // This code isn't very good. :/
 const lighting = (function () {

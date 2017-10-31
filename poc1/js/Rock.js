@@ -1,8 +1,7 @@
-// ====
-// ROCK
-// ====
-
 'use strict';
+
+/* global g_asset Entity util consts g_world SECS_TO_NOMINALS
+spatialManager entityManager g_url audioManager :true */
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
@@ -11,6 +10,10 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
+// ====
+// ROCK
+// ====
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Rock(descr) {
@@ -63,8 +66,20 @@ Rock.prototype.update = function (du) {
 
   if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 
+  const oldX = this.cx;
+  const oldY = this.cy;
+
   this.cx += this.velX * du;
   this.cy += this.velY * du;
+
+
+  if (!g_world.inBounds(this.cx, this.cy, 0)) {
+    this.cx = oldX;
+    this.cy = oldY;
+    this.velX = -this.velX;
+    this.velY = -this.velY;
+  }
+
 
   this.rotation += 1 * this.velRot;
   this.rotation = util.wrapRange(
@@ -72,19 +87,24 @@ Rock.prototype.update = function (du) {
     0, consts.FULL_CIRCLE,
   );
 
-  this.wrapPosition();
 
-  // TODO: YOUR STUFF HERE! --- (Re-)Register
+  const status = spatialManager.register(this);
+
+  if (status) {
+    spatialManager.unregister(this);
+    this.cx = oldX;
+    this.cy = oldY;
+    this.velX = -this.velX;
+    this.velY = -this.velY;
+  }
   spatialManager.register(this);
+
+  return entityManager.OK;
 };
 
 Rock.prototype.getRadius = function () {
   return this.scale * (this.sprite.width / 2) * 0.9;
 };
-
-// HACKED-IN AUDIO (no preloading)
-Rock.prototype.splitSound = new Audio('audio/rockSplit.ogg');
-Rock.prototype.evaporateSound = new Audio('audio/rockEvaporate.ogg');
 
 Rock.prototype.takeBulletHit = function () {
   this.kill();
@@ -92,16 +112,9 @@ Rock.prototype.takeBulletHit = function () {
   if (this.scale > 0.25) {
     this._spawnFragment();
     this._spawnFragment();
-
-    let sound = new Audio('audio/rockSplit.ogg');
-    sound.play();
-
-    // this.splitSound.play();
+    audioManager.play(g_url.rockSplit);
   } else {
-    let sound = new Audio('audio/rockEvaporate.ogg');
-    sound.play();
-
-    // this.evaporateSound.play();
+    audioManager.play(g_url.rockEvaporate);
   }
 };
 

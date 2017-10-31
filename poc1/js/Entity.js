@@ -1,6 +1,18 @@
+'use strict';
+
+/* global spatialManager util g_world :true */
+
+/* jshint browser: true, devel: true, globalstrict: true */
+
+/*
+0        1         2         3         4         5         6         7         8
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+*/
+
 // ======
 // ENTITY
 // ======
+
 /*
 
 Provides a set of common functions which can be "inherited" by all other
@@ -11,16 +23,6 @@ some care in use. In particular, this "base" should only provide shared
 functions... shared data properties are potentially quite confusing.
 
 */
-
-'use strict';
-
-/* jshint browser: true, devel: true, globalstrict: true */
-
-/*
-0        1         2         3         4         5         6         7         8
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
-*/
-
 
 function Entity() {
 
@@ -34,9 +36,11 @@ function Entity() {
 
 Entity.prototype.setup = function (descriptor) {
   // Apply all setup properies from the (optional) descriptor
-  for (const property in descriptor) {
-    if (!descriptor.hasOwnProperty(property)) continue;
-    this[property] = descriptor[property];
+
+  if (descriptor) {
+    for (let i = 0, keys = Object.keys(descriptor); i < keys.length; i += 1) {
+      this[keys[i]] = descriptor[keys[i]];
+    }
   }
 
   // Get my (unique) spatial ID

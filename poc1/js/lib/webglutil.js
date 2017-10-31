@@ -1,6 +1,6 @@
-// Web GL utilities
-
 'use strict';
+
+/* global  :true */
 
 /* jslint browser: true, devel: true, white: true */
 
@@ -9,6 +9,7 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+// Web GL utilities
 
 const glutil = (function () {
   const glutil = {};
@@ -33,6 +34,8 @@ const glutil = (function () {
     );
     gl.deleteShader(shader);
     if (false) throw Error();
+
+    return null;
   };
 
   /**
@@ -56,13 +59,13 @@ const glutil = (function () {
         gl.getProgramInfoLog(program),
       );
       gl.deleteProgram(program);
-      return;
+      return null;
     }
 
     if (validate) {
-      const status = lutil.validateProgram(gl, program);
+      const status = glutil.validateProgram(gl, program);
       if (!status) {
-        return;
+        return null;
       }
     }
 
@@ -136,4 +139,3 @@ const glutil = (function () {
 
   return glutil;
 }());
-

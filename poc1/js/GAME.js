@@ -1,5 +1,9 @@
 'use strict';
 
+/* global document util entityManager g_viewport g_canvas g_mouse lighting
+shadows TextureAtlas Sprite g_main spatialManager FastImage assetManager
+g_world Texture  :true */
+
 const g_sprites = {};
 
 
@@ -7,6 +11,13 @@ const g_debugCanvas = document.createElement('canvas');
 
 
 const DEBUG = false;
+
+
+// Global URLs
+const g_url = {}; // URLs are eventually placed here.
+
+// Global Assets
+const g_asset = {}; // Assets are loaded here.
 
 
 const fOcclusionMap = function (canvas) {
@@ -216,14 +227,10 @@ function renderSimulation(ctx) {
 }
 
 
-
 // ======
 // ASSETS
 // ======
 
-
-// Global Assets
-let g_asset = {}; // Assets are loaded here.
 
 function processAssets(resp) {
   if (DEBUG) {
@@ -246,10 +253,9 @@ function processAssets(resp) {
   g_occlusion.height = g_canvas.height;
 
 
-  for (const prop in g_url) {
-    if (!g_url.hasOwnProperty(prop)) continue;
-    const url = g_url[prop];
-    g_asset[prop] = resp[url];
+  for (let i = 0, keys = Object.keys(g_url); i < keys.length; i += 1) {
+    const url = g_url[keys[i]];
+    g_asset[keys[i]] = resp[url];
   }
 
   // WORLD
@@ -315,14 +321,13 @@ function processAssets(resp) {
     g_asset.shadowMask,
   );
 
+
+  spatialManager.init();
+
   g_main.mainInit();
 }
 
 // --- ASSETS ---------------------------------------------------
-
-
-// Global URLs
-let g_url = {}; // URLs are eventually placed here.
 
 
 function setup() {
@@ -354,6 +359,7 @@ function setup() {
       blood: 'blood.png',
       bullet: 'bullet.png',
       rifle: 'survivor-shoot_rifle_0.png',
+      blockMap: 'block-map.png',
     }),
   );
 
@@ -361,7 +367,12 @@ function setup() {
 
   util.extendObject(
     url_audio,
-    util.prefixStrings('audio/', {}),
+    util.prefixStrings('audio/', {
+      bulletFire: 'bulletFire.ogg',
+      bulletZapped: 'bulletZapped.ogg',
+      rockEvapoate: 'rockEvaporate.ogg',
+      rockSplit: 'rockSplit.ogg',
+    }),
   );
 
   util.extendObject(g_url, url_text);

@@ -1,5 +1,7 @@
 'use strict';
 
+/* global  document :true */
+
 const g_world = (function () {
   const world = {};
 

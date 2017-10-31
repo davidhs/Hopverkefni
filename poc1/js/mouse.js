@@ -1,9 +1,20 @@
 'use strict';
 
+/* global document util g_viewport g_canvas window :true */
+
 document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 
 
-let g_mouse = (function () {
+const g_mouse = (function () {
+  let theImage = null;
+
+  const mouse = {};
+
+  mouse.cursorLock = false;
+
+
+  let lockedObject = null;
+
   const setMousePos = (obj, evt, target) => {
     if (mouse.cursorLock) {
       target.x = util.clamp(target.x + evt.movementX, 0, obj.width);
@@ -15,14 +26,6 @@ let g_mouse = (function () {
     }
   };
 
-  let theImage = null;
-
-  let mouse = {};
-
-  mouse.cursorLock = false;
-
-
-  let lockedObject = null;
 
   util.extendObject(mouse, {
 
@@ -73,8 +76,8 @@ let g_mouse = (function () {
     getFastImage: () => theImage,
     render: (ctx) => {
       // Convert Viewport/Canvas coordinates to World coordinates.
-      const mx = g_viewport.cx + (g_mouse.x - (g_canvas.width / 2));
-      const my = g_viewport.cy + (g_mouse.y - (g_canvas.height / 2));
+      const mx = g_viewport.cx + g_mouse.x - g_canvas.width / 2;
+      const my = g_viewport.cy + g_mouse.y - g_canvas.height / 2;
 
       if (mouse.cursorLock && theImage) {
         theImage.render(ctx, mx, my);
@@ -103,7 +106,6 @@ window.addEventListener('mousemove', (evt) => {
 });
 
 // Cursor lock: slower mouse
-// TODO: muna ad fjarlaegja false
 if (false) {
   g_canvas.requestPointerLock = g_canvas.requestPointerLock || g_canvas.mozRequestPointerLock;
   g_canvas.onclick = evt => g_mouse.lockOn(g_canvas);

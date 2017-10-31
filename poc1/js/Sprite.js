@@ -1,8 +1,6 @@
-// ============
-// SPRITE STUFF
-// ============
-
 'use strict';
+
+/* global document fOcclusionMap g_viewport:true */
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
@@ -11,6 +9,10 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
+// ============
+// SPRITE STUFF
+// ============
 
 // Construct a "sprite" from the given `image`,
 //
@@ -40,7 +42,7 @@ Sprite.prototype.drawAt = function (ctx, x, y) {
 Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation, cfg) {
   if (rotation === undefined) rotation = 0;
 
-  cfg = cfg || {};
+  cfg = cfg || {};
 
   const w = this.width;
   const h = this.height;

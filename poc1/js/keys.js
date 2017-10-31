@@ -1,5 +1,7 @@
 'use strict';
 
+/* global document window :true */
+
 // =================
 // KEYBOARD HANDLING
 // =================
@@ -19,6 +21,11 @@ function handleKeyup(evt) {
   g_keys[evt.keyCode] = false;
 }
 
+// A tiny little convenience function
+function keyCode(keyChar) {
+  return keyChar.charCodeAt(0);
+}
+
 // Inspects, and then clears, a key's state
 //
 // This allows a keypress to be "one-shot" e.g. for toggles
@@ -30,10 +37,6 @@ function eatKey(keyCode) {
   return isDown;
 }
 
-// A tiny little convenience function
-function keyCode(keyChar) {
-  return keyChar.charCodeAt(0);
-}
 
 window.addEventListener('keydown', handleKeydown);
 window.addEventListener('keyup', handleKeyup);
