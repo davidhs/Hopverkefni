@@ -44,10 +44,9 @@ const entityManager = (function () {
 
 
   function _generateRocks() {
-    let i,
-      NUM_ROCKS = 20;
+    const NUM_ROCKS = 20;
 
-    for (i = 0; i < NUM_ROCKS; ++i) {
+    for (let i = 0; i < NUM_ROCKS; ++i) {
       generateRock();
     }
   }
@@ -116,7 +115,7 @@ const entityManager = (function () {
           // prevent a confusing gap from appearing in the array
           aCategory.splice(i, 1);
         } else {
-          ++i;
+          i += 1;
         }
       }
     }
@@ -127,14 +126,13 @@ const entityManager = (function () {
   // RENDER ///////////////////////////////////////////////
 
   function render(ctx, cfg) {
-    let debugX = 10,
-      debugY = 100;
+    const debugX = 10;
+    let debugY = 100;
 
     for (let c = 0; c < _categories.length; ++c) {
       const aCategory = _categories[c];
 
-      if (!_bShowRocks &&
-                aCategory == _rocks) { continue; }
+      if (!_bShowRocks && aCategory === _rocks) { continue; }
 
       for (let i = 0; i < aCategory.length; ++i) {
         aCategory[i].render(ctx, cfg);
@@ -156,7 +154,7 @@ const entityManager = (function () {
       if (_players.length > 0) {
         return _players[0];
       }
+      return 0;
     },
   };
 }());
-
