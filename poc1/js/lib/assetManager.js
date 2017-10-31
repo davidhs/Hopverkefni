@@ -67,13 +67,14 @@ const assetManager = (function () {
   function assetTick(asset, url) {
     for (let i = 0; i < bundles.length; i++) {
       const bundle = bundles[i];
-      const lut = bundle.lut;
+      const bundleLut = bundle.lut;
+      const lut = bundleLut;
 
       // Check if this bundle has been waiting
       // for this URL
       if (lut[url]) {
         lut[url] = false;
-        bundle.count++;
+        bundle.count += 1;
         bundle.asset[url] = asset;
       }
 
@@ -84,7 +85,7 @@ const assetManager = (function () {
         delete bundles[i];
 
         bundles.splice(i, 1);
-        i--;
+        i -= 1;
 
         bundle.callback(bundle.asset);
       }

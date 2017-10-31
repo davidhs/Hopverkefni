@@ -36,8 +36,10 @@ const shadows = (function () {
   function initShadowMap() {
     gShadowMap.gl = gShadowMap.canvas.getContext('webgl');
 
-    const canvas = gShadowMap.canvas;
-    const gl = gShadowMap.gl;
+    const gSMcanvas = gShadowMap.canvas;
+    const canvas = gSMcanvas;
+    const gSMgl = gShadowMap.gl;
+    const gl = gSMgl;
     const vertexShaderSource = src.lights;
     const fragmentShaderSource = src.shadowMap;
 
@@ -95,11 +97,13 @@ const shadows = (function () {
   function initShadowMask() {
     gShadowMask.gl = gShadowMask.canvas.getContext('webgl');
 
-    const canvas = gShadowMask.canvas;
+    const gSMcanvas = gShadowMask.canvas;
+    const canvas = gSMcanvas;
     const vertexShaderSource = src.lights;
     const fragmentShaderSource = src.shadowMask;
 
-    const gl = gShadowMask.gl;
+    const gSMgl = gShadowMask.gl;
+    const gl = gSMgl;
 
     const program = glutil.createProgramFromScripts(
       gl,
@@ -150,9 +154,12 @@ const shadows = (function () {
   function getShadowMap(occluders) {
     if (!initialized) return;
 
-    const canvas = gShadowMap.canvas;
-    const gl = gShadowMap.gl;
-    const program = gShadowMap.program;
+    const gSMcanvas = gShadowMap.canvas;
+    const canvas = gSMcanvas;
+    const gSMgl = gShadowMap.gl;
+    const gl = gSMgl;
+    const gSMprogram = gShadowMap.program;
+    const program = gSMprogram;
 
     const w = occluders.width;
     const h = occluders.height;
@@ -244,15 +251,13 @@ const shadows = (function () {
     const occluders = cfg.occluder;
 
 
-    const x = -cfg.x + cfg.w / 2;
-    const y = -cfg.y + cfg.h / 2;
+    const x = -cfg.x + (cfg.w / 2);
+    const y = -cfg.y + (cfg.h / 2);
 
     const _s = Math.max(occluders.width, occluders.height);
 
     const w = occluders.width;
     const h = occluders.height;
-
-    const scaler = cfg.scaler;
 
     const targetWidth = scaler * occluders.width;
     const targetHeight = scaler * occluders.height;
@@ -264,10 +269,12 @@ const shadows = (function () {
 
     const shadowMap = getShadowMap(canvasOccluders);
 
-
-    const canvas = gShadowMask.canvas;
-    const gl = gShadowMask.gl;
-    const program = gShadowMask.program;
+    const gSMcanvas = gShadowMask.canvas;
+    const canvas = gSMcanvas;
+    const gSMgl = gShadowMask.gl;
+    const gl = gSMgl;
+    const gSMprogram = gShadowMask.program;
+    const program = gSMprogram;
     const tex = gShadowMask.texture;
 
 
