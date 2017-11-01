@@ -31,13 +31,13 @@ Player.prototype.velY = 0;
 Player.prototype.bulletCooldown = 0;
 
 Player.prototype.update = function (du) {
+  spatialManager.unregister(this);
+
   this.bulletCooldown = Math.max(this.bulletCooldown - 10, 0);
 
   // Convert Viewport/Canvas coordinates to World coordinates.
   const mx = g_viewport.cx + g_mouse.x - g_canvas.width / 2;
   const my = g_viewport.cy + g_mouse.y - g_canvas.height / 2;
-
-
   const dx = mx - this.cx;
   const dy = my - this.cy;
 
@@ -46,9 +46,6 @@ Player.prototype.update = function (du) {
 
   // TODO: unregister
   // spatialManager.unregister(this);
-
-  spatialManager.unregister(this);
-
 
   // TODO: check for death
   // if (this._isDeadNow) return entityManager.KILL_ME_NOW;
@@ -76,39 +73,75 @@ Player.prototype.update = function (du) {
     this.velX = +speed;
   }
 
-  const oldX = this.cx;
-  const oldY = this.cy;
-
-  this.cx += du * this.velX;
-  this.cy += du * this.velY;
-
-
-  if (!g_world.inBounds(this.cx, this.cy, 0)) {
-    this.cx = oldX;
-    this.cy = oldY;
-  }
-
-
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
     this.fireBullet();
   }
 
-  // this.maybeFireBullet();
+  // COLLISION CHECKING
 
 
-  // TODO: re-register with spatial manager.
-  // spatialManager.register(this);
+  const oldX = this.cx;
+  const oldY = this.cy;
 
+  const newX = this.cx + du * this.velX;
+  const newY = this.cy + du * this.velY;
 
-  const flags = spatialManager.register(this);
+  this.cx = newX;
+  this.cy = newY;
 
+  if (!g_noClip) {
+    if (!g_world.inBounds(this.cx, this.cy, 0)) {
+      this.cx = oldX;
+      this.cy = oldY;
+    }
 
-  if (flags) {
-    spatialManager.unregister(this);
-    this.cx = oldX;
-    this.cy = oldY;
+    let flags = spatialManager.register(this);
+
+    // Wall crap
+    if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
+      if (flags < spatialManager.MIN_ENTITY) {
+        this.cx = newX;
+        this.cy = oldY;
+        flags = spatialManager.register(this);
+      }
+
+      if (flags < spatialManager.MIN_ENTITY) {
+        this.cx = oldX;
+        this.cy = oldY;
+        flags = spatialManager.register(this);
+      }
+
+      if (flags) {
+        this.cx = oldX;
+        this.cy = oldY;
+        flags = spatialManager.register(this);
+      }
+    } else if (flags) {
+      // Entity stuff
+      const hitEntity = this.findHitEntity();
+      if (hitEntity) {
+        const cx1 = this.cx;
+        const cy1 = this.cy;
+        const r1 = this.getRadius();
+
+        const cx2 = hitEntity.cx;
+        const cy2 = hitEntity.cy;
+        const r2 = hitEntity.getRadius();
+
+        const dr = r2 + r1;
+        const r = Math.sqrt(util.distSq(cx1, cy1, cx2, cy2));
+
+        const p = r / dr;
+
+        this.cx = oldX + p * (du * this.velX);
+        this.cy = oldY + p * (du * this.velY);
+
+        flags = 0;
+      }
+    }
+    spatialManager.register(this);
   }
 };
 

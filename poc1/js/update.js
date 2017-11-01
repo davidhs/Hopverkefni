@@ -42,6 +42,8 @@ function update(dt) {
   //
   if (shouldSkipUpdate()) return;
 
+  if (eatKey(TOGGLE_NOCLIP)) g_noClip = !g_noClip;
+
   // Remember this for later
   //
   const original_dt = dt;

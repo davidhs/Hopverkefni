@@ -25,11 +25,13 @@ Bullet.prototype.lifeSpan = 3000 / NOMINAL_UPDATE_INTERVAL;
 
 Bullet.prototype.update = function (du) {
   spatialManager.unregister(this);
-
-  if (!g_world.inBounds(this.cx, this.cy)) return entityManager.KILL_ME_NOW;
-
   this.lifeSpan -= du;
   if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
+
+
+  // ==================
+  // COLLISION HANDLING
+  // ==================
 
   const oldCX = this.cx;
   const oldCY = this.cy;
@@ -37,12 +39,15 @@ Bullet.prototype.update = function (du) {
   this.cx += this.velX * du;
   this.cy += this.velY * du;
 
+  if (!g_world.inBounds(this.cx, this.cy)) {
+    return entityManager.KILL_ME_NOW;
+  }
 
   const potentialCollision = spatialManager.register(this);
 
   if (potentialCollision) {
-    spatialManager.unregister(this);
     const hitEntity = this.findHitEntity();
+
     if (hitEntity) {
       const canTakeHit = hitEntity.takeBulletHit;
       if (canTakeHit) canTakeHit.call(hitEntity);
@@ -53,8 +58,17 @@ Bullet.prototype.update = function (du) {
       });
 
       return entityManager.KILL_ME_NOW;
+    } else if (potentialCollision < 10) {
+      entityManager.generateExplosion({
+        cx: this.cx,
+        cy: this.cy,
+      });
+      return entityManager.KILL_ME_NOW;
     }
+
+    spatialManager.register(this);
   }
+
 
   return entityManager.OK;
 };

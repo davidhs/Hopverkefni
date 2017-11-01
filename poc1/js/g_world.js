@@ -5,8 +5,8 @@
 const g_world = (function () {
   const world = {};
 
-  world.width = 1000;
-  world.height = 1000;
+  world.width = 2000;
+  world.height = 2000;
 
   world.canvas = document.createElement('canvas');
   world.canvas.width = world.width;

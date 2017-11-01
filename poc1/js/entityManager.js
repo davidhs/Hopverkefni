@@ -11,6 +11,11 @@
 const entityManager = (function () {
   // "PRIVATE" DATA
 
+  const OK = 1;
+  // A special return value, used by other objects,
+  // to request the blessed release of death!
+  const KILL_ME_NOW = -1;
+
   const _rocks = [];
   const _bullets = [];
   const _players = [];
@@ -35,14 +40,6 @@ const entityManager = (function () {
   }
 
   // PUBLIC METHODS
-
-
-  // A special return value, used by other objects,
-  // to request the blessed release of death!
-  //
-  const OK = 1;
-  const KILL_ME_NOW = -1;
-
 
   function fireBullet(cx, cy, velX, velY, rotation) {
     _bullets.push(new Bullet({
@@ -70,7 +67,7 @@ const entityManager = (function () {
   }
 
   function _generateRocks() {
-    const NUM_ROCKS = 20;
+    const NUM_ROCKS = 100;
 
     for (let i = 0; i < NUM_ROCKS; i += 1) {
       generateRock();
@@ -93,6 +90,9 @@ const entityManager = (function () {
         const status = aCategory[i].update(du);
 
         if (status === KILL_ME_NOW) {
+          // Probably superfluous
+          delete aCategory[i];
+
           // remove the dead guy, and shuffle the others down to
           // prevent a confusing gap from appearing in the array
           aCategory.splice(i, 1);
