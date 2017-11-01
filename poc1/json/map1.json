@@ -1,0 +1,11 @@
+{
+    "type": "map",
+    "test": "test",
+    "info": {
+        "world": {
+            "width": 0
+        }
+    },
+    "assets": "",
+    "rawAssets": []
+}

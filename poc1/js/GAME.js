@@ -85,8 +85,8 @@ function gatherInputs() {}
 function updateSimulation(du) {
   entityManager.update(du);
 
-  g_viewport.setCenterX(entityManager.getPos().cx);
-  g_viewport.setCenterY(entityManager.getPos().cy);
+  g_viewport.setOCX(entityManager.getPos().cx);
+  g_viewport.setOCY(entityManager.getPos().cy);
 }
 
 
@@ -137,7 +137,7 @@ function renderSimulation(ctx) {
   // Draw background
   g_asset.texture.background.render(ctxb);
 
-  ctxb.drawImage(g_testWOM, -g_viewport.getX(), -g_viewport.getY());
+  ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // === MIDGROUND ===
 
@@ -158,7 +158,7 @@ function renderSimulation(ctx) {
   });
 
 
-  ctxo.drawImage(g_testWOM, -g_viewport.getX(), -g_viewport.getY());
+  ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
 
   buffer.width = w;
@@ -313,6 +313,19 @@ function renderSimulation(ctx) {
 // ======
 
 function processAssets(resp) {
+
+  g_world.setWidth(1000);
+  g_world.setHeight(1000);
+  g_world.setTileSize(32);
+
+
+  g_viewport.setIW(g_canvas.width);
+  g_viewport.setIH(g_canvas.height);
+
+  g_viewport.setOW(g_canvas.width);
+  g_viewport.setOH(g_canvas.height);
+
+
   if (DEBUG) {
     g_debugCanvas.width = g_canvas.width;
     g_debugCanvas.height = g_canvas.height;
@@ -341,8 +354,6 @@ function processAssets(resp) {
   // WORLD
 
   // VIEWPOERT
-  g_viewport.width = g_canvas.width;
-  g_viewport.height = g_canvas.height;
 
   // =============
   // TEXTURE ATLAS
@@ -369,8 +380,8 @@ function processAssets(resp) {
   g_asset.texture.background = new Texture({
     image: g_asset.textureAtlas.dungeon.getSubimage(1, 1),
     scale: 4,
-    width: g_world.width,
-    height: g_world.height,
+    width: g_world.getWidth(),
+    height: g_world.getHeight(),
   });
 
   // SEQUENCE

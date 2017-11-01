@@ -92,8 +92,8 @@ Texture.prototype.render = function (ctx, cfg) {
   const w = this._.texture.width;
   const h = this._.texture.height;
 
-  const x = -g_viewport.getX();
-  const y = -g_viewport.getY();
+  const x = -g_viewport.getOX();
+  const y = -g_viewport.getOY();
 
   ctx.drawImage(this._.texture.getImage(), x, y);
 };

@@ -47,8 +47,8 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation, cfg) {
   const w = this.width;
   const h = this.height;
 
-  cx -= g_viewport.getX();
-  cy -= g_viewport.getY();
+  cx -= g_viewport.getOX();
+  cy -= g_viewport.getOY();
 
 
   ctx.save();

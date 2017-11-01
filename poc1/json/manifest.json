@@ -1,0 +1,8 @@
+{
+    "type": "manifest",
+    "maps": {
+        "map1": {
+            "path": "map1.json"
+        }
+    }
+}

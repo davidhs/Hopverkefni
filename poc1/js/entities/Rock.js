@@ -51,8 +51,8 @@ Rock.prototype = new Entity();
 
 Rock.prototype.randomisePosition = function () {
   // Rock randomisation defaults (if nothing otherwise specified)
-  this.cx = this.cx || Math.random() * g_world.width;
-  this.cy = this.cy || Math.random() * g_world.height;
+  this.cx = this.cx || Math.random() * g_world.getWidth();
+  this.cy = this.cy || Math.random() * g_world.getHeight();
   this.rotation = this.rotation || 0;
 };
 
