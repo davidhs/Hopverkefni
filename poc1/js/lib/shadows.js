@@ -83,17 +83,10 @@ const shadows = (function () {
     const sw = w;
     const sh = h;
 
-    let xPad = 0;
-    let yPad = 0;
+    const s = Math.max(h, w);
 
-    if (sw > sh) {
-      yPad = (sw - sh) / 2;
-      yPad = yPad * stuff.size / sh;
-    } else if (sw < sh) {
-      xPad = (sh - sw) / 2;
-      xPad = xPad * stuff.size / sw;
-    }
-
+    const xPad = stuff.size * Math.max(0, (h - w) / (2 * s));
+    const yPad = stuff.size * Math.max(0, (w - h) / (2 * s));
 
     const dx = Math.round(xPad);
     const dy = Math.round(yPad);
