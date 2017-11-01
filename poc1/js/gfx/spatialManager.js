@@ -268,8 +268,8 @@ const spatialManager = (function () {
   function render(ctx) {
     const oldStyle = ctx.strokeStyle;
 
-    const dx = g_viewport.getX();
-    const dy = g_viewport.getY();
+    const dx = g_viewport.getOX();
+    const dy = g_viewport.getOY();
 
     // Render collision grid
     for (let i = 0, keys = Object.keys(tiles); i < keys.length; i += 1) {
@@ -338,8 +338,8 @@ const spatialManager = (function () {
       setBlockMap(g_asset.blockMap);
     } else {
       const canvas = document.createElement('canvas');
-      const w = g_world.width;
-      const h = g_world.height;
+      const w = g_world.getWidth();
+      const h = g_world.getHeight();
       canvas.width = w;
       canvas.height = h;
       const ctx = canvas.getContext('2d');

@@ -76,8 +76,8 @@ const g_mouse = (function () {
     getFastImage: () => theImage,
     render: (ctx) => {
       // Convert Viewport/Canvas coordinates to World coordinates.
-      const mx = g_viewport.cx + g_mouse.x - g_canvas.width / 2;
-      const my = g_viewport.cy + g_mouse.y - g_canvas.height / 2;
+      const mx = g_viewport.getOCX() + g_mouse.x - g_canvas.width / 2;
+      const my = g_viewport.getOCY() + g_mouse.y - g_canvas.height / 2;
 
       if (mouse.cursorLock && theImage) {
         theImage.render(ctx, mx, my);

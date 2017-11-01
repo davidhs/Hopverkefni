@@ -46,8 +46,8 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
   let x = this.cx - w / 2;
   let y = this.cy - h / 2;
 
-  x -= g_viewport.getX();
-  y -= g_viewport.getY();
+  x -= g_viewport.getOX();
+  y -= g_viewport.getOY();
 
   ctx.drawImage(img.getImage(), x, y, w, h);
 };
