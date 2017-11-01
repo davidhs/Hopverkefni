@@ -29,24 +29,20 @@ const lighting = (function () {
     lightCtx.fillRect(0, 0, w, h);
     lightCtx.fill();
 
-    let xPad = 0;
-    let yPad = 0;
-
-    if (w > h) {
-      yPad = (w - h) / 2;
-      yPad = yPad * shadowMask.height / h;
-    } else if (w < h) {
-      xPad = (h - w) / 2;
-      xPad = xPad * shadowMask.width / w;
-    }
+    const s = Math.max(w, h);
 
     const sx = 0;
     const sy = 0;
     const sw = shadowMask.width;
     const sh = shadowMask.width;
 
-    const s = Math.max(w, h);
 
+    /*
+    const dx = x - s / 2;
+    const dy = y - s / 2;
+    const dw = s;
+    const dh = s;
+    */
     const dx = x - s / 2;
     const dy = y - s / 2;
     const dw = s;
@@ -54,7 +50,11 @@ const lighting = (function () {
 
 
     lightCtx.globalCompositeOperation = 'destination-in';
-    lightCtx.drawImage(shadowMask, sx, sy, sw, sh, dx, dy, dw, dh);
+    lightCtx.drawImage(
+      shadowMask,
+      sx, sy, sw, sh,
+      dx, dy, dw, dh,
+    );
 
     const oldGCO = ctx.globalCompositeOperation;
     ctx.globalCompositeOperation = 'source-over';

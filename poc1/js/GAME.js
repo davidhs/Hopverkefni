@@ -8,11 +8,10 @@ const g_sprites = {};
 const g_debugCanvas = document.createElement('canvas');
 const DEBUG = false;
 
-
 let g_testWOM;
 
 
-const g_shadowSize = 2 ** 8;
+const g_shadowSize = 2 ** 9;
 
 
 const g_debug = {};
@@ -27,7 +26,7 @@ g_debug.DEBUG_MODE = {
   SHADOW_MASK: 13,
 };
 
-g_debug.selection = -1;
+g_debug.selection = g_debug.PROJECTED_OCCLUSION_MAP;
 
 // Global URLs
 const g_url = {}; // URLs are eventually placed here.
@@ -184,15 +183,16 @@ function renderSimulation(ctx) {
     b: 255,
   };
 
-
   lighting.radialLight(bctx, color, cfg);
 
 
   if (DEBUG) {
-    let _w = g_debugCanvas.width;
-    let _h = g_debugCanvas.height;
+    const _w = g_debugCanvas.width;
+    const _h = g_debugCanvas.height;
 
     const dctx = g_debugCanvas.getContext('2d');
+    g_debugCanvas.width = g_canvas.width;
+    g_debugCanvas.height = g_canvas.height;
     dctx.fillStyle = '#f00';
     dctx.fillRect(0, 0, _w, _h);
 
@@ -227,11 +227,11 @@ function renderSimulation(ctx) {
     if (g_debug.selection === g_debug.DEBUG_MODE.ORIGINAL_OCCLUSION_MAP) {
       dctx.globalAlpha = 1.0;
 
-      _w = shadows.debug.original.canvas.width;
-      _h = shadows.debug.original.canvas.height;
+      g_debugCanvas.width = shadows.debug.original.canvas.width;
+      g_debugCanvas.height = shadows.debug.original.canvas.height;
 
       dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, _w, _h);
+      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
 
       dctx.drawImage(shadows.debug.original.canvas, 0, 0);
     }
@@ -240,11 +240,12 @@ function renderSimulation(ctx) {
     if (g_debug.selection === g_debug.DEBUG_MODE.PROJECTED_OCCLUSION_MAP) {
       dctx.globalAlpha = 1.0;
 
-      _w = shadows.debug.projected.canvas.width;
-      _h = shadows.debug.projected.canvas.height;
+      g_debugCanvas.width = shadows.debug.projected.canvas.width;
+      g_debugCanvas.height = shadows.debug.projected.canvas.height;
+
 
       dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, _w, _h);
+      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
 
       dctx.drawImage(shadows.debug.projected.canvas, 0, 0);
     }
@@ -253,12 +254,12 @@ function renderSimulation(ctx) {
     if (g_debug.selection === g_debug.DEBUG_MODE.SHADOW_MAP) {
       dctx.globalAlpha = 1.0;
 
-      _w = shadows.debug.shadowMap.canvas.width;
-      _h = shadows.debug.shadowMap.canvas.height;
+      g_debugCanvas.width = shadows.debug.shadowMap.canvas.width;
+      g_debugCanvas.height = shadows.debug.shadowMap.canvas.height;
 
 
       dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, _w, _h);
+      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
 
       dctx.drawImage(shadows.debug.shadowMap.canvas, 0, 0);
     }
@@ -267,16 +268,16 @@ function renderSimulation(ctx) {
     if (g_debug.selection === g_debug.DEBUG_MODE.SHADOW_MASK) {
       dctx.globalAlpha = 1.0;
 
-      _w = shadows.debug.shadowMask.canvas.width;
-      _h = shadows.debug.shadowMask.canvas.height;
+      g_debugCanvas.width = shadows.debug.shadowMask.canvas.width;
+      g_debugCanvas.height = shadows.debug.shadowMask.canvas.height;
 
       dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, _w, _h);
+      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
 
       dctx.drawImage(shadows.debug.shadowMask.canvas, 0, 0);
     }
 
-    if (true) {
+    if (g_debug.selection === 15) {
       const sx = 0;
       const sy = 0;
       const sw = g_testWOM.width;
@@ -421,6 +422,25 @@ function processAssets(resp) {
 
 
 function setup() {
+  let w = Math.min(window.innerWidth, window.innerHeight);
+  let h = Math.min(window.innerWidth, window.innerHeight);
+
+  h = Math.floor(w * 3 / 4);
+
+
+  w = 1600;
+  h = w * 9 / 16;
+
+  w = window.innerWidth;
+  h = window.innerHeight;
+
+  // w = 640;
+  // h = 480;
+
+  g_canvas.width = Math.floor(w);
+  g_canvas.height = Math.floor(h);
+
+
   const url_text = {};
   const url_images = {};
   const url_audio = {};
