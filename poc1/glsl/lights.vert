@@ -14,6 +14,7 @@ attribute vec2 a_texCoord0;
 // ========
 
 varying vec2 v_TexCoord0;
+varying vec4 v_Color;
 
 // ========
 // UNIFORMS
@@ -25,6 +26,7 @@ uniform vec2  u_resolution;
 void main() {
 
   v_TexCoord0 = a_texCoord0;
+  v_Color = vec4(0.0, 0.0, 0.0, 1.0);
 
   vec2 zeroToOne = a_position / u_resolution;
 

@@ -40,25 +40,26 @@ const lighting = (function () {
       xPad = xPad * shadowMask.width / w;
     }
 
+    const sx = 0;
+    const sy = 0;
+    const sw = shadowMask.width;
+    const sh = shadowMask.width;
 
-    const sx = Math.round(xPad);
-    const sy = Math.round(yPad);
-    const sw = shadowMask.width - 2 * sx;
-    const sh = shadowMask.height - 2 * sy;
+    const s = Math.max(w, h);
 
-    const dx = 0;
-    const dy = 0;
-    const dw = w;
-    const dh = h;
+    const dx = x - s / 2;
+    const dy = y - s / 2;
+    const dw = s;
+    const dh = s;
 
 
     lightCtx.globalCompositeOperation = 'destination-in';
     lightCtx.drawImage(shadowMask, sx, sy, sw, sh, dx, dy, dw, dh);
 
-
+    const oldGCO = ctx.globalCompositeOperation;
     ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(lightCanvas, 0, 0);
-    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalCompositeOperation = oldGCO;
   }
 
   return {

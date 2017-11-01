@@ -13,7 +13,7 @@ precision mediump float;
 // ========
 
 varying vec2 v_TexCoord0;
-
+varying vec4 v_Color;
 
 // ========
 // UNIFORMS
@@ -51,7 +51,7 @@ void main(void) {
 
 	//we multiply the blur amount by our distance from center
 	//this leads to more blurriness as the shadow "fades away"
-	float blur = (1.0/u_resolution.x)  * smoothstep(0.0, 1.0, r);
+	float blur = (1.0 / u_resolution.x)  * smoothstep(0.0, 1.0, r);
 
 	//now we use a simple gaussian blur
 	float sum = 0.0;
@@ -74,7 +74,6 @@ void main(void) {
 	 //gl_FragColor = vColor * vec4(vec3(1.0), lit * smoothstep(1.0, 0.0, r));
 
 	// ALpha
-	float a = lit * smoothstep(1.0, 0.0, r);
 
- 	gl_FragColor = vec4(0.0, 0.0, 0.0, a);
+ 	gl_FragColor = v_Color * vec4(vec3(1.0), sum * smoothstep(1.0, 0.0, r));
 }

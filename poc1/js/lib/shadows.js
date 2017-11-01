@@ -3,29 +3,43 @@
 /* global glutil document :true */
 
 const shadows = (function () {
-  const DEBUG = true;
+  const DEBUG = false;
 
   // Plural is canvases, but I'm lazy.
   // TODO ONLY FOR DEBUGGING PURPOSES, REMOVE LATER
-  const canvi = {
-    original: {
-      canvas: document.createElement('canvas'),
-    },
-    projected: {
-      canvas: document.createElement('canvas'),
-    },
-    shadowMap: {
-      canvas: document.createElement('canvas'),
-    },
-    shadowMask: {
-      canvas: document.createElement('canvas'),
-    },
-  };
+  let canvi;
+  if (DEBUG) {
+    canvi = {
+      original: {
+        canvas: document.createElement('canvas'),
+      },
+      projected: {
+        canvas: document.createElement('canvas'),
+      },
+      shadowMap: {
+        canvas: document.createElement('canvas'),
+      },
+      shadowMask: {
+        canvas: document.createElement('canvas'),
+      },
+    };
 
-  canvi.original.ctx = canvi.original.canvas.getContext('2d');
-  canvi.projected.ctx = canvi.projected.canvas.getContext('2d');
-  canvi.shadowMap.ctx = canvi.shadowMap.canvas.getContext('2d');
-  canvi.shadowMask.ctx = canvi.shadowMask.canvas.getContext('2d');
+    canvi.original.ctx = canvi.original.canvas.getContext('2d');
+    canvi.projected.ctx = canvi.projected.canvas.getContext('2d');
+    canvi.shadowMap.ctx = canvi.shadowMap.canvas.getContext('2d');
+    canvi.shadowMask.ctx = canvi.shadowMask.canvas.getContext('2d');
+  }
+
+  const square = [
+    // Triangle 1
+    0.0, 0.0,
+    1.0, 0.0,
+    0.0, 1.0,
+    // Triangle 2
+    0.0, 1.0,
+    1.0, 0.0,
+    1.0, 1.0,
+  ];
 
   // Occlusion image is drawn into this canvas.
   const canvasOccluders = document.createElement('canvas');
@@ -51,10 +65,12 @@ const shadows = (function () {
 
   function _copyImage(x, y, occluders) {
     // DEBUG
-    canvi.original.canvas.width = occluders.width;
-    canvi.original.canvas.height = occluders.height;
-    util.clearCanvas(canvi.original.ctx);
-    canvi.original.ctx.drawImage(occluders, 0, 0);
+    if (DEBUG) {
+      canvi.original.canvas.width = occluders.width;
+      canvi.original.canvas.height = occluders.height;
+      util.clearCanvas(canvi.original.ctx);
+      canvi.original.ctx.drawImage(occluders, 0, 0);
+    }
 
     // Clear canvas
     ctxOccluders.clearRect(0, 0, stuff.size, stuff.size);
@@ -62,8 +78,8 @@ const shadows = (function () {
     const w = occluders.width;
     const h = occluders.height;
 
-    const sx = 0;
-    const sy = 0;
+    const sx = x - w / 2;
+    const sy = y - h / 2;
     const sw = w;
     const sh = h;
 
@@ -84,11 +100,13 @@ const shadows = (function () {
     const dw = stuff.size - 2 * dx;
     const dh = stuff.size - 2 * dy;
 
-
     util.clearCanvas(ctxOccluders);
-    ctxOccluders.drawImage(occluders, 0, 0, w, h, 0, 0, stuff.size, stuff.size);
+    // ctxOccluders.drawImage(occluders, 0, 0, w, h, 0, 0, stuff.size, stuff.size);
+    ctxOccluders.drawImage(occluders, sx, sy, sw, sh, dx, dy, dw, dh);
 
     if (DEBUG) {
+      canvi.projected.width = canvasOccluders.width;
+      canvi.projected.height = canvasOccluders.height;
       util.clearCanvas(canvi.projected.ctx);
       canvi.projected.ctx.drawImage(canvasOccluders, 0, 0);
     }
@@ -96,8 +114,8 @@ const shadows = (function () {
 
   function initShadowMap() {
     // Set up canvas.
-    gShadowMap.width = stuff.size;
-    gShadowMap.height = stuff.size;
+    gShadowMap.canvas.width = stuff.size;
+    gShadowMap.canvas.height = 1;
     gShadowMap.gl = gShadowMap.canvas.getContext('webgl');
 
     // Get from gShadowMap.
@@ -125,21 +143,15 @@ const shadows = (function () {
     // Tell WebGL to use this program.
     gl.useProgram(program);
 
+    // Set up texture.
+    gShadowMap.texture = glutil.createAndSetupTexture(gl);
+
     // Square texture
     const texCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
     gl.bufferData(
       gl.ARRAY_BUFFER,
-      new Float32Array([
-        // Triangle 1
-        0.0, 0.0,
-        1.0, 0.0,
-        0.0, 1.0,
-        // Triangle 2
-        0.0, 1.0,
-        1.0, 0.0,
-        1.0, 1.0,
-      ]),
+      new Float32Array(square),
       gl.STATIC_DRAW,
     );
 
@@ -148,7 +160,7 @@ const shadows = (function () {
     // Bind it to ARRAY_BUFFER (think of ARRAY_BUFFER = positionBuffer);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     // Set a rectangle the same size as the image. (to the buffer)
-    glutil.setRectangle(gl, 0, 0, stuff.size, stuff.size);
+    glutil.setRectangle(gl, 0, 0, canvasOccluders.width, canvasOccluders.height);
 
     // Handles on uniforms.
     const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
@@ -162,15 +174,14 @@ const shadows = (function () {
     gShadowMap.resolutionUniformLocation = resolutionUniformLocation;
     gShadowMap.flipYLocation = flipYLocation;
     gShadowMap.texCoordBuffer = texCoordBuffer;
-    gShadowMap.texture = glutil.createAndSetupTexture(gl);
     gShadowMap.program = program;
     gShadowMap.positionBuffer = positionBuffer;
   }
 
   function initShadowMask() {
     // Setup canvas.
-    gShadowMask.width = stuff.size;
-    gShadowMask.height = stuff.size;
+    gShadowMask.canvas.width = stuff.size;
+    gShadowMask.canvas.height = stuff.size;
     gShadowMask.gl = gShadowMask.canvas.getContext('webgl');
 
     // Get from gShadowMask.
@@ -199,16 +210,7 @@ const shadows = (function () {
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
     gl.bufferData(
       gl.ARRAY_BUFFER,
-      new Float32Array([
-        // Triangle 1
-        0.0, 0.0,
-        1.0, 0.0,
-        0.0, 1.0,
-        // Triangle 2
-        0.0, 1.0,
-        1.0, 0.0,
-        1.0, 1.0,
-      ]),
+      new Float32Array(square),
       gl.STATIC_DRAW,
     );
 
@@ -274,7 +276,6 @@ const shadows = (function () {
     );
 
     // Set the size of the image.
-    gl.uniform2f(gShadowMap.resolutionUniformLocation, stuff.size, stuff.size);
 
 
     gl.bindTexture(gl.TEXTURE_2D, gShadowMap.texture);
@@ -288,19 +289,17 @@ const shadows = (function () {
     // Tell the shader the resolution of the framebuffer
     gl.uniform2f(gShadowMap.resolutionUniformLocation, stuff.size, stuff.size);
     // Tell WebGL the viewport setting needed for framebuffer.
-    gl.viewport(0, 0, stuff.size, stuff.size);
+    gl.viewport(0, 0, canvas.width, canvas.height);
 
 
     // Draw rectangle.
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     if (DEBUG) {
+      canvi.shadowMap.width = canvas.width;
+      canvi.shadowMap.height = canvas.height;
       util.clearCanvas(canvi.shadowMap.ctx);
-      canvi.shadowMap.ctx.drawImage(
-        canvas,
-        0, 0, canvas.width, canvas.height,
-        0, 0, stuff.size, stuff.size,
-      );
+      canvi.shadowMap.ctx.drawImage(canvas, 0, 0);
     }
 
     return canvas;
@@ -360,7 +359,7 @@ const shadows = (function () {
     );
 
     // Set the size of the image.
-    gl.uniform2f(resolutionUniformLocation, stuff.size, stuff.size);
+    gl.uniform2f(resolutionUniformLocation, shadowMap.width, shadowMap.height);
 
     gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, shadowMap);
@@ -381,6 +380,8 @@ const shadows = (function () {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     if (DEBUG) {
+      canvi.shadowMask.canvas.width = canvas.width;
+      canvi.shadowMask.canvas.height = canvas.height;
       util.clearCanvas(canvi.shadowMask.ctx);
       canvi.shadowMask.ctx.drawImage(canvas, 0, 0);
     }
@@ -396,21 +397,20 @@ const shadows = (function () {
 
     stuff.size = size || stuff.size;
 
-    console.log(stuff.size);
-
     canvasOccluders.width = stuff.size;
     canvasOccluders.height = stuff.size;
     ctxOccluders = canvasOccluders.getContext('2d');
 
+    if (DEBUG) {
+      canvi.projected.canvas.width = stuff.size;
+      canvi.projected.canvas.height = stuff.size;
 
-    canvi.projected.canvas.width = stuff.size;
-    canvi.projected.canvas.height = stuff.size;
+      canvi.shadowMap.canvas.width = stuff.size;
+      canvi.shadowMap.canvas.height = stuff.size;
 
-    canvi.shadowMap.canvas.width = stuff.size;
-    canvi.shadowMap.canvas.height = stuff.size;
-
-    canvi.shadowMask.canvas.width = stuff.size;
-    canvi.shadowMask.canvas.height = stuff.size;
+      canvi.shadowMask.canvas.width = stuff.size;
+      canvi.shadowMask.canvas.height = stuff.size;
+    }
 
     initShadowMap();
     initShadowMask();
@@ -418,12 +418,15 @@ const shadows = (function () {
     initialized = true;
   }
 
+  const returnObject = {};
 
-  return {
-    getShadowMask,
-    init,
+  returnObject.getShadowMask = getShadowMask;
+  returnObject.init = init;
 
-    // TODO DEBUG ONLY, LATER REMOVE
-    debug: canvi,
-  };
+  if (DEBUG) {
+    returnObject.debug = canvi;
+  }
+
+
+  return returnObject;
 }());

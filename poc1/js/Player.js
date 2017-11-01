@@ -101,17 +101,13 @@ Player.prototype.update = function (du) {
 
     // Wall crap
     if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
-      spatialManager.unregister(this);
-
       if (flags < spatialManager.MIN_ENTITY) {
-        spatialManager.unregister(this);
         this.cx = newX;
         this.cy = oldY;
         flags = spatialManager.register(this);
       }
 
       if (flags < spatialManager.MIN_ENTITY) {
-        spatialManager.unregister(this);
         this.cx = oldX;
         this.cy = oldY;
         flags = spatialManager.register(this);
@@ -122,12 +118,8 @@ Player.prototype.update = function (du) {
         this.cy = oldY;
         flags = spatialManager.register(this);
       }
-    }
-
-    // Entity stuff
-    if (flags) {
-      spatialManager.unregister(this);
-
+    } else if (flags) {
+      // Entity stuff
       const hitEntity = this.findHitEntity();
       if (hitEntity) {
         const cx1 = this.cx;
@@ -149,7 +141,6 @@ Player.prototype.update = function (du) {
         flags = 0;
       }
     }
-
     spatialManager.register(this);
   }
 };

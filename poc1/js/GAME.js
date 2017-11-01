@@ -6,9 +6,28 @@ g_world Texture  :true */
 
 const g_sprites = {};
 const g_debugCanvas = document.createElement('canvas');
-const DEBUG = true;
-const g_shadowSize = 256;
+const DEBUG = false;
 
+
+let g_testWOM;
+
+
+const g_shadowSize = 2 ** 8;
+
+
+const g_debug = {};
+
+g_debug.DEBUG_MODE = {
+  UNKNOWN1: 0,
+  UNKNOWN2: 1,
+  UNKNOWN3: 3,
+  ORIGINAL_OCCLUSION_MAP: 10,
+  PROJECTED_OCCLUSION_MAP: 11,
+  SHADOW_MAP: 12,
+  SHADOW_MASK: 13,
+};
+
+g_debug.selection = -1;
 
 // Global URLs
 const g_url = {}; // URLs are eventually placed here.
@@ -119,6 +138,8 @@ function renderSimulation(ctx) {
   // Draw background
   g_asset.texture.background.render(ctxb);
 
+  ctxb.drawImage(g_testWOM, -g_viewport.getX(), -g_viewport.getY());
+
   // === MIDGROUND ===
 
   // Draw onto world
@@ -138,17 +159,24 @@ function renderSimulation(ctx) {
   });
 
 
+  ctxo.drawImage(g_testWOM, -g_viewport.getX(), -g_viewport.getY());
+
+
   buffer.width = w;
   buffer.height = h;
   const bctx = buffer.getContext('2d');
 
+  const cfg = {};
 
-  const cfg = {
-    occluder: g_occlusion,
-    x: g_mouse.x,
-    y: g_mouse.y,
-    scaler: 0.25,
-  };
+  cfg.occluder = g_occlusion;
+
+  if (false) {
+    cfg.x = g_mouse.x;
+    cfg.y = g_mouse.y;
+  } else {
+    cfg.x = g_canvas.width / 2;
+    cfg.y = g_canvas.height / 2;
+  }
 
   const color = {
     r: 232,
@@ -159,18 +187,6 @@ function renderSimulation(ctx) {
 
   lighting.radialLight(bctx, color, cfg);
 
-  const DEBUG_MODE = {
-    UNKNOWN1: 0,
-    UNKNOWN2: 1,
-    UNKNOWN3: 3,
-
-    ORIGINAL_OCCLUSION_MAP: 10,
-    PROJECTED_OCCLUSION_MAP: 11,
-    SHADOW_MAP: 12,
-    SHADOW_MASK: 13,
-  };
-
-  const selection = DEBUG_MODE.PROJECTED_OCCLUSION_MAP;
 
   if (DEBUG) {
     let _w = g_debugCanvas.width;
@@ -180,7 +196,7 @@ function renderSimulation(ctx) {
     dctx.fillStyle = '#f00';
     dctx.fillRect(0, 0, _w, _h);
 
-    if (selection === DEBUG_MODE.UNKNOWN1) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN1) {
       dctx.globalCompositeOperation = 'source-over';
       dctx.drawImage(g_background, 0, 0);
 
@@ -193,7 +209,7 @@ function renderSimulation(ctx) {
       dctx.drawImage(g_foreground, 0, 0);
     }
 
-    if (selection === DEBUG_MODE.UNKNOWN2) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN2) {
       // Only look at shadow mask
       const shadowMask = shadows.getShadowMask(cfg);
       dctx.globalCompositeOperation = 'source-over';
@@ -201,14 +217,14 @@ function renderSimulation(ctx) {
     }
 
 
-    if (selection === DEBUG_MODE.UNKNOWN3) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN3) {
       dctx.globalAlpha = 1.0;
       dctx.globalCompositeOperation = 'source-over';
       dctx.drawImage(buffer, 0, 0);
     }
 
     // Look at original occlusion map.
-    if (selection === DEBUG_MODE.ORIGINAL_OCCLUSION_MAP) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.ORIGINAL_OCCLUSION_MAP) {
       dctx.globalAlpha = 1.0;
 
       _w = shadows.debug.original.canvas.width;
@@ -221,7 +237,7 @@ function renderSimulation(ctx) {
     }
 
     // Look at projected occlusion map.
-    if (selection === DEBUG_MODE.PROJECTED_OCCLUSION_MAP) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.PROJECTED_OCCLUSION_MAP) {
       dctx.globalAlpha = 1.0;
 
       _w = shadows.debug.projected.canvas.width;
@@ -234,7 +250,7 @@ function renderSimulation(ctx) {
     }
 
     // Look at shadow map
-    if (selection === DEBUG_MODE.SHADOW_MAP) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.SHADOW_MAP) {
       dctx.globalAlpha = 1.0;
 
       _w = shadows.debug.shadowMap.canvas.width;
@@ -248,7 +264,7 @@ function renderSimulation(ctx) {
     }
 
     // Look at shadow mask
-    if (selection === DEBUG_MODE.SHADOW_MASK) {
+    if (g_debug.selection === g_debug.DEBUG_MODE.SHADOW_MASK) {
       dctx.globalAlpha = 1.0;
 
       _w = shadows.debug.shadowMask.canvas.width;
@@ -258,6 +274,18 @@ function renderSimulation(ctx) {
       dctx.fillRect(0, 0, _w, _h);
 
       dctx.drawImage(shadows.debug.shadowMask.canvas, 0, 0);
+    }
+
+    if (true) {
+      const sx = 0;
+      const sy = 0;
+      const sw = g_testWOM.width;
+      const sh = g_testWOM.height;
+      const dx = 0;
+      const dy = 0;
+      const dw = dctx.canvas.width;
+      const dh = dctx.canvas.height;
+      dctx.drawImage(g_testWOM, sx, sy, sw, sh, dx, dy, dw, dh);
     }
   }
 
@@ -282,7 +310,6 @@ function renderSimulation(ctx) {
 // ======
 // ASSETS
 // ======
-
 
 function processAssets(resp) {
   if (DEBUG) {
@@ -316,13 +343,21 @@ function processAssets(resp) {
   g_viewport.width = g_canvas.width;
   g_viewport.height = g_canvas.height;
 
+  // =============
   // TEXTURE ATLAS
+  // =============
 
   g_asset.textureAtlas = {};
-
   g_asset.textureAtlas.dungeon = new TextureAtlas(g_asset.dungeon, 16, 16);
-
   g_asset.textureAtlas.explosion = new TextureAtlas(g_asset.explosion, 100, 100, (9 * 9) - 7);
+  g_asset.textureAtlas.explosionSpritesheet2 =
+    new TextureAtlas(g_asset.explosionSpritesheet2, 16, 16);
+  g_asset.textureAtlas.explosionSpritesheet3 =
+    new TextureAtlas(g_asset.explosionSpritesheet3, 16, 16);
+  g_asset.textureAtlas.explosionSpritesheet5 =
+    new TextureAtlas(g_asset.explosionSpritesheet5, 16, 16);
+  g_asset.textureAtlas.explosionSpritesheet6 =
+    new TextureAtlas(g_asset.explosionSpritesheet6, 16, 16);
 
   g_asset.textureAtlas.blood = new TextureAtlas(g_asset.blood, 512, 512);
 
@@ -377,6 +412,8 @@ function processAssets(resp) {
 
   spatialManager.init();
 
+  g_testWOM = spatialManager.getWallOcclusionMap();
+
   g_main.mainInit();
 }
 
@@ -413,6 +450,11 @@ function setup() {
       bullet: 'bullet.png',
       rifle: 'survivor-shoot_rifle_0.png',
       blockMap: 'block-map.png',
+
+      explosionSpritesheet2: 'explosionSpritesheet2.png',
+      explosionSpritesheet3: 'explosionSpritesheet3.png',
+      explosionSpritesheet5: 'explosionSpritesheet5.png',
+      explosionSpritesheet6: 'explosionSpritesheet6.png',
     }),
   );
 
