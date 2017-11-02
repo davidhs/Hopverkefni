@@ -125,7 +125,6 @@ const entityManager = (function () {
   }
 
   function init() {
-    generatePlayer();
     _generateRocks();
   }
 
@@ -136,6 +135,7 @@ const entityManager = (function () {
     fireBullet,
     generateRock,
     generateExplosion,
+    generatePlayer,
     OK,
     KILL_ME_NOW,
     getPos: () => {

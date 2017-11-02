@@ -16,16 +16,19 @@
 
 // Construct a "sprite" from the given `image`,
 //
-function Sprite(image) {
-  this.image = image;
+function Sprite(descr) {
 
-  this.width = image.width;
-  this.height = image.height;
-  this.scale = 1;
+  util.extendObject(this, descr);
+
+  if (!this.image) throw Error("Sprite has not image.");
+  this.width = this.image.width;
+  this.height = this.image.height;
+
+  if (!this.scale) this.scale = 1;
 
   const canvas = document.createElement('canvas');
-  canvas.width = image.width;
-  canvas.height = image.height;
+  canvas.width = this.image.width;
+  canvas.height = this.image.height;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(this.image, 0, 0);
 

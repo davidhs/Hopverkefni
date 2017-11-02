@@ -10,8 +10,10 @@ const DEBUG = false;
 
 let g_testWOM;
 
+let chosenMap = "map2";
 
-let g_shadowSize = 2 ** 9;
+let g_master;
+let g_shadowSize;
 
 
 const g_debug = {};
@@ -308,11 +310,13 @@ function renderSimulation(ctx) {
 }
 
 
-mapHandler.openMap("map1", response => {
+mapHandler.openMap(chosenMap, response => {
   const map = response.map;
   const assets = response.assets;
   const raw = response.raw;
   const urls = response.urls;
+
+  g_master = response;
   
   g_background.width = g_canvas.width;
   g_background.height = g_canvas.height;
@@ -341,8 +345,15 @@ mapHandler.openMap("map1", response => {
 
   util.extendObject(g_asset, raw);
   util.extendObject(g_asset, assets);
+
+  ///////
   
+  entityManager.generatePlayer({
+    sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path)
+  });
   entityManager.init();
+
+
   
   shadows.init(
     g_asset.lights,

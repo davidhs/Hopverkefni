@@ -7,11 +7,9 @@ function Player(descriptor) {
   // Common inherited setup logic from Entity
   this.setup(descriptor);
 
-  // Default sprite
-  this.sprite = this.sprite || g_asset.sprite.player;
+  if (!this.sprite) throw Error("NEED TO SET SPRITE TO CHARACTER");
 
-  // Set normal drawing scale, and warp state off
-  this._scale = 0.25;
+  this._scale = this.sprite.scale;
 }
 
 // Inherit from Entity
