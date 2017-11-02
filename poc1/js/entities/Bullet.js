@@ -8,6 +8,7 @@ function Bullet(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
 
+  // TODO: bind in JSON.
   audioManager.play(g_url.bulletFire);
 }
 
@@ -21,13 +22,16 @@ Bullet.prototype.velX = 1;
 Bullet.prototype.velY = 1;
 
 // Convert times from milliseconds to "nominal" time units.
+
+// TODO: bind in JSON
 Bullet.prototype.lifeSpan = 3000 / NOMINAL_UPDATE_INTERVAL;
 
 Bullet.prototype.update = function (du) {
   spatialManager.unregister(this);
-  this.lifeSpan -= du;
-  if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
+  this.lifeSpan -= du;
+
+  if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
 
   // ==================
   // COLLISION HANDLING
@@ -42,6 +46,8 @@ Bullet.prototype.update = function (du) {
   if (!g_world.inBounds(this.cx, this.cy)) {
     return entityManager.KILL_ME_NOW;
   }
+
+  // TODO: this is just a total mess.
 
   const potentialCollision = spatialManager.register(this);
 
@@ -73,6 +79,7 @@ Bullet.prototype.update = function (du) {
   return entityManager.OK;
 };
 
+// TODO: bind in JSON.
 Bullet.prototype.getRadius = function () {
   return 4;
 };
@@ -80,19 +87,21 @@ Bullet.prototype.getRadius = function () {
 Bullet.prototype.takeBulletHit = function () {
   this.kill();
 
+  // TODO: bind in JSON.
   audioManager.play(g_url.bulletZapped);
 };
 
 Bullet.prototype.render = function (ctx, cfg) {
   if (cfg && cfg.occlusion) return;
 
+  // TODO: bind in JSON, or just throw away.
   const fadeThresh = Bullet.prototype.lifeSpan / 3;
-
 
   if (this.lifeSpan < fadeThresh) {
     ctx.globalAlpha = this.lifeSpan / fadeThresh;
   }
 
+  // TODO: bind in JSON.
   g_asset.sprite.bullet.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
 
   ctx.globalAlpha = 1;

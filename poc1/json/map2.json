@@ -31,7 +31,7 @@
                     "y": 300
                 },
                 "sprite": {
-                    "path": "assets.sprite.donkey"
+                    "path": "assets.sprite.player"
                 }
             }
         }
@@ -149,7 +149,7 @@
             "cursor2": {
                 "dep": ["raw.crosshair"],
                 "cfg": {
-                    "scale": 0.2,
+                    "scale": 0.15,
                     "bias": {
                         "x": "-50%",
                         "y": "-50%"

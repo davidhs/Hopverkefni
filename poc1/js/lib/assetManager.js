@@ -16,6 +16,10 @@
 // The asset manager lets you load multiple assets of different types,
 // here image and text are useful types.  Once all assets have been loaded
 // the supplied callback is called.
+
+// The name is probably a misnomer, since it just fetches
+// stuff for you and does some rudamentary processing.
+// It doesn't manage assets.
 const assetManager = (function () {
   // Types of assets this manager supports.
   // const _catname = ['image', 'audio', 'text'];

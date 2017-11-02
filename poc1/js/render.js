@@ -4,6 +4,8 @@
 
 // GENERIC RENDERING
 
+// TODO: maybe place these global constants in globals.js?
+
 let g_doClear = true;
 let g_doBox = false;
 let g_undoBox = false;

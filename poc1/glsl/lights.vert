@@ -5,35 +5,42 @@ precision mediump float;
 // ATTRIBUTES
 // ==========
 
-attribute vec2 a_position;
-attribute vec4 a_color;
-attribute vec2 a_texCoord0;
+attribute vec2 a_pos;
+attribute vec2 a_tc;
 
 // ========
 // VARYINGS
 // ========
 
-varying vec2 v_TexCoord0;
-varying vec4 v_Color;
+// Texture coordinate.
+varying vec2 v_tc;
 
 // ========
 // UNIFORMS
 // ========
 
-uniform float u_flipY;  // Set 1 to not flip, and -1 to flip.
-uniform vec2  u_resolution;
+// If set to 1, then y will stay the same, otherwise
+// if it's set to -1, then y = -y.
+uniform float u_flipY;
+
+// Resolution (width and height) of the rectangle.
+uniform vec2 u_res;
 
 void main() {
 
-  v_TexCoord0 = a_texCoord0;
-  v_Color = vec4(0.0, 0.0, 0.0, 1.0);
+  v_tc = a_tc;
 
-  vec2 zeroToOne = a_position / u_resolution;
+  // Converting from screen space to clip space.
 
-  // Convert from 0->1 to 0->2
+  // a_position is in screen space.
+
+  // Convert from (0 - w, 0 - h) to (0 - 1, 0 - 1).
+  vec2 zeroToOne = a_pos / u_res;
+
+  // Convert from (0 - 1, 0 - 1) to (0 - 2, 0 - 2).
   vec2 zeroToTwo = zeroToOne * 2.0;
 
-  // Convert from 0->2 to -1->+1 (clipspace)
+  // Convert from (0 - 2, 0 - 2) to (-1 - 1, -1 - 1) (i.e. clip space.)
   vec2 clipSpace = zeroToTwo - 1.0;
 
   gl_Position = vec4(clipSpace * vec2(1, u_flipY), 0, 1);

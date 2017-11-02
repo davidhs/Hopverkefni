@@ -358,6 +358,7 @@ const spatialManager = (function () {
     }
   }
 
+  // FIXME: this is a hack!! Or, maybe...?
   function getWallOcclusionMap() {
     const canvas = document.createElement('canvas');
     canvas.width = g_world.getWidth();

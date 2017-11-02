@@ -4,31 +4,9 @@
 shadows TextureAtlas Sprite g_main spatialManager FastImage assetManager
 g_world Texture  :true */
 
-const g_sprites = {};
-const g_debugCanvas = document.createElement('canvas');
-const DEBUG = false;
-
-let g_testWOM;
-
-let chosenMap = "map2";
-
-let g_master;
-let g_shadowSize;
-
-
-const g_debug = {};
-
-g_debug.DEBUG_MODE = {
-  UNKNOWN1: 0,
-  UNKNOWN2: 1,
-  UNKNOWN3: 3,
-  ORIGINAL_OCCLUSION_MAP: 10,
-  PROJECTED_OCCLUSION_MAP: 11,
-  SHADOW_MAP: 12,
-  SHADOW_MASK: 13,
-};
-
-g_debug.selection = g_debug.PROJECTED_OCCLUSION_MAP;
+// ====
+// GAME
+// ====
 
 // Global URLs
 let g_url = {}; // URLs are eventually placed here.
@@ -36,7 +14,266 @@ let g_url = {}; // URLs are eventually placed here.
 // Global Assets
 let g_asset = {}; // Assets are loaded here.
 
+// Which map to open.
+const chosenMap = 'map2';
 
+// Map information
+let g_master;
+
+// The resolution of the shadow.
+let g_shadowSize;
+
+// Temporary stuff occlude walls.  TODO: remove me later
+let g_testWOM;
+
+// Canvases (except g_canvas).
+const g_background = document.createElement('canvas'); // Background
+const g_midground = document.createElement('canvas'); // Midground
+const g_foreground = document.createElement('canvas'); // Foreground
+
+const g_occlusion = document.createElement('canvas'); // Occlusion map
+const g_shadows = document.createElement('canvas'); // Shadows
+
+const g_debugGAME = {};
+
+// =============
+// GATHER INPUTS
+// =============
+
+function gatherInputs() {}
+
+// =================
+// UPDATE SIMULATION
+// =================
+
+// We take a very layered approach here...
+//
+// The primary `update` routine handles generic stuff such as
+// pausing, single-step, and time-handling.
+//
+// It then delegates the game-specific logic to `updateSimulation`
+
+// GAME-SPECIFIC UPDATE LOGIC
+
+function updateSimulation(du) {
+  // Update entities.
+  entityManager.update(du);
+
+  // Set viewport to follow player.
+  g_viewport.setOCX(entityManager.getPos().cx);
+  g_viewport.setOCY(entityManager.getPos().cy);
+}
+
+// =================
+// RENDER SIMULATION
+// =================
+
+// We take a very layered approach here...
+//
+// The primary `render` routine handles generic stuff such as
+// the diagnostic toggles (including screen-clearing).
+//
+// It then delegates the game-specific logic to `gameRender`
+
+// GAME-SPECIFIC RENDERING
+
+function renderSimulation(ctx) {
+  // === SETUP & CLEARING ===
+
+  // Get 2D contexts for canvases.
+  const ctxb = g_background.getContext('2d');
+  const ctxm = g_midground.getContext('2d');
+  const ctxf = g_foreground.getContext('2d');
+  const ctxo = g_occlusion.getContext('2d'); // Occlusion map context
+  const ctxs = g_shadows.getContext('2d'); // Shadows context
+
+  // Width and height of rendering canvases.
+  const w = g_canvas.width;
+  const h = g_canvas.height;
+
+  // Clear canvases.
+  ctxb.clearRect(0, 0, w, h);
+  ctxm.clearRect(0, 0, w, h);
+  ctxf.clearRect(0, 0, w, h);
+  ctxo.clearRect(0, 0, w, h);
+  ctxs.clearRect(0, 0, w, h);
+
+  // Clear rendering canvas.
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, w, h);
+
+  // === DRAWING TO VARIOUS CANVASES ===
+
+  // --- BACKGROUND ---
+
+  // Draw background.  TODO: remove later
+  g_asset.texture.background.render(ctxb);
+
+  // Draw alpha 0 background.  TODO: remove later
+  ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+
+  // --- MIDGROUND ----
+
+  // Draw entities to midground.
+  entityManager.render(ctxm);
+
+  // --- FOREGROUND ---
+
+  // Draw Cursor
+  if (g_mouse.getFastImage()) {
+    g_mouse.render(ctxf);
+  }
+
+  // === OCCLUSION ===
+
+  // Add entities to occlusion map.
+  entityManager.render(ctxo, {
+    occlusion: true,
+  });
+
+  // Add "walls" to occlusion map.  TODO: remove later.
+  ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+
+  // === SHADOWS ===
+
+  // Draw the light.
+  //
+  // NB: color doesn't work and the blending doesn't
+  // work very well.
+  lighting.radialLight(ctxs, {
+    r: 232,
+    g: 217,
+    b: 255,
+  }, {
+    occluder: g_occlusion,
+    x: g_canvas.width / 2,
+    y: g_canvas.height / 2,
+  });
+
+  // === DEBUG ===
+
+  // Draw debug stuff.
+  g_debugGAME.render(ctx);
+
+  // === DRAW TO RENDERING CANVAS ===
+
+  // --- DRAW BACKGROUND ---
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.drawImage(g_background, 0, 0);
+
+  // --- DRAW LIGHTS/SHADOWS ---
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.drawImage(g_shadows, 0, 0, w, h);
+
+  // --- DRAW MIDGROUND ---
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.drawImage(g_midground, 0, 0);
+
+  // --- DRAW FOREGROUND ---
+  ctx.drawImage(g_foreground, 0, 0);
+}
+
+
+function setup(response) {
+  // Unroll response.
+  const map = response.map;
+  const assets = response.assets;
+  const raw = response.raw;
+  const urls = response.urls;
+
+  // Store response in g_master.
+  g_master = response;
+
+  // Set canvas width and heights.
+  g_background.width = g_canvas.width;
+  g_background.height = g_canvas.height;
+
+  g_midground.width = g_canvas.width;
+  g_midground.height = g_canvas.height;
+
+  g_foreground.width = g_canvas.width;
+  g_foreground.height = g_canvas.height;
+
+  g_occlusion.width = g_canvas.width;
+  g_occlusion.height = g_canvas.height;
+
+  g_shadows.width = g_canvas.width;
+  g_shadows.height = g_canvas.height;
+
+  // Init debug
+  g_debugGAME.init();
+
+  // Set g_url.
+  g_url = response.urls;
+
+  // Set g_asset
+  g_asset = response.assets;
+
+  const stuff = {};
+
+  for (let i = 0, keys = Object.keys(urls); i < keys.length; i += 1) {
+    const name = keys[i];
+    const url = urls[name];
+
+    stuff[url] = raw[name];
+  }
+
+  util.extendObject(g_asset, raw);
+  util.extendObject(g_asset, assets);
+
+  // --- Mouse ---
+
+  // Set mouse cursor image.
+  if (g_master.map.mouse.image) {
+    g_mouse.setFastImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
+  }
+
+  // Enable cursor lock, if applicable.
+  if (g_master.map.mouse.cursorLock) {
+    g_mouse.enableCursorLock();
+  }
+
+  // --- Entity Manager ---
+
+  // Assign a player a sprite image.
+  entityManager.generatePlayer({
+    sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path),
+  });
+
+  // Initialize entity manager.
+  entityManager.init();
+
+  // --- Shadows ---
+
+  // Initialize shadows: load in shader source code and
+  // resolution of shadow.
+  shadows.init(
+    g_asset.lights,
+    g_asset.shadowMap,
+    g_asset.shadowMask,
+    g_shadowSize,
+  );
+
+  // --- Spatial Manager ---
+
+  // Initialize spatial manager.
+  spatialManager.init();
+
+  // Temporary occlusion map from spatial manager.  TODO: remove later.
+  g_testWOM = spatialManager.getWallOcclusionMap();
+
+  // --- Start Game ---
+
+  // Start game!
+  g_main.mainInit();
+}
+
+
+// =========================
+// DEBUG STUFF, REMOVE LATER
+// =========================
+
+// Eughh...
 const fOcclusionMap = function (canvas) {
   function occluder(rgba1, rgba2) {
     const rgbaInit = [rgba1.r, rgba1.g, rgba1.b, rgba1.a];
@@ -62,131 +299,28 @@ const fOcclusionMap = function (canvas) {
   return util.forAllPixels(canvas, occluder);
 };
 
+const g_debug = {};
 
-// =============
-// GATHER INPUTS
-// =============
+const g_debugCanvas = document.createElement('canvas');
+const DEBUG = false;
 
-function gatherInputs() {}
+g_debug.DEBUG_MODE = {
+  UNKNOWN1: 0,
+  UNKNOWN2: 1,
+  UNKNOWN3: 3,
+  ORIGINAL_OCCLUSION_MAP: 10,
+  PROJECTED_OCCLUSION_MAP: 11,
+  SHADOW_MAP: 12,
+  SHADOW_MASK: 13,
+};
 
-// =================
-// UPDATE SIMULATION
-// =================
-
-// We take a very layered approach here...
-//
-// The primary `update` routine handles generic stuff such as
-// pausing, single-step, and time-handling.
-//
-// It then delegates the game-specific logic to `updateSimulation`
-
-
-// GAME-SPECIFIC UPDATE LOGIC
+g_debug.selection = g_debug.PROJECTED_OCCLUSION_MAP;
 
 
-function updateSimulation(du) {
-  entityManager.update(du);
+g_debugGAME.init = () => {};
 
-  g_viewport.setOCX(entityManager.getPos().cx);
-  g_viewport.setOCY(entityManager.getPos().cy);
-}
-
-
-// =================
-// RENDER SIMULATION
-// =================
-
-// We take a very layered approach here...
-//
-// The primary `render` routine handles generic stuff such as
-// the diagnostic toggles (including screen-clearing).
-//
-// It then delegates the game-specific logic to `gameRender`
-
-
-// GAME-SPECIFIC RENDERING
-
-const g_background = document.createElement('canvas');
-const g_midground = document.createElement('canvas');
-const g_foreground = document.createElement('canvas');
-const g_occlusion = document.createElement('canvas');
-
-
-const occ = document.createElement('canvas');
-const buffer = document.createElement('canvas');
-
-
-function renderSimulation(ctx) {
-  const ctxb = g_background.getContext('2d');
-  const ctxm = g_midground.getContext('2d');
-  const ctxf = g_foreground.getContext('2d');
-  const ctxo = g_occlusion.getContext('2d');
-
-  const w = g_canvas.width;
-  const h = g_canvas.height;
-
-  ctxb.clearRect(0, 0, w, h);
-  ctxm.clearRect(0, 0, w, h);
-  ctxf.clearRect(0, 0, w, h);
-  ctxo.clearRect(0, 0, w, h);
-
-
-  // Clear world
-  // g_world.ctx.clearRect(0, 0, g_world.width, g_world.height);
-
-  // === BACKGROUND ===
-
-  // Draw background
-  g_asset.texture.background.render(ctxb);
-
-  ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
-
-  // === MIDGROUND ===
-
-  // Draw onto world
-  entityManager.render(ctxm);
-
-  // === FOREGROUND ===
-
-  // Draw cursor
-  g_mouse.render(ctxf);
-
-
-  // === OCCLUSION ===
-
-
-  entityManager.render(ctxo, {
-    occlusion: true,
-  });
-
-
-  ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
-
-
-  buffer.width = w;
-  buffer.height = h;
-  const bctx = buffer.getContext('2d');
-
-  const cfg = {};
-
-  cfg.occluder = g_occlusion;
-
-  if (false) {
-    cfg.x = g_mouse.x;
-    cfg.y = g_mouse.y;
-  } else {
-    cfg.x = g_canvas.width / 2;
-    cfg.y = g_canvas.height / 2;
-  }
-
-  const color = {
-    r: 232,
-    g: 217,
-    b: 255,
-  };
-
-  lighting.radialLight(bctx, color, cfg);
-
+g_debugGAME.render = (ctx) => {
+  if (!DEBUG) return;
 
   if (DEBUG) {
     const _w = g_debugCanvas.width;
@@ -204,7 +338,7 @@ function renderSimulation(ctx) {
 
 
       dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(buffer, 0, 0);
+      dctx.drawImage(g_shadows, 0, 0);
 
       dctx.globalCompositeOperation = 'source-over';
       dctx.drawImage(g_midground, 0, 0);
@@ -222,7 +356,7 @@ function renderSimulation(ctx) {
     if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN3) {
       dctx.globalAlpha = 1.0;
       dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(buffer, 0, 0);
+      dctx.drawImage(g_shadows, 0, 0);
     }
 
     // Look at original occlusion map.
@@ -290,100 +424,11 @@ function renderSimulation(ctx) {
       const dh = dctx.canvas.height;
       dctx.drawImage(g_testWOM, sx, sy, sw, sh, dx, dy, dw, dh);
     }
-
   }
+};
 
+// ==========
+// START GAME
+// ==========
 
-  // Clear canvas
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, w, h);
-
-
-  // === TO CANVAS ===
-
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(g_background, 0, 0);
-  ctx.globalCompositeOperation = 'lighter';
-  ctx.drawImage(buffer, 0, 0, w, h);
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(g_midground, 0, 0);
-  ctx.drawImage(g_foreground, 0, 0);
-
-
-  // Draw Cursor
-  if (g_mouse.getFastImage()) {
-    g_mouse.render(ctx);
-  }
-}
-
-
-mapHandler.openMap(chosenMap, response => {
-  const map = response.map;
-  const assets = response.assets;
-  const raw = response.raw;
-  const urls = response.urls;
-
-  g_master = response;
-  
-  g_background.width = g_canvas.width;
-  g_background.height = g_canvas.height;
-
-  g_midground.width = g_canvas.width;
-  g_midground.height = g_canvas.height;
-
-  g_foreground.width = g_canvas.width;
-  g_foreground.height = g_canvas.height;
-
-  g_occlusion.width = g_canvas.width;
-  g_occlusion.height = g_canvas.height;
-
-
-  g_url = response.urls;
-  g_asset = response.assets;
-
-  const stuff = {};
-
-  for (let i = 0, keys = Object.keys(urls); i < keys.length; i += 1) {
-    const name = keys[i];
-    const url = urls[name];
-
-    stuff[url] = raw[name];
-  }
-
-  util.extendObject(g_asset, raw);
-  util.extendObject(g_asset, assets);
-
-  ///////
-
-  // Mouse
-  if (g_master.map.mouse.image) {
-    g_mouse.setFastImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
-  }
-  if (g_master.map.mouse.cursorLock) {
-    g_mouse.enableCursorLock();
-  }
-
-  
-  // Entity manager
-  entityManager.generatePlayer({
-    sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path)
-  });
-  entityManager.init();
-
-
-  
-  shadows.init(
-    g_asset.lights,
-    g_asset.shadowMap,
-    g_asset.shadowMask,
-    g_shadowSize,
-  );
-  
-  
-  spatialManager.init();
-  
-  g_testWOM = spatialManager.getWallOcclusionMap();
-  
-  g_main.mainInit();
-
-});
+mapHandler.openMap(chosenMap, setup);

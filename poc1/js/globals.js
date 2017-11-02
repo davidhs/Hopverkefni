@@ -6,6 +6,8 @@
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
+// Global variables?
+
 // =======
 // GLOBALS
 // =======

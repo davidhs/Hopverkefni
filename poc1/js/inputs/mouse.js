@@ -79,6 +79,18 @@ const g_mouse = (function () {
       const mx = g_mouse.x;
       const my = g_mouse.y;
 
+      if (!mouse.cursorLock && theImage) {
+        g_canvas.style.cursor = 'none';
+        theImage.render(ctx, mx, my);
+      }
+
+      if (mouse.cursorLock && !theImage) {
+        const oldStyle = ctx.fillStyle;
+        ctx.fillStyle = '#0f0';
+        util.fillCircle(ctx, mx, my, 10);
+        ctx.fillStyle = oldStyle;
+      }
+
       if (mouse.cursorLock && theImage) {
         theImage.render(ctx, mx, my);
       }
@@ -89,8 +101,8 @@ const g_mouse = (function () {
         targetObject.requestPointerLock();
       }
     },
-  })
-  
+  });
+
   function enableCursorLock() {
     g_canvas.requestPointerLock = g_canvas.requestPointerLock || g_canvas.mozRequestPointerLock;
     g_canvas.onclick = evt => g_mouse.lockOn(g_canvas);
@@ -105,8 +117,8 @@ const g_mouse = (function () {
   }
 
   util.extendObject(mouse, {
-    enableCursorLock
-  })
+    enableCursorLock,
+  });
 
   return mouse;
 }());
