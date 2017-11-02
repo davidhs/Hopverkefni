@@ -4,16 +4,69 @@
 
 // obj can be canvas or image
 function FastImage(obj) {
+
+
+
+  this.scale = obj.scale || 1.0;
+
+  const image = obj.image;
+
+  
   const canvas = document.createElement('canvas');
+  canvas.width = image.width * this.scale;
+  canvas.height = image.height * this.scale;
+
   const ctx = canvas.getContext('2d');
+
+
+
+  if (image instanceof FastImage) {
+    ctx.drawImage(image.getImage(), 
+      0, 0, image.width, image.height,
+      0, 0, canvas.width, canvas.height
+    );
+  } else {
+    ctx.drawImage(
+      image, 
+      0, 0, image.width, image.height,
+      0, 0, canvas.width, canvas.height
+
+    );
+  }
 
   this._ = {
     canvas,
     ctx,
   };
 
-  this.update(obj);
+  if (obj.bias) {
+    let x = obj.bias.x;
+    let y = obj.bias.y;
+
+    if (typeof x === "number") biasX = x;
+    if (typeof y === "number") biasY = y;
+
+    if (typeof x === "string") {
+      if (x.endsWith("%")) {
+        const percentage = parseFloat(x.substring(0, x.length - 1));
+        this.biasX = canvas.width * percentage / 100.0;
+      }
+    }
+    
+    if (typeof y === "string") {
+      if (y.endsWith("%")) {
+        const percentage = parseFloat(y.substring(0, y.length - 1));
+        this.biasY = canvas.height * percentage / 100.0;
+      }
+    }
+  }
+
+  this.width = canvas.width;
+  this.height = canvas.height;
 }
+
+FastImage.prototype.biasX = 0;
+FastImage.prototype.biasY = 0;
 
 
 FastImage.prototype.width = 0;
@@ -56,18 +109,19 @@ FastImage.prototype.crop = function (x, y, w, h) {
   const ctx = canvas.getContext('2d');
   ctx.drawImage(this._.canvas, x, y, w, h, 0, 0, w, h);
 
-  return new FastImage(canvas);
+  return new FastImage({
+    image: canvas
+  });
 };
 
 
-FastImage.prototype.update = function (obj) {
+FastImage.prototype.update = function (imageThing) {
   const thisCanvas = this._.canvas;
   const canvas = thisCanvas;
   let ctx = this._.ctx;
 
-  const objProp = [obj.width, obj.height];
-  const [width, height] = objProp;
-
+  const width = imageThing.width;
+  const height = imageThing.height;
 
   if (canvas.width !== width || canvas.height !== height) {
     canvas.width = width;
@@ -80,10 +134,10 @@ FastImage.prototype.update = function (obj) {
   }
 
 
-  if (obj instanceof FastImage) {
-    ctx.drawImage(obj.getImage(), 0, 0, width, height);
+  if (imageThing instanceof FastImage) {
+    ctx.drawImage(imageThing.getImage(), 0, 0, width, height);
   } else {
-    ctx.drawImage(obj, 0, 0, width, height);
+    ctx.drawImage(imageThing, 0, 0, width, height);
   }
 };
 
@@ -98,7 +152,9 @@ FastImage.prototype.copy = function () {
   const ctx = canvas.getContext('2d');
   ctx.drawImage(this._.canvas, 0, 0, w, h);
 
-  return new FastImage(canvas);
+  return new FastImage({
+    image: canvas
+  });
 };
 
 FastImage.prototype.render = function (ctx, x, y, w, h) {
@@ -109,8 +165,8 @@ FastImage.prototype.render = function (ctx, x, y, w, h) {
   h = h || this._.canvas.height;
 
   if (w === this._.canvas.width && h === this._.canvas.height) {
-    ctx.drawImage(this._.canvas, x, y);
+    ctx.drawImage(this._.canvas, x + this.biasX, y + this.biasY);
   } else {
-    ctx.drawImage(this._.canvas, x, y);
+    ctx.drawImage(this._.canvas, x + this.biasX, y + this.biasY);
   }
 };
