@@ -4,14 +4,11 @@
 
 // obj can be canvas or image
 function FastImage(obj) {
-
-
-
   this.scale = obj.scale || 1.0;
 
   const image = obj.image;
 
-  
+
   const canvas = document.createElement('canvas');
   canvas.width = image.width * this.scale;
   canvas.height = image.height * this.scale;
@@ -19,17 +16,17 @@ function FastImage(obj) {
   const ctx = canvas.getContext('2d');
 
 
-
   if (image instanceof FastImage) {
-    ctx.drawImage(image.getImage(), 
+    ctx.drawImage(
+      image.getImage(),
       0, 0, image.width, image.height,
-      0, 0, canvas.width, canvas.height
+      0, 0, canvas.width, canvas.height,
     );
   } else {
     ctx.drawImage(
-      image, 
+      image,
       0, 0, image.width, image.height,
-      0, 0, canvas.width, canvas.height
+      0, 0, canvas.width, canvas.height,
 
     );
   }
@@ -40,21 +37,21 @@ function FastImage(obj) {
   };
 
   if (obj.bias) {
-    let x = obj.bias.x;
-    let y = obj.bias.y;
+    const x = obj.bias.x;
+    const y = obj.bias.y;
 
-    if (typeof x === "number") biasX = x;
-    if (typeof y === "number") biasY = y;
+    if (typeof x === 'number') biasX = x;
+    if (typeof y === 'number') biasY = y;
 
-    if (typeof x === "string") {
-      if (x.endsWith("%")) {
+    if (typeof x === 'string') {
+      if (x.endsWith('%')) {
         const percentage = parseFloat(x.substring(0, x.length - 1));
         this.biasX = canvas.width * percentage / 100.0;
       }
     }
-    
-    if (typeof y === "string") {
-      if (y.endsWith("%")) {
+
+    if (typeof y === 'string') {
+      if (y.endsWith('%')) {
         const percentage = parseFloat(y.substring(0, y.length - 1));
         this.biasY = canvas.height * percentage / 100.0;
       }
@@ -110,7 +107,7 @@ FastImage.prototype.crop = function (x, y, w, h) {
   ctx.drawImage(this._.canvas, x, y, w, h, 0, 0, w, h);
 
   return new FastImage({
-    image: canvas
+    image: canvas,
   });
 };
 
@@ -153,7 +150,7 @@ FastImage.prototype.copy = function () {
   ctx.drawImage(this._.canvas, 0, 0, w, h);
 
   return new FastImage({
-    image: canvas
+    image: canvas,
   });
 };
 

@@ -24,24 +24,12 @@ functions... shared data properties are potentially quite confusing.
 
 */
 
-function Entity() {
-
-/*
-    // Diagnostics to check inheritance stuff
-    this._entityProperty = true;
-    console.dir(this);
-*/
-
-}
+function Entity() {}
 
 Entity.prototype.setup = function (descriptor) {
   // Apply all setup properies from the (optional) descriptor
 
-  if (descriptor) {
-    for (let i = 0, keys = Object.keys(descriptor); i < keys.length; i += 1) {
-      this[keys[i]] = descriptor[keys[i]];
-    }
-  }
+  util.extendObject(this, descriptor);
 
   // Get my (unique) spatial ID
   this._spatialID = spatialManager.getNewSpatialID();
@@ -71,6 +59,7 @@ Entity.prototype.kill = function () {
   this._isDeadNow = true;
 };
 
+// TODO: maybe not applicable anymore.
 Entity.prototype.findHitEntity = function () {
   const pos = this.getPos();
 
@@ -80,10 +69,12 @@ Entity.prototype.findHitEntity = function () {
 };
 
 // This is just little "convenience wrapper"
+// TODO: maybe not applicable anymore.
 Entity.prototype.isColliding = function () {
   return this.findHitEntity();
 };
 
+// TODO: remove
 Entity.prototype.wrapPosition = function () {
   this.cx = util.wrapRange(this.cx, 0, g_world.getWidth());
   this.cy = util.wrapRange(this.cy, 0, g_world.getHeight());

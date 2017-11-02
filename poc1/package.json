@@ -4,7 +4,7 @@
   "description": "lokaverkefni",
   "main": "index.html",
   "scripts": {
-    "browser-sync": "browser-sync start --server --files index.html glsl/*.* js/*.js css/*.css img/*.png audio/*.ogg js/entities/*.js js/gfx/*.js js/inputs/*.js",
+    "browser-sync": "browser-sync start --server --files index.html glsl/*.* js/** css/*.css img/*.png audio/*.ogg json/**",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

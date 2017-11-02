@@ -17,16 +17,12 @@
 // Construct a "sprite" from the given `image`,
 //
 function Sprite(obj) {
-
   this.image = obj.image;
-  if (!this.image) throw Error("Sprite has not image.");
+  if (!this.image) throw Error('Sprite has not image.');
   this.width = this.image.width;
   this.height = this.image.height;
 
   this.scale = obj.scale || 1.0;
-
-
-
 
 
   const canvas = document.createElement('canvas');

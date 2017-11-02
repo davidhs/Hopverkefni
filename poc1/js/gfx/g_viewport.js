@@ -3,11 +3,6 @@
 /* global g_world :true */
 
 
-// We call inner (intrinsic) and outer (extrinsic).
-
-
-// TODO: split into extrinsic and intrinsic components.
-//
 const g_viewport = (function () {
   // PRIVATE DATA
 

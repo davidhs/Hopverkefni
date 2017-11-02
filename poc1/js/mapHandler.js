@@ -6,8 +6,8 @@
 // MAP HANDLER
 // ===========
 
+// This code is rushed...
 const mapHandler = (function () {
-
   // TODO set lock
 
   let activeMap;
@@ -20,140 +20,35 @@ const mapHandler = (function () {
   let assetCatalog = {};
 
   let phase1Done = false;
-  phase1Done = true;  // I KNOW
+  phase1Done = true; // I KNOW
 
   let _callback = null;
 
   let oRaw = {};
 
   let urls = {};
-  
-  function getManifest(callback) {
-    assetManager.load({
-      text: ["json/manifest.json"],
-      image: [],
-      audio: []
-    }, response => {
-      const key = Object.keys(response)[0];
-      const manifest = JSON.parse(response[key]);
-      callback(manifest);
-    });
-  }
-  
-  function getMap(mapName, callback) {
-    getManifest(manifest => {
-      const prefix = "" || manifest.prefix;
-      const path = prefix + manifest.maps[mapName].path;
-  
-      if (!(path && prefix)) callback(null);
-  
-      assetManager.load({
-        text: [path],
-        image: [],
-        audio: []
-        }, response => {
-          const key = Object.keys(response)[0];
-          const map = JSON.parse(response[key]);
-          callback(map);
-        }
-      );
-    });
-  }
-  
-  function openMap(mapName, callback) {
-    // TODO implement callback (post-processing)
-    getMap(mapName, processMap);
-    _callback = callback;
-  }
-  
-  
-  function processMap(map) {
-  
-    // Refer back to this map
-    activeMap = map;
-  
-    // Set shadow size
-    g_shadowSize = map.cfg.shadowSize;
-  
-    // Setting world
-    g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
-    g_world.setHeight(map.cfg.world.width, map.cfg.world.unit);
-    g_world.setTileWidth(map.cfg.tile.width);
-    g_world.setTileHeight(map.cfg.tile.height);
-  
-    // Set "rendering" canvas.
-    g_canvas.width = map.cfg.viewport.width;
-    g_canvas.height = map.cfg.viewport.height;
-  
-    // Setting viewport
-    g_viewport.setIW(map.cfg.viewport.width);
-    g_viewport.setIH(map.cfg.viewport.height);
-  
-    g_viewport.setOW(map.cfg.viewport.width);
-    g_viewport.setOH(map.cfg.viewport.height);
-  
-    // PROCESSING RAW DATA
-  
-    const url_audio = {};
-    const audioList = map.assets.raw.audio;
-    for (let i = 0; i < audioList.length; i += 1) {
-      const catalog = audioList[i];
-      util.extendObject(
-        url_audio,
-        util.prefixStrings(catalog.prefix, catalog.paths),
-      );
-    }
-  
-    const url_images = {};
-    const imageList = map.assets.raw.image;
-    for (let i = 0; i < imageList.length; i += 1) {
-      const catalog = imageList[i];
-      util.extendObject(
-        url_images,
-        util.prefixStrings(catalog.prefix, catalog.paths),
-      ); 
-    }
-  
-    const url_text = {};
-    const textList = map.assets.raw.text;
-    for (let i = 0; i < textList.length; i += 1) {
-      const catalog = textList[i];
-      util.extendObject(
-        url_text,
-        util.prefixStrings(catalog.prefix, catalog.paths),
-      );
-    }
-  
-    util.extendObject(urls, url_text);
-    util.extendObject(urls, url_images);
-    util.extendObject(urls, url_audio);
-  
-    assetManager.load({
-      text: util.objPropsToList(url_text),
-      image: util.objPropsToList(url_images),
-      audio: util.objPropsToList(url_audio),
-    }, processAssets2);
-  }
+  let attempsExits = 0;
 
+  const returnAsset = {};
+
+  const processor = {};
 
 
   function getAsset(path) {
-
     const trimmedPath = path.trim();
 
-    if (trimmedPath === "world.width") {
+    if (trimmedPath === 'world.width') {
       return activeMap.cfg.world.width;
-    } else if (trimmedPath === "world.height") {
+    } else if (trimmedPath === 'world.height') {
       return activeMap.cfg.world.height;
     }
 
     return assetCatalog[path];
   }
 
-  let attempsExits = 0;
 
   function doExit() {
-    attempsExits++;
+    attempsExits += 1;
 
     if (remaining !== 0) return;
 
@@ -165,30 +60,29 @@ const mapHandler = (function () {
     const _urls = urls;
     const raw = oRaw;
 
-    
+
     // DO LATER
     if (true) {
-    activeMap = null;
-    bundles = [];
-    completeDependencies = {};
-    assetCatalog = {};
-    phase1Done = false;
-    _callback = null;
-    urls = {};
-    oRaw = {};
+      activeMap = null;
+      bundles = [];
+      completeDependencies = {};
+      assetCatalog = {};
+      phase1Done = false;
+      _callback = null;
+      urls = {};
+      oRaw = {};
     }
 
     callback({
-      map: map,
+      map,
       assets: retAsset,
       urls: _urls,
-      raw: raw
+      raw,
     });
   }
 
   function checkIfHasAllDependencies(bundle) {
-
-    let dependencies = bundle.desc.dep;
+    const dependencies = bundle.desc.dep;
 
     for (let i = 0; i < dependencies.length; i += 1) {
       const dependency = dependencies[i];
@@ -201,6 +95,16 @@ const mapHandler = (function () {
     return true;
   }
 
+  function processBundle(bundleIndex) {
+    const bundle = bundles[bundleIndex];
+    const hasAllDependencies = checkIfHasAllDependencies(bundle);
+
+    if (hasAllDependencies) {
+      processor[bundle.type](bundleIndex);
+    }
+  }
+
+
   function tick() {
     for (let i = 0; i < bundles.length; i += 1) {
       processBundle(i);
@@ -211,28 +115,7 @@ const mapHandler = (function () {
     }
   }
 
-  function processBundle(bundleIndex) {
-
-    const bundle = bundles[bundleIndex];
-    let hasAllDependencies = checkIfHasAllDependencies(bundle);
-
-    if (hasAllDependencies) {
-      processor[bundle.type](bundleIndex);
-    }
-
-  }
-
-  function processBundles() {
-    const newestEntryIndex = bundles.length - 1;
-
-    processBundle(newestEntryIndex);
-  }
-
-  let returnAsset = {};
-
-  let processor = {};
-
-  processor.textureAtlas = bundleIndex => {
+  processor.textureAtlas = (bundleIndex) => {
     // START OF PROLOGUE
     const entry = bundles[bundleIndex];
     const type = entry.type;
@@ -241,29 +124,29 @@ const mapHandler = (function () {
     const cfg = entry.desc.cfg;
     // END OF PROLOGUE
 
-    let image = getAsset(dependencies[0]);
-    let tileWidth = cfg.tileWidth || 0;
-    let tileHeight = cfg.tileHeight || 0;
-    let nrOfTiles = cfg.nrOfTiles || 0;
-    let primaryDirection = cfg.primaryDirection || "right";
-    let secondaryDirection = cfg.secondaryDirection || "down";
+    const image = getAsset(dependencies[0]);
+    const tileWidth = cfg.tileWidth || 0;
+    const tileHeight = cfg.tileHeight || 0;
+    const nrOfTiles = cfg.nrOfTiles || 0;
+    const primaryDirection = cfg.primaryDirection || 'right';
+    const secondaryDirection = cfg.secondaryDirection || 'down';
 
     const obj = new TextureAtlas(image, tileWidth, tileHeight, nrOfTiles);
 
 
     // START OF EPILOGUE
-    remaining--;
+    remaining -= 1;
     if (!returnAsset[type]) returnAsset[type] = {};
     returnAsset[type][name] = obj;
-    assetCatalog[type + "." + name] = obj;
-    completeDependencies[type + "." + name] = true;
+    assetCatalog[`${type}.${name}`] = obj;
+    completeDependencies[`${type}.${name}`] = true;
     entry.ready = true;
     bundles.splice(bundleIndex, 1);
     tick();
     // END OF EPILOGUE
   };
 
-  processor.texture = bundleIndex => {
+  processor.texture = (bundleIndex) => {
     // START OF PROLOGUE
     const entry = bundles[bundleIndex];
     const type = entry.type;
@@ -278,23 +161,23 @@ const mapHandler = (function () {
     let width = 0;
     let height = 0;
 
-    if (typeof cfg.width === "string") {
+    if (typeof cfg.width === 'string') {
       // Path
       width = getAsset(cfg.width);
     } else {
       width = cfg.width;
     }
 
-    if (typeof cfg.height === "string") {
+    if (typeof cfg.height === 'string') {
       height = getAsset(cfg.height);
     } else {
       height = cfg.height;
     }
 
-    let scale = cfg.scale || 1;
+    const scale = cfg.scale || 1;
     let image = null;
 
-    if (typeof imageThing === "string") {
+    if (typeof imageThing === 'string') {
       image = getAsset(imageThing);
     } else {
       // Assume type texture atlas :/
@@ -304,26 +187,26 @@ const mapHandler = (function () {
     }
 
     const obj = new Texture({
-      image: image,
-      scale: scale,
-      width: width, 
-      height: height
+      image,
+      scale,
+      width,
+      height,
     });
 
 
     // START OF EPILOGUE
-    remaining--;
+    remaining -= 1;
     if (!returnAsset[type]) returnAsset[type] = {};
     returnAsset[type][name] = obj;
-    assetCatalog[type + "." + name] = obj;
-    completeDependencies[type + "." + name] = true;
+    assetCatalog[`${type}.${name}`] = obj;
+    completeDependencies[`${type}.${name}`] = true;
     entry.ready = true;
     bundles.splice(bundleIndex, 1);
     tick();
     // END OF EPILOGUE
   };
 
-  processor.sequence = bundleIndex => {
+  processor.sequence = (bundleIndex) => {
     // START OF PROLOGUE
     const entry = bundles[bundleIndex];
     const type = entry.type;
@@ -334,32 +217,32 @@ const mapHandler = (function () {
 
     const textureAtlas = getAsset(dependencies[0]);
 
-    const all = cfg.all || "true";
-    const primaryDirection = cfg.primaryDirection || "right";
-    const secondaryDirection = cfg.secondaryDirection || "down";
+    const all = cfg.all || 'true';
+    const primaryDirection = cfg.primaryDirection || 'right';
+    const secondaryDirection = cfg.secondaryDirection || 'down';
 
     const obj = textureAtlas.getSequence({
       // TODO FIX LATER
       rowFirst: true,
       LR: true,
       TB: true,
-      qty: textureAtlas.nrOfSubimages
+      qty: textureAtlas.nrOfSubimages,
     });
 
 
     // START OF EPILOGUE
-    remaining--;
+    remaining -= 1;
     if (!returnAsset[type]) returnAsset[type] = {};
     returnAsset[type][name] = obj;
-    assetCatalog[type + "." + name] = obj;
-    completeDependencies[type + "." + name] = true;
+    assetCatalog[`${type}.${name}`] = obj;
+    completeDependencies[`${type}.${name}`] = true;
     entry.ready = true;
     bundles.splice(bundleIndex, 1);
     tick();
     // END OF EPILOGUE
   };
 
-  processor.sprite = bundleIndex => {
+  processor.sprite = (bundleIndex) => {
     // START OF PROLOGUE
     const entry = bundles[bundleIndex];
     const type = entry.type;
@@ -377,19 +260,18 @@ const mapHandler = (function () {
     const obj = new Sprite(inputObject);
 
     // START OF EPILOGUE
-    remaining--;
+    remaining -= 1;
     if (!returnAsset[type]) returnAsset[type] = {};
     returnAsset[type][name] = obj;
-    assetCatalog[type + "." + name] = obj;
-    completeDependencies[type + "." + name] = true;
+    assetCatalog[`${type}.${name}`] = obj;
+    completeDependencies[`${type}.${name}`] = true;
     entry.ready = true;
     bundles.splice(bundleIndex, 1);
     tick();
     // END OF EPILOGUE
   };
 
-  processor.fastImage = bundleIndex => {
-
+  processor.fastImage = (bundleIndex) => {
     // START OF PROLOGUE
     const entry = bundles[bundleIndex];
     const type = entry.type;
@@ -407,34 +289,36 @@ const mapHandler = (function () {
     const obj = new FastImage(inputObject);
 
     // START OF EPILOGUE
-    remaining--;
+    remaining -= 1;
     if (!returnAsset[type]) returnAsset[type] = {};
     returnAsset[type][name] = obj;
-    assetCatalog[type + "." + name] = obj;
-    completeDependencies[type + "." + name] = true;
+    assetCatalog[`${type}.${name}`] = obj;
+    completeDependencies[`${type}.${name}`] = true;
     entry.ready = true;
     bundles.splice(bundleIndex, 1);
     tick();
     // END OF EPILOGUE
   };
 
+  function processBundles() {
+    const newestEntryIndex = bundles.length - 1;
 
-  
+    processBundle(newestEntryIndex);
+  }
+
   function processAssets2(response) {
-  
-
     const map = activeMap;
 
     const _url = urls;
     const _assets = {};
-  
+
     // TODO not global here
     for (let i = 0, keys = Object.keys(_url); i < keys.length; i += 1) {
       const url = _url[keys[i]];
       _assets[keys[i]] = response[url];
     }
 
-    //g_asset = _assets;
+    // g_asset = _assets;
 
     const assets = map.assets;
 
@@ -442,7 +326,6 @@ const mapHandler = (function () {
 
     const raw = assets.raw;
 
-    
 
     for (let i = 0, keys = Object.keys(raw); i < keys.length; i += 1) {
       const categoryType = keys[i];
@@ -452,15 +335,15 @@ const mapHandler = (function () {
         const paths = entry.paths;
         for (let k = 0, keys2 = Object.keys(paths); k < keys2.length; k += 1) {
           const name = keys2[k];
-          completeDependencies["raw." + name] = true;
-          assetCatalog["raw." + name] = _assets[name];
+          completeDependencies[`raw.${name}`] = true;
+          assetCatalog[`raw.${name}`] = _assets[name];
           oRaw[name] = _assets[name];
         }
       }
     }
 
     const _types = [
-      "texture", "textureAtlas", "sequence", "sprite", "fastImage"
+      'texture', 'textureAtlas', 'sequence', 'sprite', 'fastImage',
     ];
 
     for (let j = 0; j < _types.length; j += 1) {
@@ -470,10 +353,10 @@ const mapHandler = (function () {
         const name = keys[i];
         remaining += 1;
         const bundle = {
-          type: type,
+          type,
           name: keys[i],
           desc: typeCatalog[name],
-          ready: false
+          ready: false,
         };
         bundles.push(bundle);
       }
@@ -481,6 +364,90 @@ const mapHandler = (function () {
 
 
     processBundles();
+  }
+
+  function processMap(map) {
+    // Refer back to this map
+    activeMap = map;
+
+    // Set shadow size
+    g_shadowSize = map.cfg.shadowSize;
+
+    // Setting world
+    g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
+    g_world.setHeight(map.cfg.world.width, map.cfg.world.unit);
+    g_world.setTileWidth(map.cfg.tile.width);
+    g_world.setTileHeight(map.cfg.tile.height);
+
+    // Set "rendering" canvas.
+    g_canvas.width = map.cfg.viewport.width;
+    g_canvas.height = map.cfg.viewport.height;
+
+    // Setting viewport
+    g_viewport.setIW(map.cfg.viewport.width);
+    g_viewport.setIH(map.cfg.viewport.height);
+
+    g_viewport.setOW(map.cfg.viewport.width);
+    g_viewport.setOH(map.cfg.viewport.height);
+
+    // PROCESSING RAW DATA
+
+    const url_audio = {};
+    const audioList = map.assets.raw.audio;
+    for (let i = 0; i < audioList.length; i += 1) {
+      const catalog = audioList[i];
+      util.extendObject(
+        url_audio,
+        util.prefixStrings(catalog.prefix, catalog.paths),
+      );
+    }
+
+    const url_images = {};
+    const imageList = map.assets.raw.image;
+    for (let i = 0; i < imageList.length; i += 1) {
+      const catalog = imageList[i];
+      util.extendObject(
+        url_images,
+        util.prefixStrings(catalog.prefix, catalog.paths),
+      );
+    }
+
+    const url_text = {};
+    const textList = map.assets.raw.text;
+    for (let i = 0; i < textList.length; i += 1) {
+      const catalog = textList[i];
+      util.extendObject(
+        url_text,
+        util.prefixStrings(catalog.prefix, catalog.paths),
+      );
+    }
+
+    util.extendObject(urls, url_text);
+    util.extendObject(urls, url_images);
+    util.extendObject(urls, url_audio);
+
+    assetManager.load({
+      text: util.objPropsToList(url_text),
+      image: util.objPropsToList(url_images),
+      audio: util.objPropsToList(url_audio),
+    }, processAssets2);
+  }
+
+
+  // ================
+  // PUBLIC FUNCTIONS
+  // ================
+
+  function getManifest(callback) {
+    assetManager.load({
+      text: ['json/manifest.json'],
+      image: [],
+      audio: [],
+    }, (response) => {
+      const key = Object.keys(response)[0];
+      const manifest = JSON.parse(response[key]);
+      callback(manifest);
+    });
   }
 
   function getItem(master, path) {
@@ -493,11 +460,37 @@ const mapHandler = (function () {
     return obj;
   }
 
+  function getMap(mapName, callback) {
+    getManifest((manifest) => {
+      const prefix = '' || manifest.prefix;
+      const path = prefix + manifest.maps[mapName].path;
+
+      if (!(path && prefix)) callback(null);
+
+      assetManager.load({
+        text: [path],
+        image: [],
+        audio: [],
+      }, (response) => {
+        const key = Object.keys(response)[0];
+        const map = JSON.parse(response[key]);
+        callback(map);
+      });
+    });
+  }
+
+  function openMap(mapName, callback) {
+    // TODO implement callback (post-processing)
+    getMap(mapName, processMap);
+    _callback = callback;
+  }
+
+  // EXPOSURE
 
   return {
-    getManifest: getManifest,
-    getMap: getMap,
-    openMap: openMap,
-    getItem: getItem
+    getManifest,
+    getMap,
+    openMap,
+    getItem,
   };
 })();

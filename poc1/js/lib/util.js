@@ -10,6 +10,8 @@ const util = (function () {
   const util = {};
 
   util.extendObject = (object, extensions) => {
+    if (!extensions) return;
+
     for (let i = 0, keys = Object.keys(extensions); i < keys.length; i += 1) {
       object[keys[i]] = extensions[keys[i]];
     }

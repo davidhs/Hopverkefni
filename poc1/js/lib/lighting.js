@@ -13,6 +13,8 @@ const lighting = (function () {
     const b = color.b || 0;
     const a = color.a || 255;
 
+    // /
+
 
     const x = cfg.x || 0;
     const y = cfg.y || 0;
@@ -24,6 +26,7 @@ const lighting = (function () {
     lightCanvas.width = w;
     lightCanvas.height = h;
 
+    // Yeah... this doesn't work.
     lightCtx.globalCompositeOperation = 'source-over';
     lightCtx.fillStyle = `rgba(${r},${g},${b},${a})`;
     lightCtx.fillRect(0, 0, w, h);
@@ -36,19 +39,12 @@ const lighting = (function () {
     const sw = shadowMask.width;
     const sh = shadowMask.width;
 
-
-    /*
-    const dx = x - s / 2;
-    const dy = y - s / 2;
-    const dw = s;
-    const dh = s;
-    */
     const dx = x - s / 2;
     const dy = y - s / 2;
     const dw = s;
     const dh = s;
 
-
+    // Nobody told me how to blend the images.
     lightCtx.globalCompositeOperation = 'destination-in';
     lightCtx.drawImage(
       shadowMask,

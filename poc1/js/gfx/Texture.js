@@ -20,6 +20,8 @@
 
 
 /**
+ * TODO: optimize this thing!  If the map is large then
+ * this image is absolutely huge!
  *
  * @param {{scale: number, image: [Image|HTMLCanvasElement], width: number, height: number}} obj
  */
@@ -73,7 +75,7 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
   }
 
   this._.texture = new FastImage({
-    image: canvas
+    image: canvas,
   });
 };
 
