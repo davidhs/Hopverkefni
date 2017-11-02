@@ -9,11 +9,10 @@
 // TODO: split into extrinsic and intrinsic components.
 //
 const g_viewport = (function () {
-
   // PRIVATE DATA
 
-  let innerX = 0;
-  let innerY = 0;
+  const innerX = 0;
+  const innerY = 0;
 
   let innerWidth = 0;
   let innerHeight = 0;
@@ -44,7 +43,7 @@ const g_viewport = (function () {
 
   /**
    * Set inner width of viewport.
-   * 
+   *
    * @param {Number} iw
    */
   function setIW(iw) {
@@ -54,7 +53,7 @@ const g_viewport = (function () {
 
   /**
    * Set inner height of viewport.
-   * 
+   *
    * @param {Number} ih
    */
   function setIH(ih) {
@@ -80,7 +79,7 @@ const g_viewport = (function () {
 
   /**
    * Set outer width of viewport.
-   * 
+   *
    * @param {Number} ow
    */
   function setOW(ow) {
@@ -90,7 +89,7 @@ const g_viewport = (function () {
 
   /**
    * Set outer height of viewport.
-   * 
+   *
    * @param {Number} oh
    */
   function setOH(oh) {
@@ -99,8 +98,8 @@ const g_viewport = (function () {
 
 
   /**
-   * Get outer X.  
-   * 
+   * Get outer X.
+   *
    * NOTE: This referes to the upper left corner
    *       point of the viewport.
    */
@@ -110,8 +109,8 @@ const g_viewport = (function () {
 
 
   /**
-   * Get outer Y.  
-   * 
+   * Get outer Y.
+   *
    * NOTE: This referes to the upper left corner
    *       point of the viewport.
    */
@@ -122,10 +121,10 @@ const g_viewport = (function () {
 
   /**
    * Set outer X.
-   * 
+   *
    * NOTE: This referes to the upper left corner
    *       point of the viewport.
-   * 
+   *
    * @param {Number} ox
    */
   function setOX(ox) {
@@ -135,10 +134,10 @@ const g_viewport = (function () {
 
   /**
    * Set outer Y.
-   * 
+   *
    * NOTE: This referes to the upper left corner
    *       point of the viewport.
-   * 
+   *
    * @param {Number} oy
    */
   function setOY(oy) {
@@ -167,7 +166,7 @@ const g_viewport = (function () {
   /**
    * Set outer center X, i.e. the middle of the viewport's
    * rectangle in world space.
-   * 
+   *
    * @param {Number} ocx
    */
   function setOCX(ocx) {
@@ -178,7 +177,7 @@ const g_viewport = (function () {
   /**
    * Set outer center Y, i.e. the middle of the viewport's
    * rectangle in world space.
-   * 
+   *
    * @param {Number} ocy
    */
   function setOCY(ocy) {
@@ -189,7 +188,7 @@ const g_viewport = (function () {
   /**
    * Map X from viewport's (inner) coordinate system to
    * to world's (outer) coordinate system.
-   * 
+   *
    * @param {Number} ix
    */
   function mapI2OX(ix) {
@@ -200,7 +199,7 @@ const g_viewport = (function () {
   /**
    * Map Y from viewport's (inner) coordinate system to
    * the world's (outer) coordinate system.
-   * 
+   *
    * @param {Number} iy
    */
   function mapI2OY(iy) {
@@ -211,7 +210,7 @@ const g_viewport = (function () {
   /**
    * Map X from world's (outer) coordinate system to
    * viewport's (inner) coordinate system.
-   * 
+   *
    * @param {Number} ox
    */
   function mapO2IX(ox) {
@@ -222,7 +221,7 @@ const g_viewport = (function () {
   /**
    * Map Y from world's (outer) coordinate system to
    * viewport's (inner) coordinate system.
-   * 
+   *
    * @param {Number} oy
    */
   function mapO2IY(oy) {
@@ -234,16 +233,30 @@ const g_viewport = (function () {
   const obj = {};
 
   util.extendObject(obj, {
-    getIW, getIH, setIW, setIH,
-    getOW, getOH, setOW, setOH,
+    getIW,
+    getIH,
+    setIW,
+    setIH,
+    getOW,
+    getOH,
+    setOW,
+    setOH,
 
 
-    getOX, getOY, setOX, setOY,
+    getOX,
+    getOY,
+    setOX,
+    setOY,
 
-    getOCX, getOCY, setOCX, setOCY,
+    getOCX,
+    getOCY,
+    setOCX,
+    setOCY,
 
-    mapI2OX, mapI2OY,
-    mapO2IX, mapO2IY,
+    mapI2OX,
+    mapI2OY,
+    mapO2IX,
+    mapO2IY,
   });
 
   return obj;
