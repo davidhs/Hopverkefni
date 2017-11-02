@@ -369,13 +369,12 @@ const mapHandler = (function () {
     // END OF PROLOGUE
 
     const image = getAsset(dependencies[0]);
-    let scale = 1.0;
 
-    if (cfg && cfg.scale) scale = cfg.scale;
+    const inputObject = {};
+    if (cfg) util.extendObject(inputObject, cfg);
+    inputObject.image = image;
 
-    const obj = new Sprite({
-      image, scale
-    });
+    const obj = new Sprite(inputObject);
 
     // START OF EPILOGUE
     remaining--;
@@ -401,7 +400,11 @@ const mapHandler = (function () {
 
     const image = getAsset(dependencies[0]);
 
-    const obj = new FastImage(image);
+    const inputObject = {};
+    if (cfg) util.extendObject(inputObject, cfg);
+    inputObject.image = image;
+
+    const obj = new FastImage(inputObject);
 
     // START OF EPILOGUE
     remaining--;

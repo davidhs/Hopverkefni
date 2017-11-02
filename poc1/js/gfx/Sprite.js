@@ -16,15 +16,18 @@
 
 // Construct a "sprite" from the given `image`,
 //
-function Sprite(descr) {
+function Sprite(obj) {
 
-  util.extendObject(this, descr);
-
+  this.image = obj.image;
   if (!this.image) throw Error("Sprite has not image.");
   this.width = this.image.width;
   this.height = this.image.height;
 
-  if (!this.scale) this.scale = 1;
+  this.scale = obj.scale || 1.0;
+
+
+
+
 
   const canvas = document.createElement('canvas');
   canvas.width = this.image.width;
@@ -34,6 +37,9 @@ function Sprite(descr) {
 
   this.occlusion = fOcclusionMap(canvas);
 }
+
+Sprite.prototype.biasX = 0;
+Sprite.prototype.biasY = 0;
 
 Sprite.prototype.drawAt = function (ctx, x, y) {
   ctx.drawImage(

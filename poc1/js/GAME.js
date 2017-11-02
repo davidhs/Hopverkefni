@@ -290,6 +290,7 @@ function renderSimulation(ctx) {
       const dh = dctx.canvas.height;
       dctx.drawImage(g_testWOM, sx, sy, sw, sh, dx, dy, dw, dh);
     }
+
   }
 
 
@@ -307,6 +308,12 @@ function renderSimulation(ctx) {
   ctx.globalCompositeOperation = 'source-over';
   ctx.drawImage(g_midground, 0, 0);
   ctx.drawImage(g_foreground, 0, 0);
+
+
+  // Draw Cursor
+  if (g_mouse.getFastImage()) {
+    g_mouse.render(ctx);
+  }
 }
 
 
@@ -347,7 +354,17 @@ mapHandler.openMap(chosenMap, response => {
   util.extendObject(g_asset, assets);
 
   ///////
+
+  // Mouse
+  if (g_master.map.mouse.image) {
+    g_mouse.setFastImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
+  }
+  if (g_master.map.mouse.cursorLock) {
+    g_mouse.enableCursorLock();
+  }
+
   
+  // Entity manager
   entityManager.generatePlayer({
     sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path)
   });

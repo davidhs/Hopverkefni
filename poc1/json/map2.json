@@ -19,7 +19,8 @@
     },
 
     "mouse": {
-
+        "image": "assets.fastImage.cursor2",
+        "cursorLock": true
     },
 
     "init": {
@@ -144,6 +145,16 @@
         "fastImage": {
             "cursor": {
                 "dep": ["raw.cursor"]
+            },
+            "cursor2": {
+                "dep": ["raw.crosshair"],
+                "cfg": {
+                    "scale": 0.2,
+                    "bias": {
+                        "x": "-50%",
+                        "y": "-50%"
+                    }
+                }
             }
         },
         "raw": {
@@ -162,7 +173,8 @@
                     "explosionSpritesheet3": "explosionSpritesheet3.png",
                     "explosionSpritesheet5": "explosionSpritesheet5.png",
                     "explosionSpritesheet6": "explosionSpritesheet6.png",
-                    "donkey": "notdonkey.png"
+                    "donkey": "notdonkey.png",
+                    "crosshair": "crosshair.png"
                 }
             }],
             "audio": [{
