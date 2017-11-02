@@ -20,6 +20,7 @@ const mapHandler = (function () {
   let assetCatalog = {};
 
   let phase1Done = false;
+  phase1Done = true;  // I KNOW
 
   let _callback = null;
 
@@ -175,7 +176,7 @@ const mapHandler = (function () {
     _callback = null;
     urls = {};
     oRaw = {};
-  }
+    }
 
     callback({
       map: map,
@@ -368,12 +369,12 @@ const mapHandler = (function () {
     // END OF PROLOGUE
 
     const image = getAsset(dependencies[0]);
-    let scale = 1.0;
 
-    if (cfg && cfg.scale) scale = cfg.scale;
+    const inputObject = {};
+    if (cfg) util.extendObject(inputObject, cfg);
+    inputObject.image = image;
 
-    const obj = new Sprite(image);
-    obj.scale = scale;
+    const obj = new Sprite(inputObject);
 
     // START OF EPILOGUE
     remaining--;
@@ -399,7 +400,11 @@ const mapHandler = (function () {
 
     const image = getAsset(dependencies[0]);
 
-    const obj = new FastImage(image);
+    const inputObject = {};
+    if (cfg) util.extendObject(inputObject, cfg);
+    inputObject.image = image;
+
+    const obj = new FastImage(inputObject);
 
     // START OF EPILOGUE
     remaining--;
@@ -478,11 +483,21 @@ const mapHandler = (function () {
     processBundles();
   }
 
-  phase1Done = true;
+  function getItem(master, path) {
+    let obj = master;
+    const chain = path.split('.');
+    for (let i = 0; i < chain.length; i += 1) {
+      obj = obj[chain[i]];
+    }
+
+    return obj;
+  }
+
 
   return {
     getManifest: getManifest,
     getMap: getMap,
-    openMap: openMap
+    openMap: openMap,
+    getItem: getItem
   };
 })();

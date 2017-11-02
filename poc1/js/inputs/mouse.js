@@ -76,8 +76,8 @@ const g_mouse = (function () {
     getFastImage: () => theImage,
     render: (ctx) => {
       // Convert Viewport/Canvas coordinates to World coordinates.
-      const mx = g_viewport.getOCX() + g_mouse.x - g_canvas.width / 2;
-      const my = g_viewport.getOCY() + g_mouse.y - g_canvas.height / 2;
+      const mx = g_mouse.x;
+      const my = g_mouse.y;
 
       if (mouse.cursorLock && theImage) {
         theImage.render(ctx, mx, my);
@@ -89,7 +89,24 @@ const g_mouse = (function () {
         targetObject.requestPointerLock();
       }
     },
-  });
+  })
+  
+  function enableCursorLock() {
+    g_canvas.requestPointerLock = g_canvas.requestPointerLock || g_canvas.mozRequestPointerLock;
+    g_canvas.onclick = evt => g_mouse.lockOn(g_canvas);
+
+    document.addEventListener('pointerlockchange', (evt) => {
+      g_mouse.handleEvent('pointerlockchange', evt, g_canvas);
+    }, false);
+
+    document.addEventListener('mozpointerlockchange', (evt) => {
+      g_mouse.handleEvent('mozpointerlockchange', evt, g_canvas);
+    }, false);
+  }
+
+  util.extendObject(mouse, {
+    enableCursorLock
+  })
 
   return mouse;
 }());
@@ -104,17 +121,3 @@ window.addEventListener('mouseup', (evt) => {
 window.addEventListener('mousemove', (evt) => {
   g_mouse.handleEvent('mousemove', evt, g_canvas);
 });
-
-// Cursor lock: slower mouse
-if (false) {
-  g_canvas.requestPointerLock = g_canvas.requestPointerLock || g_canvas.mozRequestPointerLock;
-  g_canvas.onclick = evt => g_mouse.lockOn(g_canvas);
-
-  document.addEventListener('pointerlockchange', (evt) => {
-    g_mouse.handleEvent('pointerlockchange', evt, g_canvas);
-  }, false);
-
-  document.addEventListener('mozpointerlockchange', (evt) => {
-    g_mouse.handleEvent('mozpointerlockchange', evt, g_canvas);
-  }, false);
-}

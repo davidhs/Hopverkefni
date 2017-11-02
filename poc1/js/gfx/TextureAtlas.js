@@ -9,7 +9,11 @@
  * https://en.wikipedia.org/wiki/Texture_atlas
  */
 function TextureAtlas(image, subimageWidth, subimageHeight, nrOfSubimages) {
-  image = new FastImage(image);
+  image = new FastImage({
+    image: image
+  });
+
+  
 
   this.image = image;
 

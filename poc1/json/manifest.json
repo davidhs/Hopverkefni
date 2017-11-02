@@ -4,6 +4,9 @@
     "maps": {
         "map1": {
             "path": "map1.json"
+        },
+        "map2": {
+            "path": "map2.json"
         }
     },
     "keyBindings": {}

@@ -72,7 +72,9 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
     }
   }
 
-  this._.texture = new FastImage(canvas);
+  this._.texture = new FastImage({
+    image: canvas
+  });
 };
 
 
