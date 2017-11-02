@@ -1,8 +1,10 @@
 {
     "type": "manifest",
+    "prefix": "json/",
     "maps": {
         "map1": {
             "path": "map1.json"
         }
-    }
+    },
+    "keyBindings": {}
 }

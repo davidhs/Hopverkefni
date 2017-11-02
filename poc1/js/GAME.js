@@ -11,7 +11,7 @@ const DEBUG = false;
 let g_testWOM;
 
 
-const g_shadowSize = 2 ** 9;
+let g_shadowSize = 2 ** 9;
 
 
 const g_debug = {};
@@ -29,10 +29,10 @@ g_debug.DEBUG_MODE = {
 g_debug.selection = g_debug.PROJECTED_OCCLUSION_MAP;
 
 // Global URLs
-const g_url = {}; // URLs are eventually placed here.
+let g_url = {}; // URLs are eventually placed here.
 
 // Global Assets
-const g_asset = {}; // Assets are loaded here.
+let g_asset = {}; // Assets are loaded here.
 
 
 const fOcclusionMap = function (canvas) {
@@ -308,31 +308,12 @@ function renderSimulation(ctx) {
 }
 
 
-// ======
-// ASSETS
-// ======
-
-function processAssets(resp) {
-
-  g_world.setWidth(1000);
-  g_world.setHeight(1000);
-  g_world.setTileSize(32);
-
-
-  g_viewport.setIW(g_canvas.width);
-  g_viewport.setIH(g_canvas.height);
-
-  g_viewport.setOW(g_canvas.width);
-  g_viewport.setOH(g_canvas.height);
-
-
-  if (DEBUG) {
-    g_debugCanvas.width = g_canvas.width;
-    g_debugCanvas.height = g_canvas.height;
-    document.getElementById('canvi').appendChild(g_debugCanvas);
-  }
-
-
+mapHandler.openMap("map1", response => {
+  const map = response.map;
+  const assets = response.assets;
+  const raw = response.raw;
+  const urls = response.urls;
+  
   g_background.width = g_canvas.width;
   g_background.height = g_canvas.height;
 
@@ -346,171 +327,35 @@ function processAssets(resp) {
   g_occlusion.height = g_canvas.height;
 
 
-  for (let i = 0, keys = Object.keys(g_url); i < keys.length; i += 1) {
-    const url = g_url[keys[i]];
-    g_asset[keys[i]] = resp[url];
+  g_url = response.urls;
+  g_asset = response.assets;
+
+  const stuff = {};
+
+  for (let i = 0, keys = Object.keys(urls); i < keys.length; i += 1) {
+    const name = keys[i];
+    const url = urls[name];
+
+    stuff[url] = raw[name];
   }
 
-  // WORLD
-
-  // VIEWPOERT
-
-  // =============
-  // TEXTURE ATLAS
-  // =============
-
-  g_asset.textureAtlas = {};
-  g_asset.textureAtlas.dungeon = new TextureAtlas(g_asset.dungeon, 16, 16);
-  g_asset.textureAtlas.explosion = new TextureAtlas(g_asset.explosion, 100, 100, (9 * 9) - 7);
-  g_asset.textureAtlas.explosionSpritesheet2 =
-    new TextureAtlas(g_asset.explosionSpritesheet2, 16, 16);
-  g_asset.textureAtlas.explosionSpritesheet3 =
-    new TextureAtlas(g_asset.explosionSpritesheet3, 16, 16);
-  g_asset.textureAtlas.explosionSpritesheet5 =
-    new TextureAtlas(g_asset.explosionSpritesheet5, 16, 16);
-  g_asset.textureAtlas.explosionSpritesheet6 =
-    new TextureAtlas(g_asset.explosionSpritesheet6, 16, 16);
-
-  g_asset.textureAtlas.blood = new TextureAtlas(g_asset.blood, 512, 512);
-
-  // TEXTURE
-
-  g_asset.texture = {};
-
-  g_asset.texture.background = new Texture({
-    image: g_asset.textureAtlas.dungeon.getSubimage(1, 1),
-    scale: 4,
-    width: g_world.getWidth(),
-    height: g_world.getHeight(),
-  });
-
-  // SEQUENCE
-
-  g_asset.sequence = {};
-
-  g_asset.sequence.explosion = g_asset.textureAtlas.explosion.getSequence({
-    rowFirst: true,
-    LR: true,
-    TB: true,
-    qty: g_asset.textureAtlas.explosion.nrOfSubimages,
-  });
-
-  g_mouse.setFastImage(new FastImage(g_asset.cursor));
-
-  // SPRITES
-
-  g_asset.sprite = {};
-
-  g_asset.sprite.rock = new Sprite(g_asset.rock);
-
-  g_asset.sprite.bullet = new Sprite(g_asset.bullet);
-  g_asset.sprite.bullet.scale = 0.15;
-
-  g_asset.sprite.player = new Sprite(g_asset.rifle);
-  g_asset.sprite.player.scale = 0.1;
-
-  g_asset.sprite.blood = new Sprite(g_asset.blood);
-
+  util.extendObject(g_asset, raw);
+  util.extendObject(g_asset, assets);
+  
   entityManager.init();
-
-
+  
   shadows.init(
     g_asset.lights,
     g_asset.shadowMap,
     g_asset.shadowMask,
     g_shadowSize,
   );
-
-
+  
+  
   spatialManager.init();
-
+  
   g_testWOM = spatialManager.getWallOcclusionMap();
-
+  
   g_main.mainInit();
-}
 
-// --- ASSETS ---------------------------------------------------
-
-
-function setup() {
-  let w = Math.min(window.innerWidth, window.innerHeight);
-  let h = Math.min(window.innerWidth, window.innerHeight);
-
-  h = Math.floor(w * 3 / 4);
-
-
-  w = 1600;
-  h = w * 9 / 16;
-
-  w = window.innerWidth;
-  h = window.innerHeight;
-
-  // w = 640;
-  // h = 480;
-
-  g_canvas.width = Math.floor(w);
-  g_canvas.height = Math.floor(h);
-
-
-  const url_text = {};
-  const url_images = {};
-  const url_audio = {};
-
-  // --- TEXT ---
-
-  // Shaders
-  util.extendObject(
-    url_text,
-    util.prefixStrings('glsl/', {
-      lights: 'lights.vert', // vertexShader
-      shadowMap: 'shadowMap.frag', // fragmentShader
-      shadowMask: 'shadowMask.frag', // shadowRender
-    }),
-  );
-
-  // --- IMAGES ---
-
-  util.extendObject(
-    url_images,
-    util.prefixStrings('img/', {
-      cursor: 'cursor.png',
-      dungeon: 'dungeonTileset.png',
-      explosion: 'spritesheet1.png',
-      rock: 'rock.png',
-      blood: 'blood.png',
-      bullet: 'bullet.png',
-      rifle: 'survivor-shoot_rifle_0.png',
-      blockMap: 'block-map.png',
-
-      explosionSpritesheet2: 'explosionSpritesheet2.png',
-      explosionSpritesheet3: 'explosionSpritesheet3.png',
-      explosionSpritesheet5: 'explosionSpritesheet5.png',
-      explosionSpritesheet6: 'explosionSpritesheet6.png',
-    }),
-  );
-
-  // --- AUDIO ---
-
-  util.extendObject(
-    url_audio,
-    util.prefixStrings('audio/', {
-      bulletFire: 'bulletFire.ogg',
-      bulletZapped: 'bulletZapped.ogg',
-      rockEvapoate: 'rockEvaporate.ogg',
-      rockSplit: 'rockSplit.ogg',
-    }),
-  );
-
-  util.extendObject(g_url, url_text);
-  util.extendObject(g_url, url_images);
-  util.extendObject(g_url, url_audio);
-
-  assetManager.load({
-    text: util.objPropsToList(url_text),
-    image: util.objPropsToList(url_images),
-    audio: util.objPropsToList(url_audio),
-  }, processAssets);
-}
-
-
-setup();
+});
