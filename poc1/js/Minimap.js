@@ -1,19 +1,17 @@
 const Minimap = (function () {
   const Minimap = {};
-  Minimap.canvas = document.createElement('canvas');
 
-  Minimap.canvas.cx = g_world.width + 10;
-  Minimap.canvas.cy = g_world.height/3;
+  /*var c = document.getElementById("rightCanvas");
+  var ctx = c.getContext("2d");
+  Minimap.cx = 0;
+  Minimap.cy = 0;
 
-  Minimap.canvas.width = g_world.width/10;
-  Minimap.canvas.height = g_world.height/6;
-  Minimap.ctx = Minimap.canvas.getContext('2d');
-  Minimap.ctx.beginPath();
-  Minimap.ctx.lineWidth="6";
-  Minimap.ctx.strokeStyle="red";
-  Minimap.ctx.fill();
-  Minimap.ctx.stroke();
-  Minimap.ctx.drawImage(..\img\crate2.png, 100, 100);
+  Minimap.width = g_world.getWidth()/10;
+  Minimap.height = g_world.getHeight()/2;
+  console.log(Minimap.width);
+  ctx.beginPath();
+  ctx.rect(Minimap.cx,Minimap.cy,Minimap.width,Minimap.height)
+  ctx.fill();
 
 
 
@@ -25,6 +23,7 @@ const Minimap = (function () {
 
 
 
-  return Minimap;
+
+  return Minimap;*/
 
 }());
