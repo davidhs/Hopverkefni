@@ -20,6 +20,7 @@ const mapHandler = (function () {
   let assetCatalog = {};
 
   let phase1Done = false;
+  phase1Done = true;  // I KNOW
 
   let _callback = null;
 
@@ -175,7 +176,7 @@ const mapHandler = (function () {
     _callback = null;
     urls = {};
     oRaw = {};
-  }
+    }
 
     callback({
       map: map,
@@ -372,8 +373,9 @@ const mapHandler = (function () {
 
     if (cfg && cfg.scale) scale = cfg.scale;
 
-    const obj = new Sprite(image);
-    obj.scale = scale;
+    const obj = new Sprite({
+      image, scale
+    });
 
     // START OF EPILOGUE
     remaining--;
@@ -478,11 +480,21 @@ const mapHandler = (function () {
     processBundles();
   }
 
-  phase1Done = true;
+  function getItem(master, path) {
+    let obj = master;
+    const chain = path.split('.');
+    for (let i = 0; i < chain.length; i += 1) {
+      obj = obj[chain[i]];
+    }
+
+    return obj;
+  }
+
 
   return {
     getManifest: getManifest,
     getMap: getMap,
-    openMap: openMap
+    openMap: openMap,
+    getItem: getItem
   };
 })();
