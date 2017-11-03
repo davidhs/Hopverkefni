@@ -9,15 +9,22 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-/*
 
-spatialManager.js
-
-A module which handles spatial lookup, as required for...
-e.g. general collision detection.
-
-*/
-
+/**
+ * Spatial manager
+ * 
+ * A module which handles spatial lookup, used for general collision
+ * detection.
+ * 
+ * It's very important to conside the tile size `tileSize' beforehand --
+ * enable to change tile size -- because it can drastically affect
+ * performance.  If the scene is huge and there are a lot of objects
+ * spread around, you should conside using a larget tile size.
+ * 
+ * Registering and unregistering is a rather slow process.  It's used
+ * for spatial lookup.  It only indicates potential collisions.  It's
+ * up to the entities themselves to resolve the collisions themselves.
+ */
 const spatialManager = (function () {
   // PRIVATE DATA
 
@@ -32,11 +39,23 @@ const spatialManager = (function () {
 
   // Tiles (grid)
   const tiles = [];
-  const tileSize = 16;
+  const tileSize = 32;
 
   let nextSpatialID = MIN_ENTITY; // make all valid IDs non-falsey (i.e. don't start at 0)
 
   // PRIVATE METHODS
+
+  function _registerCheck(id, x, y) {
+    if (x < 0 || y < 0) return OUT_OF_BOUNDS;
+
+    if (!tiles[y]) return NO_CONFLICT;
+
+    const targetID = tiles[y][x];
+
+    if (targetID && id !== targetID) return targetID;
+
+    return NO_CONFLICT;
+  }
 
 
   /**
@@ -88,6 +107,59 @@ const spatialManager = (function () {
     return targetID;
   }
 
+  function _registerRectCheck(id, x1, y1, x2, y2) {
+
+    // Do precheck.
+
+    let tid;
+    const mx = Math.floor((x1 + x2) / 2);
+    const my = Math.floor((y1 + y2) / 2);
+
+    // Interior check
+    tid = _registerCheck(id, mx, my);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Corner check
+
+
+    // Check upper left corner.
+    tid = _registerCheck(id, x1, y1);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Check bottom right corner
+    tid = _registerCheck(id, x2, y2);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Check bottm left corner
+    tid = _registerCheck(id, x2, y2);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Check upper right corner
+    tid = _registerCheck(id, x2, y2);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+
+    // Side check
+
+    // Left side
+    tid = _registerCheck(id, x1, my);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Right side
+    tid = _registerCheck(id, x2, my);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Upper side
+    tid = _registerCheck(id, mx, y1);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    // Bottom side
+    tid = _registerCheck(id, mx, y2);
+    if (tid > MIN_ENTITY && tid !== id) return tid;
+
+    return id;
+  }
+
 
   /**
    * Returns `true' if tile is occupied with another ID,
@@ -103,6 +175,10 @@ const spatialManager = (function () {
    */
   function _registerRect(id, x1, y1, x2, y2) {
     let minConflictID = Number.MAX_VALUE;
+
+    const precheckID = _registerRectCheck(id, x1, y1, x2, y2);
+
+    if (id !== precheckID) return -precheckID;
 
     // Horizontal "exterior" boundaries.
     for (let x = x1; x <= x2; x += 1) {
@@ -172,7 +248,9 @@ const spatialManager = (function () {
   }
 
 
+  // ==============
   // PUBLIC METHODS
+  // ==============
 
   function getNewSpatialID() {
     const id = nextSpatialID;
@@ -200,7 +278,7 @@ const spatialManager = (function () {
     const flag = _registerRect(spatialID, x1, y1, x2, y2);
 
     // Cleanup
-    if (flag) {
+    if (flag > 0 && flag) {
       _unregisterRect(spatialID, x1, y1, x2, y2);
     } else {
       entities[spatialID] = {
@@ -287,7 +365,12 @@ const spatialManager = (function () {
         const x = colNumber * tileSize;
         const y = rowNumber * tileSize;
 
-        util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
+        //if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
+
+        if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
+          util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
+
+        }
       }
     }
 
@@ -296,7 +379,11 @@ const spatialManager = (function () {
     for (let j = 0, keys2 = Object.keys(entities); j < keys2.length; j += 1) {
       const ID = keys2[j];
       const e = entities[ID];
-      util.strokeCircle(ctx, e.posX - dx, e.posY - dy, e.radius);
+      const radius = (typeof e.radius !== "undefined") ? e.radius : e.getRadius();
+      
+      if (g_viewport.inOuterSquareCircle(e.posX, e.posY, radius)) {
+        util.strokeCircle(ctx, e.posX - dx, e.posY - dy, e.radius);
+      }
     }
     ctx.strokeStyle = oldStyle;
   }

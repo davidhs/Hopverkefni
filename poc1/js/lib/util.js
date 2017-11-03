@@ -90,6 +90,16 @@ const util = (function () {
     return newImage;
   };
 
+  /**
+   * Assumes left1 <= right1 and left2 <= right2.
+   */
+  util.isIntervalIntersection = (left1, right1, left2, right2) => {
+    const c1 = left1 <= right2;
+    const c2 = right1 >= left2;
+
+    return c1 && c2;
+  };
+
   util.clampRange = (value, lowBound, highBound) => {
     if (value < lowBound) {
       value = lowBound;

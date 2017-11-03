@@ -44,6 +44,11 @@ function Rock(descr) {
     spatialManager.register(this);
   }
 
+  if (false) {
+    this.cx = 100;
+    this.cy = 100;
+  }
+
   this.randomiseVelocity();
 }
 
@@ -137,6 +142,10 @@ Rock.prototype._spawnFragment = function () {
 };
 
 Rock.prototype.render = function (ctx, cfg) {
+
+  if (!g_viewport.inOuterSquareCircle(this.cx, this.cy, this.getRadius())) return;
+
+
   const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   this.sprite.scale = this.scale;

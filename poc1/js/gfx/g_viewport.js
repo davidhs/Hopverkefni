@@ -223,6 +223,35 @@ const g_viewport = (function () {
     return (oy - outerY) * (innerHeight / innerWidth);
   }
 
+
+  function inOuterSquareCircle(wcx, wcy, wr) {
+    return inOuterRectangleBounds(wcx - wr, wcy - wr, 2 * wr, 2 * wr);
+  }
+
+  function inOuterCircleBounds(wcx, wcy, wr) {
+    return inOuterSquareCircle(wcx, wcy, wr);
+  }
+
+  function inOuterRectangleBounds(wx, wy, ww, wh) {
+
+    const ax1 = getOX();
+    const ax2 = getOX() + getOW();
+
+    const ay1 = getOY();
+    const ay2 = getOY() + getOH();
+
+    const x1 = wx;
+    const x2 = wx + ww;
+
+    const y1 = wy;
+    const y2 = wy + wh;
+
+    const c1 = util.isIntervalIntersection(x1, x2, ax1, ax2);
+    const c2 = util.isIntervalIntersection(y1, y2, ay1, ay2);
+
+    return c1 && c2;
+  }
+
   // EXPOSURE
 
   const obj = {};
@@ -252,6 +281,8 @@ const g_viewport = (function () {
     mapI2OY,
     mapO2IX,
     mapO2IY,
+
+    inOuterSquareCircle, inOuterCircleBounds, inOuterRectangleBounds
   });
 
   return obj;

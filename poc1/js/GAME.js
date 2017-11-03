@@ -130,7 +130,7 @@ function renderSimulation(ctx) {
   // --- FOREGROUND ---
 
   // Draw Cursor
-  if (g_mouse.getFastImage()) {
+  if (g_mouse.getImage()) {
     g_mouse.render(ctxf);
   }
 
@@ -227,7 +227,7 @@ function setup(response) {
 
   // Set mouse cursor image.
   if (g_master.map.mouse.image) {
-    g_mouse.setFastImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
+    g_mouse.setImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
   }
 
   // Enable cursor lock, if applicable.

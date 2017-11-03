@@ -6,9 +6,6 @@ function TileMap(cfg) {
 
     this.textureAtlas = cfg.textureAtlas;
 
-    console.log(this.textureAtlas);
-
-
     if (type === 1) {
          
         const map = util.xml2json(cfg.map).map;
