@@ -5,8 +5,8 @@
 const g_world = (function () {
   // PRIVATE DATA
 
-  const UNIT_PIXEL = "px";
-  const UNIT_TILE = "t";
+  const UNIT_PIXEL = 'px';
+  const UNIT_TILE = 't';
 
   // Tile dimensions in pixels.
   let tileWidth = 32;

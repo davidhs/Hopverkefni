@@ -12,68 +12,77 @@ precision mediump float;
 // VARYINGS
 // ========
 
-varying vec2 v_TexCoord0;
-varying vec4 v_Color;
+// Texture coordinates passed in from
+// vertex shader.
+varying vec2 v_tc;
 
 // ========
 // UNIFORMS
 // ========
 
-uniform sampler2D u_texture;
-uniform vec2 u_resolution;
-
-// =========
-// FUNCTIONS
-// =========
-
-//sample from the distance map
-float sample(vec2 coord, float r) {
-  return step(r, texture2D(u_texture, coord).r);
-}
+// Our 2D texture.
+uniform sampler2D u_tex;
+// Resalution of said texture.
+uniform vec2 u_res;       
 
 // ====
 // MAIN
 // ====
 
+// Sample the 1D shadow map.  The shadow map
+// is sampled with via `theta', since the
+// shadow map axis corresponds to different
+// angles, and the value at that coordinate
+// correspons to the distance of the nearest
+// occluder.
+float sample(float theta, float radius) {
+  
+  // Texture sampled.
+  vec4 ts = texture2D(u_tex, vec2(theta, 0));
+
+  // The occlusion distance, i.e. how
+  // far the nearest occluder is at
+  // this angle `theta'.
+  float occlusionDistance = ts.r;
+
+  // Lorem ipsum.
+  return step(radius, occlusionDistance);
+}
+
 void main(void) {
-  //rectangular to polar
-  vec2 norm = v_TexCoord0.st * 2.0 - 1.0;
-	float theta = atan(norm.y, norm.x);
-	float r = length(norm);
-	float coord = (theta + PI) / TAU;
 
-	//the tex coord to sample our 1D lookup texture
-	//always 0.0 on y axis
-	vec2 tc = vec2(coord, 0.0);
+  // Convert from cartesian coordinates
+  // to polar coordinates.
+  
+  // Convert from [[0, 1], [0, 1]] to [[-1, 1], [-1, 1]].s
+  vec2 norm = v_tc.st * 2.0 - 1.0;
+  
+  // Get length of vector nrom.
+  float radius = length(norm);
 
-	//the center tex coord, which gives us hard shadows
-	float center = sample(vec2(tc.x, tc.y), r);
+  // Angle, phase shiften and taken
+  float theta = (atan(norm.y, norm.x) + PI) / TAU;
 
-	//we multiply the blur amount by our distance from center
-	//this leads to more blurriness as the shadow "fades away"
-	float blur = (1.0 / u_resolution.x)  * smoothstep(0.0, 1.0, r);
+  // Width of GL viewport.
+  float width = u_res.x;
 
-	//now we use a simple gaussian blur
-	float sum = 0.0;
-  sum += sample(vec2(tc.x - 4.0*blur, tc.y), r) * 0.05;
-  sum += sample(vec2(tc.x - 3.0*blur, tc.y), r) * 0.09;
-  sum += sample(vec2(tc.x - 2.0*blur, tc.y), r) * 0.12;
-  sum += sample(vec2(tc.x - 1.0*blur, tc.y), r) * 0.15;
+  // More distance, more blur to apply.
+  float blurFactor = smoothstep(0.0, 1.0, radius) / width;
 
-  sum += center * 0.16;
+  // Opa opa
+  float opacity = 0.0;
 
-  sum += sample(vec2(tc.x + 1.0*blur, tc.y), r) * 0.15;
-  sum += sample(vec2(tc.x + 2.0*blur, tc.y), r) * 0.12;
-  sum += sample(vec2(tc.x + 3.0*blur, tc.y), r) * 0.09;
-  sum += sample(vec2(tc.x + 4.0*blur, tc.y), r) * 0.05;
-	//1.0 -> in light, 0.0 -> in shadow
- 	float lit = mix(center, sum, 1.0);
+  // Sample more and more from different angles from
+  // the shadow map with increasing distance.  
+  // Causes the shadow to blur when farther away.
+  opacity += sample(theta - 2.0 * blurFactor, radius) * 0.1;
+  opacity += sample(theta - 1.0 * blurFactor, radius) * 0.2;
+  opacity += sample(theta + 0.0 * blurFactor, radius) * 0.4;
+  opacity += sample(theta + 1.0 * blurFactor, radius) * 0.2;
+  opacity += sample(theta + 2.0 * blurFactor, radius) * 0.1;
 
- 	//multiply the summed amount by our distance, which gives us a radial falloff
- 	//then multiply by vertex (light) color
-	 //gl_FragColor = vColor * vec4(vec3(1.0), lit * smoothstep(1.0, 0.0, r));
+  // Alpha
+  float alpha = opacity * smoothstep(1.0, 0.0, radius);
 
-	// ALpha
-
- 	gl_FragColor = v_Color * vec4(vec3(1.0), sum * smoothstep(1.0, 0.0, r));
+  gl_FragColor = vec4(vec3(1.0), alpha);
 }

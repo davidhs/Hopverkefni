@@ -19,6 +19,8 @@
 // Later on the URL might take position and occlusion map as parameter to
 // modify the sound, e.g. sound that is farther away isn't as loud,  sound
 // that is blocked by some corner or "outside" is muffled.
+//
+// NB: if it caches audio, then it doesn't do it for very long...
 const audioManager = (function () {
   // Audio files are initially loaded by the asset manager.
   // It appears by doing so the audio file is cached, so `new Audio(...)'

@@ -129,9 +129,6 @@ const shadows = (function () {
     if (DEBUG) glutil.validateProgram(gl, program);
 
     // Handles on attributes (in vertex shader file);
-    gShadowMap.positionLocation = gl.getAttribLocation(program, 'a_position');
-    gShadowMap.texCoordLocation = gl.getAttribLocation(program, 'a_texCoord0');
-    gShadowMap.a_color = gl.getAttribLocation(program, 'a_color');
 
     // Tell WebGL to use this program.
     gl.useProgram(program);
@@ -140,8 +137,8 @@ const shadows = (function () {
     gShadowMap.texture = glutil.createAndSetupTexture(gl);
 
     // Square texture
-    const texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    const buff_tc = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_tc);
     gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array(square),
@@ -149,26 +146,36 @@ const shadows = (function () {
     );
 
     // Create a buffer to put 2D clip space points in.
-    const positionBuffer = gl.createBuffer();
+    const buff_pos = gl.createBuffer();
     // Bind it to ARRAY_BUFFER (think of ARRAY_BUFFER = positionBuffer);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_pos);
     // Set a rectangle the same size as the image. (to the buffer)
     glutil.setRectangle(gl, 0, 0, canvasOccluders.width, canvasOccluders.height);
 
     // Handles on uniforms.
-    const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
-    const flipYLocation = gl.getUniformLocation(program, 'u_flipY');
+    const u_res = gl.getUniformLocation(program, 'u_res');
+    const u_flipY = gl.getUniformLocation(program, 'u_flipY');
+
+
+    const a_pos = gl.getAttribLocation(program, 'a_pos');
+    const a_tc = gl.getAttribLocation(program, 'a_tc');
 
     // Turn on attributes.
-    gl.enableVertexAttribArray(gShadowMap.positionLocation);
-    gl.enableVertexAttribArray(gShadowMap.texCoordLocation);
+    gl.enableVertexAttribArray(a_pos);
+    gl.enableVertexAttribArray(a_tc);
+
 
     // Add to gShadowMap.
-    gShadowMap.resolutionUniformLocation = resolutionUniformLocation;
-    gShadowMap.flipYLocation = flipYLocation;
-    gShadowMap.texCoordBuffer = texCoordBuffer;
+    gShadowMap.u_res = u_res;
+    gShadowMap.u_flipY = u_flipY;
+
+    gShadowMap.a_tc = a_tc;
+    gShadowMap.buff_tc = buff_tc;
+
+    gShadowMap.a_pos = a_pos;
+    gShadowMap.buff_pos = buff_pos;
+
     gShadowMap.program = program;
-    gShadowMap.positionBuffer = positionBuffer;
   }
 
   function initShadowMask() {
@@ -199,8 +206,8 @@ const shadows = (function () {
     gShadowMask.texture = glutil.createAndSetupTexture(gl);
 
     // Square texture.
-    const texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    const buff_tc = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_tc);
     gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array(square),
@@ -208,47 +215,82 @@ const shadows = (function () {
     );
 
     // Create a buffer to put 2D clip space points in.
-    const positionBuffer = gl.createBuffer();
+    const buff_pos = gl.createBuffer();
     // Bind it to ARRAY_BUFFER (think of ARRAY_BUFFER = positionBuffer);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_pos);
     // Set a rectangle the same size as the image. (to the buffer)
     glutil.setRectangle(gl, 0, 0, stuff.size, stuff.size);
 
     // Tell WebGL to use this program.
     gl.useProgram(program);
 
+    const u_res = gl.getUniformLocation(program, 'u_res');
+    const u_flipY = gl.getUniformLocation(program, 'u_flipY');
+
 
     // Handle on attributes.
-    const positionLocation = gl.getAttribLocation(program, 'a_position');
-    const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord0');
-    const a_color = gl.getAttribLocation(program, 'a_color');
+    const a_pos = gl.getAttribLocation(program, 'a_pos');
+    const a_tc = gl.getAttribLocation(program, 'a_tc');
+
+    // Turn on attributes.
+    gl.enableVertexAttribArray(a_pos);
+    gl.enableVertexAttribArray(a_tc);
+
 
     // Add to gShadowMask
-    gShadowMask.positionLocation = positionLocation;
-    gShadowMask.texCoordLocation = texCoordLocation;
-    gShadowMask.a_color = a_color;
-    gShadowMask.texCoordBuffer = texCoordBuffer;
+    gShadowMask.u_res = u_res;
+    gShadowMask.u_flipY = u_flipY;
+
+    gShadowMask.a_tc = a_tc;
+    gShadowMask.buff_tc = buff_tc;
+
+    gShadowMask.a_pos = a_pos;
+    gShadowMask.buff_pos = buff_pos;
+
     gShadowMask.program = program;
-    gShadowMask.positionBuffer = positionBuffer;
   }
 
 
   function getShadowMap(occluders) {
     if (!initialized) return null;
 
-    const canvas = gShadowMap.canvas;
-    const gl = gShadowMap.gl;
-    const program = gShadowMap.program;
+    // Target object
+    const to = gShadowMap;
+
+    const canvas = to.canvas;
+    const gl = to.gl;
+    const program = to.program;
+
+    const a_pos = to.a_pos;
+    const buff_pos = to.buff_pos;
+
+    const a_tc = to.a_tc;
+    const buff_tc = to.buff_tc;
+
+    const imageTT = occluders; // Image to texture.
+    const texture = to.texture;
+
+    const u_flipY = to.u_flipY;
+    const u_res = to.u_res;
+
+    // Frame buffer width and height.
+    const fbw = stuff.size;
+    const fbh = stuff.size;
+
+    // View port width and height.
+    const vpw = canvas.width;
+    const vph = canvas.height;
+
 
     // Clear the canvas
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     // Bind the position buffer.
-    gl.bindBuffer(gl.ARRAY_BUFFER, gShadowMap.positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_pos);
     // Tell position attr. how to get out of positionBuffer.
     gl.vertexAttribPointer(
-      gShadowMap.positionLocation, // Attribute location
+      a_pos, // Attribute location
       2, // Nr. of elements in attribute.
       gl.FLOAT, // Type of elements
       false, // Whether data is normalized
@@ -257,10 +299,10 @@ const shadows = (function () {
     );
 
     // Bind the position buffer.
-    gl.bindBuffer(gl.ARRAY_BUFFER, gShadowMap.texCoordBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_tc);
     // Tell the textCoord attribute how to get data out of texCoordBuffer (ARRAY_BUFFER)
     gl.vertexAttribPointer(
-      gShadowMap.texCoordLocation, // Attribute location
+      a_tc, // Attribute location
       2, // Nr. of elements in attribute.
       gl.FLOAT, // Type of elements
       false, // Whether data is normalized
@@ -271,26 +313,26 @@ const shadows = (function () {
     // Set the size of the image.
 
 
-    gl.bindTexture(gl.TEXTURE_2D, gShadowMap.texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, occluders);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageTT);
 
     // Flip y coordinate for canvas.
-    gl.uniform1f(gShadowMap.flipYLocation, -1);
+    gl.uniform1f(u_flipY, -1);
 
     // Tell WebGL to render to Canvas instead of framebuffer.
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     // Tell the shader the resolution of the framebuffer
-    gl.uniform2f(gShadowMap.resolutionUniformLocation, stuff.size, stuff.size);
+    gl.uniform2f(u_res, fbw, fbh);
     // Tell WebGL the viewport setting needed for framebuffer.
-    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.viewport(0, 0, vpw, vph);
 
 
     // Draw rectangle.
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     if (DEBUG) {
-      canvi.shadowMap.width = canvas.width;
-      canvi.shadowMap.height = canvas.height;
+      canvi.shadowMap.width = vpw;
+      canvi.shadowMap.height = vph;
       util.clearCanvas(canvi.shadowMap.ctx);
       canvi.shadowMap.ctx.drawImage(canvas, 0, 0);
     }
@@ -308,30 +350,47 @@ const shadows = (function () {
 
     const shadowMap = getShadowMap(canvasOccluders);
 
-    const canvas = gShadowMask.canvas;
-    const gl = gShadowMask.gl;
-    const program = gShadowMask.program;
-    const tex = gShadowMask.texture;
+    // Target object.
+    const to = gShadowMask;
+
+    const canvas = to.canvas;
+    const gl = to.gl;
+    const program = to.program;
+    const tex = to.texture;
 
 
-    // Look up uniform locations (get handle of this attribute)
-    const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution');
-    const flipYLocation = gl.getUniformLocation(program, 'u_flipY');
+    const u_res = to.u_res;
+    const u_flipY = to.u_flipY;
+
+    const a_pos = to.a_pos;
+    const buff_pos = to.buff_pos;
+
+    const a_tc = to.a_tc;
+    const buff_tc = to.buff_tc;
+
+
+    const smw = shadowMap.width;
+    const smh = shadowMap.height;
+
+    const imageTT = shadowMap;
+
+    // Frame buffer width and height.
+    const fbw = stuff.size;
+    const fbh = stuff.size;
+
+    // View port width and height.
+    const vpw = canvas.width;
+    const vph = canvas.height;
 
     // Clear the canvas
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // Turn on the position attribute.
-    gl.enableVertexAttribArray(gShadowMask.positionLocation);
-    // Turn on the texcoord attribute
-    gl.enableVertexAttribArray(gShadowMask.texCoordLocation);
-
     // Bind the position buffer.
-    gl.bindBuffer(gl.ARRAY_BUFFER, gShadowMask.positionBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_pos);
     // Tell position attr. how to get out of positionBuffer.
     gl.vertexAttribPointer(
-      gShadowMask.positionLocation, // Attribute location
+      a_pos, // Attribute location
       2, // Nr. of elements in attribute.
       gl.FLOAT, // Type of elements
       false, // Whether data is normalized
@@ -340,10 +399,10 @@ const shadows = (function () {
     );
 
     // Bind the position buffer.
-    gl.bindBuffer(gl.ARRAY_BUFFER, gShadowMask.texCoordBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buff_tc);
     // Tell the textCoord attribute how to get data out of texCoordBuffer (ARRAY_BUFFER)
     gl.vertexAttribPointer(
-      gShadowMask.texCoordLocation, // Attribute location
+      a_tc, // Attribute location
       2, // Nr. of elements in attribute.
       gl.FLOAT, // Type of elements
       false, // Whether data is normalized
@@ -352,22 +411,22 @@ const shadows = (function () {
     );
 
     // Set the size of the image.
-    gl.uniform2f(resolutionUniformLocation, shadowMap.width, shadowMap.height);
+    gl.uniform2f(u_res, smw, smh);
 
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, shadowMap);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imageTT);
 
     // Flip y coordinate for canvas.
-    gl.uniform1f(flipYLocation, 1);
+    gl.uniform1f(u_flipY, 1);
 
     // Tell WebGL to render to Canvas instead of framebuffer.
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     // Tell the shader the resolution of the framebuffer
-    gl.uniform2f(resolutionUniformLocation, stuff.size, stuff.size);
+    gl.uniform2f(u_res, fbw, fbh);
 
 
     // Tell WebGL the viewport setting needed for framebuffer.
-    gl.viewport(0, 0, stuff.size, stuff.size);
+    gl.viewport(0, 0, vpw, vph);
 
     // Draw rectangle.
     gl.drawArrays(gl.TRIANGLES, 0, 6);

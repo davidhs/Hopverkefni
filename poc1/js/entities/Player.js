@@ -7,7 +7,7 @@ function Player(descriptor) {
   // Common inherited setup logic from Entity
   this.setup(descriptor);
 
-  if (!this.sprite) throw Error("NEED TO SET SPRITE TO CHARACTER");
+  if (!this.sprite) throw Error('NEED TO SET SPRITE TO CHARACTER');
 
   this._scale = this.sprite.scale;
 }
@@ -147,15 +147,17 @@ Player.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
+// TODO: maybe we wan't different bullets?
 Player.prototype.fireBullet = function () {
   if (!g_mouse.isDown) return;
 
   if (this.bulletCooldown > 0) return;
 
+  // TODO: bind in JSON how long each bullet lives
+  // until it fades away.
   this.bulletCooldown += 0.05 * SECS_TO_NOMINALS;
 
   const angle = Math.PI / 2 + this.rotation;
-
 
   const dX = +Math.sin(angle);
   const dY = -Math.cos(angle);
@@ -176,6 +178,7 @@ Player.prototype.fireBullet = function () {
 
   const rotation = this.rotation;
 
+  // TODO: Do this a bit different.
   entityManager.fireBullet(
     cx,
     cy,
@@ -187,6 +190,8 @@ Player.prototype.fireBullet = function () {
 
 
 Player.prototype.render = function (ctx, cfg) {
+  // TODO: maybe we wan't the player to cast shadows,
+  // sometimes.
   if (cfg && cfg.occlusion) return;
 
   const origScale = this.sprite.scale;

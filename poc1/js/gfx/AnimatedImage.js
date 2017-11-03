@@ -15,6 +15,8 @@ AnimatedImage.prototype.dt = 0;
 AnimatedImage.prototype.rate = 1.5;
 AnimatedImage.prototype.sequence = [];
 
+// TODO: bind in JSON a more sensible rate.
+
 AnimatedImage.prototype.update = function (du) {
   if (this.done) return entityManager.KILL_ME_NOW;
 
@@ -28,6 +30,8 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
 
   cfg = cfg || {};
 
+  // TODO: bind in JSON, maybe we wan't
+  // explosion to cast shadows.
   if (cfg.occlusion) return;
 
 
@@ -49,5 +53,6 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
   x -= g_viewport.getOX();
   y -= g_viewport.getOY();
 
+  // TODO: I don't like the FastImage thing.
   ctx.drawImage(img.getImage(), x, y, w, h);
 };

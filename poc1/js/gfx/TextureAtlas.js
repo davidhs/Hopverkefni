@@ -6,14 +6,16 @@
 /**
  * Uniformly-sized sub-images.
  *
+ * TODO: I don't know if it's such a good idea to split a large
+ * sprite sheet into 1000 images.
+ *
  * https://en.wikipedia.org/wiki/Texture_atlas
  */
 function TextureAtlas(image, subimageWidth, subimageHeight, nrOfSubimages) {
   image = new FastImage({
-    image: image
+    image,
   });
 
-  
 
   this.image = image;
 

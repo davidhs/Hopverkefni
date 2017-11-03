@@ -41,6 +41,8 @@ const entityManager = (function () {
 
   // PUBLIC METHODS
 
+  // TODO: maybe we want to fire different types of bullets.
+  // figure out how to do that.
   function fireBullet(cx, cy, velX, velY, rotation) {
     _bullets.push(new Bullet({
       cx,
@@ -56,16 +58,20 @@ const entityManager = (function () {
     _players.push(new Player(descr));
   }
 
+  // TODO: bind in JSON which type explosion,
+  // and explosion rate.
   function generateExplosion(descr) {
     descr.sequence = g_asset.sequence.explosion;
 
     _explosions.push(new AnimatedImage(descr));
   }
 
+  // TODO: maybe we don't want rocks in the future?
   function generateRock(descr) {
     _rocks.push(new Rock(descr));
   }
 
+  // TODO: yes, surely we don't, don't we?
   function _generateRocks() {
     const NUM_ROCKS = 100;
 
@@ -74,12 +80,10 @@ const entityManager = (function () {
     }
   }
 
-
+  // TODO: remove this later
   function toggleRocks() {
     _bShowRocks = !_bShowRocks;
   }
-
-  // UPDATE ///////////////////////////////////////////////
 
   function update(du) {
     for (let c = 0; c < _categories.length; c += 1) {
@@ -102,15 +106,11 @@ const entityManager = (function () {
       }
     }
 
+    // TODO: remove this.
     if (_rocks.length === 0) _generateRocks();
   }
 
-  // RENDER ///////////////////////////////////////////////
-
   function render(ctx, cfg) {
-    const debugX = 10;
-    let debugY = 100;
-
     for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
 
@@ -118,9 +118,7 @@ const entityManager = (function () {
 
       for (let i = 0; i < aCategory.length; i += 1) {
         aCategory[i].render(ctx, cfg);
-        // debug.text(".", debugX + i * 10, debugY);
       }
-      debugY += 10;
     }
   }
 
@@ -138,6 +136,10 @@ const entityManager = (function () {
     generatePlayer,
     OK,
     KILL_ME_NOW,
+
+    // FIXME: this is just a hack to get
+    // the player's position so the viewport can
+    // track the player.
     getPos: () => {
       if (_players.length > 0) {
         return _players[0];
