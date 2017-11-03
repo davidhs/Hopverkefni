@@ -10,6 +10,11 @@
 const mapHandler = (function () {
   // TODO set lock
 
+
+  const DEBUG = false;
+  const VERBOSE = false;
+  const FILENAME = 'mapHandler.js';
+
   let activeMap;
 
   let bundles = [];
@@ -51,6 +56,8 @@ const mapHandler = (function () {
     attempsExits += 1;
 
     if (remaining !== 0) return;
+
+    if (DEBUG) console.log(`${FILENAME}: Done processing, exiting map handler.`);
 
     // DO CLEANUP
 
@@ -96,8 +103,11 @@ const mapHandler = (function () {
   }
 
   function processBundle(bundleIndex) {
+    if (DEBUG && VERBOSE) console.log(`${FILENAME}: Processing bundle index ${bundleIndex}`);
     const bundle = bundles[bundleIndex];
     const hasAllDependencies = checkIfHasAllDependencies(bundle);
+
+    if (DEBUG && VERBOSE) console.log(`${FILENAME}: Does it have all it's dependencies? ${hasAllDependencies}`);
 
     if (hasAllDependencies) {
       processor[bundle.type](bundleIndex);
@@ -124,14 +134,13 @@ const mapHandler = (function () {
     const cfg = entry.desc.cfg;
     // END OF PROLOGUE
 
-    const image = getAsset(dependencies[0]);
-    const tileWidth = cfg.tileWidth || 0;
-    const tileHeight = cfg.tileHeight || 0;
-    const nrOfTiles = cfg.nrOfTiles || 0;
-    const primaryDirection = cfg.primaryDirection || 'right';
-    const secondaryDirection = cfg.secondaryDirection || 'down';
+    const inputObject = {
+      image: getAsset(dependencies[0])
+    };
 
-    const obj = new TextureAtlas(image, tileWidth, tileHeight, nrOfTiles);
+    util.extendObject(inputObject, cfg);
+
+    const obj = new TextureAtlas(inputObject);
 
 
     // START OF EPILOGUE
@@ -215,6 +224,8 @@ const mapHandler = (function () {
     const cfg = entry.desc.cfg;
     // END OF PROLOGUE
 
+    if (DEBUG && VERBOSE) console.log(`${FILENAME}: Processing sequence.`);
+
     const textureAtlas = getAsset(dependencies[0]);
 
     const all = cfg.all || 'true';
@@ -222,11 +233,9 @@ const mapHandler = (function () {
     const secondaryDirection = cfg.secondaryDirection || 'down';
 
     const obj = textureAtlas.getSequence({
-      // TODO FIX LATER
-      rowFirst: true,
-      LR: true,
-      TB: true,
-      qty: textureAtlas.nrOfSubimages,
+      primaryDirection: 'right',
+      secondaryDirection: 'down',
+      nrOfTiles: textureAtlas.nrOfTiles
     });
 
 
@@ -271,6 +280,44 @@ const mapHandler = (function () {
     // END OF EPILOGUE
   };
 
+  // BRAND NEW TECH!
+  processor.tileMap = (bundleIndex) => {
+    // START OF PROLOGUE
+    const entry = bundles[bundleIndex];
+    const type = entry.type;
+    const name = entry.name;
+    const dependencies = entry.desc.dep;
+    const cfg = entry.desc.cfg;
+    // END OF PROLOGUE
+
+    const inputObject = {};
+    if (cfg) util.extendObject(inputObject, cfg);
+
+    for (let i = 0; i < dependencies.length; i += 1) {
+      const dependencyName = dependencies[i];
+      const dependency = getAsset(dependencyName);
+      for (let j = 0, keys = Object.keys(inputObject); j < keys.length; j += 1) {
+        const propertyName = keys[j];
+        if (inputObject[propertyName] === dependencyName) {
+          inputObject[propertyName] = dependency;
+        }
+      }
+    }
+
+    const obj = new TileMap(inputObject);
+
+    // START OF EPILOGUE
+    remaining -= 1;
+    if (!returnAsset[type]) returnAsset[type] = {};
+    returnAsset[type][name] = obj;
+    assetCatalog[`${type}.${name}`] = obj;
+    completeDependencies[`${type}.${name}`] = true;
+    entry.ready = true;
+    bundles.splice(bundleIndex, 1);
+    tick();
+    // END OF EPILOGUE
+  };
+
   processor.fastImage = (bundleIndex) => {
     // START OF PROLOGUE
     const entry = bundles[bundleIndex];
@@ -300,13 +347,10 @@ const mapHandler = (function () {
     // END OF EPILOGUE
   };
 
-  function processBundles() {
-    const newestEntryIndex = bundles.length - 1;
+  function processAssets(response) {
 
-    processBundle(newestEntryIndex);
-  }
+    if (DEBUG) console.log(`${FILENAME}: Processing assets...`);
 
-  function processAssets2(response) {
     const map = activeMap;
 
     const _url = urls;
@@ -327,6 +371,7 @@ const mapHandler = (function () {
     const raw = assets.raw;
 
 
+    if (DEBUG && VERBOSE) console.log(`${FILENAME}: Doing something...`);
     for (let i = 0, keys = Object.keys(raw); i < keys.length; i += 1) {
       const categoryType = keys[i];
       const entryList = raw[categoryType];
@@ -343,9 +388,10 @@ const mapHandler = (function () {
     }
 
     const _types = [
-      'texture', 'textureAtlas', 'sequence', 'sprite', 'fastImage',
+      'texture', 'textureAtlas', 'sequence', 'sprite', 'fastImage', 'tileMap'
     ];
 
+    if (DEBUG && VERBOSE) console.log(`${FILENAME}: Doing something more...`);
     for (let j = 0; j < _types.length; j += 1) {
       const type = _types[j];
       const typeCatalog = assets[type];
@@ -362,8 +408,20 @@ const mapHandler = (function () {
       }
     }
 
+    if (DEBUG && VERBOSE) console.log(`${FILENAME}: About to go process bundles.`);
+    tick();
+  }
 
-    processBundles();
+  function _loremIpsum(itemList) {
+    const url_items = {};
+    for (let i = 0; i < itemList.length; i += 1) {
+      const catalog = itemList[i];
+      util.extendObject(
+        url_items,
+        util.prefixStrings(catalog.prefix, catalog.paths),
+      );
+    }
+    return url_items;
   }
 
   function processMap(map) {
@@ -392,45 +450,25 @@ const mapHandler = (function () {
 
     // PROCESSING RAW DATA
 
-    const url_audio = {};
-    const audioList = map.assets.raw.audio;
-    for (let i = 0; i < audioList.length; i += 1) {
-      const catalog = audioList[i];
-      util.extendObject(
-        url_audio,
-        util.prefixStrings(catalog.prefix, catalog.paths),
-      );
-    }
-
-    const url_images = {};
-    const imageList = map.assets.raw.image;
-    for (let i = 0; i < imageList.length; i += 1) {
-      const catalog = imageList[i];
-      util.extendObject(
-        url_images,
-        util.prefixStrings(catalog.prefix, catalog.paths),
-      );
-    }
-
-    const url_text = {};
-    const textList = map.assets.raw.text;
-    for (let i = 0; i < textList.length; i += 1) {
-      const catalog = textList[i];
-      util.extendObject(
-        url_text,
-        util.prefixStrings(catalog.prefix, catalog.paths),
-      );
-    }
+    const url_audio = _loremIpsum(map.assets.raw.audio);
+    const url_images = _loremIpsum(map.assets.raw.image);
+    const url_text = _loremIpsum(map.assets.raw.text);
+    const url_json = _loremIpsum(map.assets.raw.json);
+    const url_xml = _loremIpsum(map.assets.raw.xml);
 
     util.extendObject(urls, url_text);
     util.extendObject(urls, url_images);
     util.extendObject(urls, url_audio);
+    util.extendObject(urls, url_json);
+    util.extendObject(urls, url_xml);
 
     assetManager.load({
       text: util.objPropsToList(url_text),
       image: util.objPropsToList(url_images),
       audio: util.objPropsToList(url_audio),
-    }, processAssets2);
+      json: util.objPropsToList(url_json),
+      xml: util.objPropsToList(url_xml),
+    }, processAssets);
   }
 
 
@@ -439,11 +477,13 @@ const mapHandler = (function () {
   // ================
 
   function getManifest(callback) {
+    if (DEBUG) console.log(`${FILENAME}: Getting manifest...`);
     assetManager.load({
       text: ['json/manifest.json'],
       image: [],
       audio: [],
     }, (response) => {
+      if (DEBUG) console.log(`${FILENAME}: Done getting manifest.`);
       const key = Object.keys(response)[0];
       const manifest = JSON.parse(response[key]);
       callback(manifest);
@@ -461,7 +501,9 @@ const mapHandler = (function () {
   }
 
   function getMap(mapName, callback) {
+    if (DEBUG) console.log(`${FILENAME}: Getting map...`);
     getManifest((manifest) => {
+      if (DEBUG) console.log(`${FILENAME}: Done getting map.`);
       const prefix = '' || manifest.prefix;
       const path = prefix + manifest.maps[mapName].path;
 
@@ -481,16 +523,28 @@ const mapHandler = (function () {
 
   function openMap(mapName, callback) {
     // TODO implement callback (post-processing)
+    if (DEBUG) console.log(`${FILENAME}: Opening map: ${mapName}`);
     getMap(mapName, processMap);
     _callback = callback;
   }
 
   // EXPOSURE
 
-  return {
+  const returnObject = {
     getManifest,
     getMap,
     openMap,
     getItem,
   };
+
+  if (DEBUG) {
+    const dbo = {};
+    util.extendObject(dbo, {
+      bundles,
+      completeDependencies
+    });
+    returnObject.debug = dbo;
+  }
+
+  return returnObject;
 })();

@@ -3,9 +3,9 @@
     "name": "Yet another test!",
     "cfg": {
         "world": {
-            "width": 2000,
-            "height": 2000,
-            "unit": "px"
+            "width": 1000,
+            "height": 1000,
+            "unit": "t"
         },
         "tile": {
             "width": 32,
@@ -138,7 +138,7 @@
             "player": {
                 "dep": ["raw.rifle"],
                 "cfg": {
-                    "scale": 0.3
+                    "scale": 0.2
                 }
             },
             "blood": {
@@ -151,6 +151,18 @@
                 }
             }
         },
+        "tileMap": {
+            "tm1": {
+                "dep": ["raw.test2map", "raw.test2tileset", "textureAtlas.spritesheet1"],
+                "cfg": {
+                    "type": 1,
+                    "map": "raw.test2map",
+                    "tileset": "raw.test2tileset",
+                    "textureAtlas": "textureAtlas.spritesheet1"
+                }
+
+            }
+        },
         "fastImage": {
             "cursor": {
                 "dep": ["raw.cursor"]
@@ -158,7 +170,7 @@
             "cursor2": {
                 "dep": ["raw.crosshair"],
                 "cfg": {
-                    "scale": 0.15,
+                    "scale": 0.05,
                     "bias": {
                         "x": "-50%",
                         "y": "-50%"
@@ -220,6 +232,12 @@
                 "paths": {
                     "test1_tiledMapLayer": "test1-tiledMapLayer.tmx",
                     "test1_tileset": "test1-tileset.tsx"
+                }
+            }, {
+                "prefix": "xml/",
+                "paths": {
+                    "test2map": "test2-map.tmx",
+                    "test2tileset": "test2-tileset.tsx"
                 }
             }]
         }

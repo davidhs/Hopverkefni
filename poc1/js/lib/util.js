@@ -294,6 +294,88 @@ const util = (function () {
     return l;
   };
 
+  util.value = (value, defaultValue) => {
+    if (typeof value !== "undefined") {
+      return value;
+    } else {
+      return defaultValue;
+    }
+  };
+
+  function xml2json(xml, cfg) {
+    let obj = {};
+
+    
+    if (typeof xml === 'undefined') throw Error();
+
+    let ignoreEmptyStrings = true;
+
+    // I'll do this later.  I want to be able to replace
+    // every of this names with something else.
+    let attributeHandle = "@attributes";
+    let textHandle = "#text";
+
+    if (xml.nodeType === XMLDocument.ELEMENT_NODE) {
+      if (xml.attributes.length > 0) {
+        obj[attributeHandle] = {};
+        for (let i = 0; i < xml.attributes.length; i += 1) {
+          const attribute = xml.attributes.item(i);
+          obj[attributeHandle][attribute.nodeName] = attribute.nodeValue;
+        }
+      }
+    }
+
+    if (xml.nodeType === XMLDocument.TEXT_NODE) {
+      obj = xml.nodeValue;
+    }
+
+    if (xml.nodeType === XMLDocument.DOCUMENT_NODE) {}
+
+
+    if (typeof xml.hasChildNodes !== 'undefined' && xml.hasChildNodes()) {
+      for (let i = 0; i < xml.childNodes.length; i += 1) {
+        const item = xml.childNodes.item(i);
+        const nodeName = item.nodeName;
+
+        if (typeof obj[nodeName] === 'undefined') {
+
+          const subtree = xml2json(item);
+
+          if (typeof subtree === "string") {
+            const str = ignoreEmptyStrings ? subtree.trim() : subtree;
+            if (str.length !== 0) {
+              obj[nodeName] = str;
+            }
+          } else {
+            obj[nodeName] = xml2json(item);
+          }
+        } else {
+          // Multi line text?
+          if (typeof obj[nodeName].push === "undefined") {
+            const oldObject = obj[nodeName];
+            obj[nodeName] = [];
+            obj[nodeName].push(oldObject);
+          }
+
+          const subtree = xml2json(item);
+
+          if (typeof subtree === "string") {
+            const str = ignoreEmptyStrings ? subtree.trim() : subtree;
+            if (str.length !== 0) {
+              obj[nodeName] = str;
+            }
+          } else {
+            obj[nodeName].push(subtree);
+          }
+        }
+      }
+    }
+
+    return obj;
+  };
+
+  util.xml2json = xml2json;
+
 
   return util;
 })();

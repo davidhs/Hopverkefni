@@ -209,7 +209,7 @@ const g_viewport = (function () {
    * @param {Number} ox
    */
   function mapO2IX(ox) {
-    return (ow - outerX) * (innerWidth / outerWidth);
+    return (ox - outerX) * (innerWidth / outerWidth);
   }
 
 
