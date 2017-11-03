@@ -19,8 +19,8 @@
     },
 
     "mouse": {
-        "image": "assets.fastImage.cursor2",
-        "cursorLock": true
+        "image": "raw.cursor",
+        "cursorLock": false
     },
 
     "init": {
@@ -152,7 +152,7 @@
             }
         },
         "tileMap": {
-            "tm1": {
+            "tm2": {
                 "dep": ["raw.test2map", "raw.test2tileset", "textureAtlas.spritesheet1"],
                 "cfg": {
                     "type": 1,
@@ -160,7 +160,15 @@
                     "tileset": "raw.test2tileset",
                     "textureAtlas": "textureAtlas.spritesheet1"
                 }
-
+            },
+            "tm1": {
+                "dep": ["raw.test1_tiledMapLayer", "raw.test1_tileset", "textureAtlas.spritesheet1"],
+                "cfg": {
+                    "type": 1,
+                    "map": "raw.test1_tiledMapLayer",
+                    "tileset": "raw.test1_tileset",
+                    "textureAtlas": "textureAtlas.spritesheet1"
+                }
             }
         },
         "fastImage": {

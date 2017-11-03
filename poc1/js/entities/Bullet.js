@@ -43,9 +43,7 @@ Bullet.prototype.update = function (du) {
   this.cx += this.velX * du;
   this.cy += this.velY * du;
 
-  if (!g_world.inBounds(this.cx, this.cy)) {
-    return entityManager.KILL_ME_NOW;
-  }
+  if (!g_world.inBounds(this.cx, this.cy)) return entityManager.KILL_ME_NOW;
 
   // TODO: this is just a total mess.
 
@@ -55,6 +53,7 @@ Bullet.prototype.update = function (du) {
     const hitEntity = this.findHitEntity();
 
     if (hitEntity) {
+      spatialManager.unregister(this);
       const canTakeHit = hitEntity.takeBulletHit;
       if (canTakeHit) canTakeHit.call(hitEntity);
 
@@ -64,7 +63,8 @@ Bullet.prototype.update = function (du) {
       });
 
       return entityManager.KILL_ME_NOW;
-    } else if (potentialCollision < 10) {
+    } else if (potentialCollision < spatialManager.MIN_ENTITY) {
+      spatialManager.unregister(this);
       entityManager.generateExplosion({
         cx: this.cx,
         cy: this.cy,
@@ -85,6 +85,7 @@ Bullet.prototype.getRadius = function () {
 };
 
 Bullet.prototype.takeBulletHit = function () {
+  spatialManager.unregister(this);
   this.kill();
 
   // TODO: bind in JSON.

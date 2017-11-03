@@ -67,7 +67,7 @@ Texture.prototype.resize = function (textureWidth, textureHeight) {
       const x = j * dw;
 
       ctx.drawImage(
-        image.getImage(),
+        image,
         0, 0, w, h,
         x, y, dw, dh,
       );
@@ -99,5 +99,5 @@ Texture.prototype.render = function (ctx, cfg) {
   const x = -g_viewport.getOX();
   const y = -g_viewport.getOY();
 
-  ctx.drawImage(this._.texture.getImage(), x, y);
+  ctx.drawImage(this._.texture, x, y);
 };

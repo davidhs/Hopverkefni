@@ -1,5 +1,8 @@
 'use strict';
 
+
+const DEBUG_PLAYER = false;
+
 /* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
 spatialManager entityManager g_world :true */
 
@@ -71,7 +74,7 @@ Player.prototype.update = function (du) {
   }
 
   if (this.velX !== 0 || this.velY !== 0) {
-    console.log("Player location: ", this.cx / 32, this.cy / 32);
+    if (DEBUG_PLAYER) console.log("Player location: ", this.cx / 32, this.cy / 32);
   }
 
   // TODO: Handle firitng

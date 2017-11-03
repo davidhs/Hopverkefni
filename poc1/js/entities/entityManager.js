@@ -73,7 +73,7 @@ const entityManager = (function () {
 
   // TODO: yes, surely we don't, don't we?
   function _generateRocks() {
-    const NUM_ROCKS = 100;
+    const NUM_ROCKS = 1000;
 
     for (let i = 0; i < NUM_ROCKS; i += 1) {
       generateRock();

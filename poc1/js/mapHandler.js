@@ -192,7 +192,7 @@ const mapHandler = (function () {
       // Assume type texture atlas :/
       const tileX = cfg.image.coordinate[0];
       const tileY = cfg.image.coordinate[1];
-      image = imageThing.getSubimage(tileX, tileY);
+      image = imageThing.getTile(tileX, tileY);
     }
 
     const obj = new Texture({
