@@ -73,6 +73,19 @@
 * https://en.wikipedia.org/wiki/Pathfinding
 * https://en.wikipedia.org/wiki/Navigation_mesh
 
+**Davíð:** 
+
+Ein útfærsla á þessu vandamáli er að leggja net yfir heiminn í laginu eins og grind, þar sem hver hnútur væri tengdur aðlægum
+hnútum, þar sem hver leggur hefur ákveðna þyngd. Ef hnúturinn liggur ofan á svæði sem ekki er hægt að komast í gegnum er hann annaðhvort fjarlægður eða þyngd leggja í kringum hann sett í óendanlegt, t.d. eins og Number.MAX_VALUE.
+
+Markmiðið hér að finna leið, en ekki endilega stystu leið, í gegnum netið.
+
+Reiknirit Dijkstra, A*, eða önnur sambærileg reiknirit geta leyst þetta vandamál.
+
+Einnig viljum við kannski að hver dýnamískur hlutur er mismunandi á stærð, þannig ef hlutur A, sem væri lítill, og hlutur B, sem væri stór, væru svipað staðsettur og væri að reyna að komast á stað X, þá gæti A smogið sér í gegnum þröngan gang, en B þyrfti að finna aðra leið.
+
+Ein leið til að útfæra þetta væri þannig hver hnútur netinu viti hversu stóran hlut hann gæti geymt.
+
 #### Vandamál:
 * Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
 
@@ -84,12 +97,19 @@
 
 **Daníel:** Erum við að gera detection fyrir eitthvað sem hreyfist f. utan skotin? 
 
-### Shadows
+**Davíð:** Já, við athugum hvort dýnamískir hlutir rekast við aðra dýnamísk og statíska hluti (eins og veggir
+
+Hugmyndin mín væri að Spatial Manager sæi alfarið um að ákvarða hvort árekstur eigi sér stað og ef svo
+myndi tilkynna þeim hlutum sem væri að rekast saman og láta þá leysa áreksturinn.
+
+Ég hef hugsað mér að skipta hvernig Spatial Manager virkar í tvennt: (1) meðhöndlun á árekstri við statíska hluti, og
+(2) meðhöndlun á árekstri við dýnamíska hluti.  Statískir hlutir eru "þannig séð" fyrirfram ákveðnir og staðsetningin
+þarf ekki að uppfæra.  Dýnamískir hlutir eru erfiaðri, því þeir geta safnast saman.  Ein hugmynd, sem er núna í gangi en illa útfærð, er að skipta heiminum í "grind", þar sem hver reitur hefur á meðaltali ekki of marga hluti. Einnig væri hægt að skoða að nota [Quadtree](https://en.wikipedia.org/wiki/Quadtree) í staðinn fyrir að skipta heiminum niður í grind.
+
+### Shadows / ligting
 
 * https://en.wikipedia.org/wiki/Ray_casting
 * http://ncase.me/sight-and-light/
-
-### Lighting
 
 Hægt að nota sambærilega ray casting aðferð og notað er til að búa til skugga.
 
