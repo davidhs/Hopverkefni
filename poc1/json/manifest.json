@@ -7,6 +7,9 @@
         },
         "map2": {
             "path": "map2.json"
+        },
+        "map3": {
+            "path": "map3.json"
         }
     },
     "keyBindings": {}

@@ -1,0 +1,6 @@
+{
+    "name": "Hello world!",
+    "age": 1001,
+    "skills": ["not cooking", "zone out"],
+    "ready": false
+}

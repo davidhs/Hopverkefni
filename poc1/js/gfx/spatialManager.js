@@ -336,7 +336,7 @@ const spatialManager = (function () {
   function init() {
     if (false) {
       setBlockMap(g_asset.blockMap);
-    } else {
+    } else if (false) {
       const canvas = document.createElement('canvas');
       const w = g_world.getWidth();
       const h = g_world.getHeight();

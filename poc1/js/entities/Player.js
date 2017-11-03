@@ -25,6 +25,7 @@ Player.prototype.cx = 200;
 Player.prototype.cy = 200;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
+Player.prototype.maxSpeed = 5;
 
 Player.prototype.bulletCooldown = 0;
 
@@ -48,27 +49,29 @@ Player.prototype.update = function (du) {
   // TODO: check for death
   // if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 
-  const speed = 10;
-
   this.velX = 0;
   this.velY = 0;
 
   // TODO: do movement
 
   if (g_keys[this.KEY_UP]) {
-    this.velY = -speed;
+    this.velY = -this.maxSpeed;
   }
 
   if (g_keys[this.KEY_DOWN]) {
-    this.velY = +speed;
+    this.velY = this.maxSpeed;
   }
 
   if (g_keys[this.KEY_LEFT]) {
-    this.velX = -speed;
+    this.velX = -this.maxSpeed;
   }
 
   if (g_keys[this.KEY_RIGHT]) {
-    this.velX = +speed;
+    this.velX = this.maxSpeed;
+  }
+
+  if (this.velX !== 0 || this.velY !== 0) {
+    console.log("Player location: ", this.cx / 32, this.cy / 32);
   }
 
   // TODO: Handle firitng

@@ -15,7 +15,7 @@ let g_url = {}; // URLs are eventually placed here.
 let g_asset = {}; // Assets are loaded here.
 
 // Which map to open.
-const chosenMap = 'map2';
+let chosenMap;  // Defined in init.json
 
 // Map information
 let g_master;
@@ -87,6 +87,13 @@ function renderSimulation(ctx) {
   const ctxo = g_occlusion.getContext('2d'); // Occlusion map context
   const ctxs = g_shadows.getContext('2d'); // Shadows context
 
+  ctxb.imageSmoothingEnabled = false;
+  ctxm.imageSmoothingEnabled = false;
+  ctxf.imageSmoothingEnabled = false;
+  ctxo.imageSmoothingEnabled = false;
+  ctxs.imageSmoothingEnabled = false;
+
+
   // Width and height of rendering canvases.
   const w = g_canvas.width;
   const h = g_canvas.height;
@@ -107,10 +114,13 @@ function renderSimulation(ctx) {
   // --- BACKGROUND ---
 
   // Draw background.  TODO: remove later
-  g_asset.texture.background.render(ctxb);
+  //g_asset.texture.background.render(ctxb);
+
+  // Render better background.
+  g_tm.render(ctxb);
 
   // Draw alpha 0 background.  TODO: remove later
-  ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+  //ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // --- MIDGROUND ----
 
@@ -132,7 +142,7 @@ function renderSimulation(ctx) {
   });
 
   // Add "walls" to occlusion map.  TODO: remove later.
-  ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+  //ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // === SHADOWS ===
 
@@ -175,6 +185,7 @@ function renderSimulation(ctx) {
 
 
 function setup(response) {
+
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
@@ -203,23 +214,14 @@ function setup(response) {
   // Init debug
   g_debugGAME.init();
 
-  // Set g_url.
-  g_url = response.urls;
+  // Init g_url.
+  g_url = {};
+  util.extendObject(g_url, response.urls);
 
-  // Set g_asset
-  g_asset = response.assets;
-
-  const stuff = {};
-
-  for (let i = 0, keys = Object.keys(urls); i < keys.length; i += 1) {
-    const name = keys[i];
-    const url = urls[name];
-
-    stuff[url] = raw[name];
-  }
-
-  util.extendObject(g_asset, raw);
-  util.extendObject(g_asset, assets);
+  // Init g_asset.
+  g_asset = {};
+  util.extendObject(g_asset, {raw: g_master.raw});
+  util.extendObject(g_asset, response.assets);
 
   // --- Mouse ---
 
@@ -248,11 +250,14 @@ function setup(response) {
   // Initialize shadows: load in shader source code and
   // resolution of shadow.
   shadows.init(
-    g_asset.lights,
-    g_asset.shadowMap,
-    g_asset.shadowMask,
+    g_asset.raw.lights,
+    g_asset.raw.shadowMap,
+    g_asset.raw.shadowMask,
     g_shadowSize,
   );
+
+  // Experimental
+  g_tm = g_asset.tileMap.tm1;
 
   // --- Spatial Manager ---
 
@@ -260,13 +265,15 @@ function setup(response) {
   spatialManager.init();
 
   // Temporary occlusion map from spatial manager.  TODO: remove later.
-  g_testWOM = spatialManager.getWallOcclusionMap();
+  //g_testWOM = spatialManager.getWallOcclusionMap();
 
   // --- Start Game ---
 
   // Start game!
   g_main.mainInit();
 }
+
+let g_tm;
 
 
 // =========================
@@ -431,4 +438,13 @@ g_debugGAME.render = (ctx) => {
 // START GAME
 // ==========
 
-mapHandler.openMap(chosenMap, setup);
+assetManager.load({json: ['json/init.json']}, response => {
+
+  const ji = response[Object.keys(response)[0]];
+
+  chosenMap = ji.variables.chosenMap;
+
+  mapHandler.openMap(chosenMap, setup);
+});
+
+
