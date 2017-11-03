@@ -9,6 +9,9 @@
 * Á leikurinn að hafa quest/verkefni/missions/goal?
 
     * **Daníel:** Gætum skoðað það að hafa waves, sem verða alltaf erfiðar og erfiðar. Frekar easy að implementa og kominn survival fýlingur. Getum einnig leyft spilaranum að velja milli survival eða eitthvað annað.
+    
+* Ef við notum forrit eins og [Tiled](http://www.mapeditor.org/) til að búa til borð þá getum við tilgreint svæði í borðinu
+þar sem óvinir myndast.
 
 ### Á leikurinn að samanstanda af mismunandi borðum?
 
@@ -17,6 +20,8 @@
 **Alexander**:
   Mín skoðun er sú að þetta ætti að vera eitt stórt map, sem er endalaust og
   verður erfiðara með tímanumm, s.s. fleiri óvinir í einu og erfiðari
+
+**Davíð**: hvernig útfærir maður endalaust borð?  Annað, þá þarf maður að reiða á procedural generation.
 
 #### Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
 
@@ -29,6 +34,8 @@
 #### "Open-world"?
 
 * **Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
+
+* **Davíð:** Nei, hef lesið að nota preocedurally generated sé erfitt að meðhöndla þannig útkoman er flott.  T.d. ef leikmaðurinn byrjar fastur í vegg eða í svæði sem hann kemst ekki úr.
 
 #### Procedurally generated
   
@@ -57,6 +64,14 @@
 **Daníel:** Getum gert það. Ótrúlega easy að bæta inní og strax orðið svona "öðruvísi" og klárlega plús í kladdann.
 
 ## Tækni
+
+### Animation
+
+* **Davíð:**
+
+Það þarf að finna út hvernig teikna player-inn eða skrímsli.  Animation-ið þyrfti að bregðast við einhversskonar "áreiti" eins og leikmaðurinn sé á hreyfingur, er að skjóta, verður fyrir árás o.fl.
+
+Flott væri að hafa "góðan" stuðning fyrir animation.  T.d. það gæti verið kyndinn einhversstaðar á kortinu sem væri með animate-aðan eld.
 
 ### Hljóð
 
