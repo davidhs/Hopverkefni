@@ -22,16 +22,56 @@
 //
 // NB: if it caches audio, then it doesn't do it for very long...
 const audioManager = (function () {
+
+  const aa = {};
+
+
   // Audio files are initially loaded by the asset manager.
   // It appears by doing so the audio file is cached, so `new Audio(...)'
   // appears to play the cached audio file.
-  function play(url) {
-    const sound = new Audio(url);
-    sound.play();
+  function play(url, loop) {
+
+    loop = (typeof loop !== "undefined") ? loop : false;
+
+    if (!aa[url]) {
+      const audio = new Audio(url);
+      aa[url] = {
+        idx: 0,
+        list: [audio]
+      };
+    }
+
+    let handle = null;
+
+    // Search for available audio
+    let found = false;
+    for (let i = 0; i < aa[url].list.length && !found; i += 1) {
+      if (!found && aa[url].list[i].paused) {
+        found = true;
+        const audio = aa[url].list[i];
+        handle = audio;
+
+        audio.playbackRate = 1.0;
+        audio.volume = 1.0;
+        audio.currentTime = 0;
+        audio.loop = loop;
+        audio.play();
+      }
+    }
+
+    if (!found) {
+      const audio = new Audio(url);
+      handle = audio;
+      audio.play();
+      aa[url].list.push(audio);
+    }
+
+    return handle;
   }
 
   // Expose properties and functions.
   return {
     play,
+    debug: aa
   };
 }());

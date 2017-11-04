@@ -20,11 +20,13 @@ const entityManager = (function () {
   const _bullets = [];
   const _players = [];
   const _explosions = [];
+  const _genericEnemiesOne = [];
 
   const _categories = [
     _rocks,
     _bullets,
     _players,
+    _genericEnemiesOne,
     _explosions,
   ];
 
@@ -69,6 +71,10 @@ const entityManager = (function () {
   // TODO: maybe we don't want rocks in the future?
   function generateRock(descr) {
     _rocks.push(new Rock(descr));
+  }
+
+  function generateGenericEnemyOne(cfg) {
+    _genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
 
   // TODO: yes, surely we don't, don't we?
@@ -124,6 +130,20 @@ const entityManager = (function () {
 
   function init() {
     _generateRocks();
+
+    for (let i = 0; i < 100; i += 1) {
+      const cx = Math.random() * g_world.getWidth();
+      const cy = Math.random() * g_world.getHeight();
+      generateGenericEnemyOne({
+        cx, cy,
+        sprite: g_asset.sprite.donkey
+      });
+    }
+  }
+
+  function getPlayer() {
+    if (_players.length > 0) return _players[0];
+    return null;
   }
 
   return {
@@ -134,17 +154,14 @@ const entityManager = (function () {
     generateRock,
     generateExplosion,
     generatePlayer,
+    generateGenericEnemyOne,
     OK,
     KILL_ME_NOW,
 
     // FIXME: this is just a hack to get
     // the player's position so the viewport can
     // track the player.
-    getPos: () => {
-      if (_players.length > 0) {
-        return _players[0];
-      }
-      return null;
-    },
+    getPos: getPlayer,
+    getPlayer
   };
 }());

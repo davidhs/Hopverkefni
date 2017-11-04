@@ -110,8 +110,8 @@ TextureAtlas.prototype.getTile = function (tx, ty) {
 
   // TODO: cache tiles
 
-  const x = tx * this.tileWidth;
-  const y = ty * this.tileHeight;
+  const x = Math.floor(tx) * this.tileWidth;
+  const y = Math.floor(ty) * this.tileHeight;
   const w = this.tileWidth;
   const h = this.tileHeight;
 
