@@ -135,7 +135,7 @@ const mapHandler = (function () {
     // END OF PROLOGUE
 
     const inputObject = {
-      image: getAsset(dependencies[0])
+      image: getAsset(dependencies[0]),
     };
 
     util.extendObject(inputObject, cfg);
@@ -235,7 +235,7 @@ const mapHandler = (function () {
     const obj = textureAtlas.getSequence({
       primaryDirection: 'right',
       secondaryDirection: 'down',
-      nrOfTiles: textureAtlas.nrOfTiles
+      nrOfTiles: textureAtlas.nrOfTiles,
     });
 
 
@@ -348,7 +348,6 @@ const mapHandler = (function () {
   };
 
   function processAssets(response) {
-
     if (DEBUG) console.log(`${FILENAME}: Processing assets...`);
 
     const map = activeMap;
@@ -388,7 +387,7 @@ const mapHandler = (function () {
     }
 
     const _types = [
-      'texture', 'textureAtlas', 'sequence', 'sprite', 'fastImage', 'tileMap'
+      'texture', 'textureAtlas', 'sequence', 'sprite', 'fastImage', 'tileMap',
     ];
 
     if (DEBUG && VERBOSE) console.log(`${FILENAME}: Doing something more...`);
@@ -541,7 +540,7 @@ const mapHandler = (function () {
     const dbo = {};
     util.extendObject(dbo, {
       bundles,
-      completeDependencies
+      completeDependencies,
     });
     returnObject.debug = dbo;
   }

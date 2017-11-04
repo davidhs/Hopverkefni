@@ -22,7 +22,6 @@
 //
 // NB: if it caches audio, then it doesn't do it for very long...
 const audioManager = (function () {
-
   const aa = {};
 
 
@@ -30,14 +29,13 @@ const audioManager = (function () {
   // It appears by doing so the audio file is cached, so `new Audio(...)'
   // appears to play the cached audio file.
   function play(url, loop) {
-
-    loop = (typeof loop !== "undefined") ? loop : false;
+    loop = (typeof loop !== 'undefined') ? loop : false;
 
     if (!aa[url]) {
       const audio = new Audio(url);
       aa[url] = {
         idx: 0,
-        list: [audio]
+        list: [audio],
       };
     }
 
@@ -72,6 +70,6 @@ const audioManager = (function () {
   // Expose properties and functions.
   return {
     play,
-    debug: aa
+    debug: aa,
   };
 }());
