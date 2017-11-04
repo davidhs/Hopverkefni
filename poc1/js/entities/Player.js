@@ -14,8 +14,6 @@ function Player(descriptor) {
 
   this._scale = this.sprite.scale;
 
-  this._soundRunning;
-
   this._soundRunning = new Audio(g_url.running1);
   this._soundRunning.loop = true;
 }
@@ -68,12 +66,7 @@ Player.prototype.update = function (du) {
 
   // TODO: do movement
 
-  
 
-  
-
-
-  
   let noHorAcc = true;
   let noVerAcc = true;
 
@@ -115,7 +108,7 @@ Player.prototype.update = function (du) {
 
   if (Math.abs(this.velX) > EPS || Math.abs(this.velY) > EPS) {
     // In motion
-    if (DEBUG_PLAYER) console.log("Player location: ", this.cx / 32, this.cy / 32);
+    if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
     if (!this._soundRunning) {
       this._soundRunning = audioManager.play(g_url.running1);
     }
@@ -128,7 +121,7 @@ Player.prototype.update = function (du) {
   // ======
   // FIRING
   // ======
-  
+
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {

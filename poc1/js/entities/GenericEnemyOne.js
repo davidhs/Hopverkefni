@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 /* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
 spatialManager entityManager g_world :true */
 
@@ -37,7 +36,6 @@ GenericEnemyOne.prototype.decay = 0.5;
 GenericEnemyOne.prototype.attackCooldown = 50;
 
 GenericEnemyOne.prototype.update = function (du) {
-
   // Unregister from spatial manager.
   spatialManager.unregister(this);
 
@@ -85,7 +83,7 @@ GenericEnemyOne.prototype.update = function (du) {
 
   if (Math.abs(this.velX) > EPS || Math.abs(this.velY) > EPS) {
     // In motion
-    if (DEBUG_PLAYER) console.log("Player location: ", this.cx / 32, this.cy / 32);
+    if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
     if (!this._soundRunning && len < 2 * g_viewport.getIW()) {
       this._soundRunning = audioManager.play(g_url.running1, true);
     }
@@ -105,38 +103,39 @@ GenericEnemyOne.prototype.update = function (du) {
   this.cx = newX;
   this.cy = newY;
 
-  
-    if (!g_world.inBounds(this.cx, this.cy, 0)) {
-      this.cx = oldX;
+
+  if (!g_world.inBounds(this.cx, this.cy, 0)) {
+    this.cx = oldX;
+    this.cy = oldY;
+  }
+
+  let flags = spatialManager.register(this);
+
+  // Wall crap
+  if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
+    if (flags < spatialManager.MIN_ENTITY) {
+      this.cx = newX;
       this.cy = oldY;
+      flags = spatialManager.register(this);
     }
 
-    let flags = spatialManager.register(this);
+    if (flags < spatialManager.MIN_ENTITY) {
+      this.cx = oldX;
+      this.cy = oldY;
+      flags = spatialManager.register(this);
+    }
 
-    // Wall crap
-    if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
-      if (flags < spatialManager.MIN_ENTITY) {
-        this.cx = newX;
-        this.cy = oldY;
-        flags = spatialManager.register(this);
-      }
-
-      if (flags < spatialManager.MIN_ENTITY) {
-        this.cx = oldX;
-        this.cy = oldY;
-        flags = spatialManager.register(this);
-      }
-
-      if (flags) {
-        this.cx = oldX;
-        this.cy = oldY;
-        flags = spatialManager.register(this);
-      }
-    } 
+    if (flags) {
+      this.cx = oldX;
+      this.cy = oldY;
+      flags = spatialManager.register(this);
+    }
+  }
+  // Return sett til ad stoppa Lint villu (ma taka ut ef tetta gerir bug)
+  return 0;
 };
 
 GenericEnemyOne.prototype.attack = function (du) {
-
   this.attackCooldown -= 1.0 * du;
 
   if (this.attackCooldown > 0) return;
@@ -163,7 +162,7 @@ GenericEnemyOne.prototype.getRadius = function () {
 GenericEnemyOne.prototype.render = function (ctx, cfg) {
   // TODO: maybe we wan't the player to cast shadows,
   // sometimes.
-  
+
 
   const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
@@ -171,4 +170,3 @@ GenericEnemyOne.prototype.render = function (ctx, cfg) {
   this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
   this.sprite.scale = origScale;
 };
-

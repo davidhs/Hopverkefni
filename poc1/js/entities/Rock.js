@@ -142,7 +142,6 @@ Rock.prototype._spawnFragment = function () {
 };
 
 Rock.prototype.render = function (ctx, cfg) {
-
   if (!g_viewport.inOuterSquareCircle(this.cx, this.cy, this.getRadius())) return;
 
 

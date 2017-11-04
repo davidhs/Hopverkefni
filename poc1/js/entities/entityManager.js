@@ -135,8 +135,9 @@ const entityManager = (function () {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({
-        cx, cy,
-        sprite: g_asset.sprite.donkey
+        cx,
+        cy,
+        sprite: g_asset.sprite.donkey,
       });
     }
   }
@@ -162,6 +163,6 @@ const entityManager = (function () {
     // the player's position so the viewport can
     // track the player.
     getPos: getPlayer,
-    getPlayer
+    getPlayer,
   };
 }());
