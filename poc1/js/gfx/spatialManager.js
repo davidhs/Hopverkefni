@@ -12,15 +12,15 @@
 
 /**
  * Spatial manager
- * 
+ * ===============
  * A module which handles spatial lookup, used for general collision
  * detection.
- * 
+ * ---------------
  * It's very important to conside the tile size `tileSize' beforehand --
  * enable to change tile size -- because it can drastically affect
  * performance.  If the scene is huge and there are a lot of objects
  * spread around, you should conside using a larget tile size.
- * 
+ * ----------------
  * Registering and unregistering is a rather slow process.  It's used
  * for spatial lookup.  It only indicates potential collisions.  It's
  * up to the entities themselves to resolve the collisions themselves.
@@ -108,7 +108,6 @@ const spatialManager = (function () {
   }
 
   function _registerRectCheck(id, x1, y1, x2, y2) {
-
     // Do precheck.
 
     let tid;
@@ -365,11 +364,10 @@ const spatialManager = (function () {
         const x = colNumber * tileSize;
         const y = rowNumber * tileSize;
 
-        //if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
+        //  if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
 
         if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
           util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
-
         }
       }
     }
@@ -379,8 +377,8 @@ const spatialManager = (function () {
     for (let j = 0, keys2 = Object.keys(entities); j < keys2.length; j += 1) {
       const ID = keys2[j];
       const e = entities[ID];
-      const radius = (typeof e.radius !== "undefined") ? e.radius : e.getRadius();
-      
+      const radius = (typeof e.radius !== 'undefined') ? e.radius : e.getRadius();
+
       if (g_viewport.inOuterSquareCircle(e.posX, e.posY, radius)) {
         util.strokeCircle(ctx, e.posX - dx, e.posY - dy, e.radius);
       }
