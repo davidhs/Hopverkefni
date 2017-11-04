@@ -233,7 +233,6 @@ const g_viewport = (function () {
   }
 
   function inOuterRectangleBounds(wx, wy, ww, wh) {
-
     const ax1 = getOX();
     const ax2 = getOX() + getOW();
 
@@ -282,7 +281,9 @@ const g_viewport = (function () {
     mapO2IX,
     mapO2IY,
 
-    inOuterSquareCircle, inOuterCircleBounds, inOuterRectangleBounds
+    inOuterSquareCircle,
+    inOuterCircleBounds,
+    inOuterRectangleBounds,
   });
 
   return obj;
