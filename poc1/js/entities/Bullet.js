@@ -9,7 +9,7 @@ function Bullet(descr) {
   this.setup(descr);
 
   // TODO: bind in JSON.
-  //audioManager.play(g_url.bulletFire);
+  // audioManager.play(g_url.bulletFire);
   audioManager.play(g_url.gunsound1);
 }
 
