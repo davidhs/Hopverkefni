@@ -49,7 +49,6 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
 
   const tx = term[0];
   const ty = term[1];
-  
   const w = ref.tileWidth;
   const h = ref.tileHeight;
 
@@ -60,6 +59,6 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
   y -= g_viewport.getOY();
 
   // TODO: I don't like the FastImage thing.
-  //ctx.drawImage(img, x, y, w, h);
+  // ctx.drawImage(img, x, y, w, h);
   ref.renderTile(ctx, tx, ty, x, y, w, h);
 };
