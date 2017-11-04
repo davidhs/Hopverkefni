@@ -15,7 +15,7 @@ let g_url = {}; // URLs are eventually placed here.
 let g_asset = {}; // Assets are loaded here.
 
 // Which map to open.
-let chosenMap;  // Defined in init.json
+let chosenMap; // Defined in init.json
 
 // Map information
 let g_master;
@@ -114,13 +114,13 @@ function renderSimulation(ctx) {
   // --- BACKGROUND ---
 
   // Draw background.  TODO: remove later
-  //g_asset.texture.background.render(ctxb);
+  // g_asset.texture.background.render(ctxb);
 
   // Render better background.
   g_tm.render(ctxb);
 
   // Draw alpha 0 background.  TODO: remove later
-  //ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+  // ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // --- MIDGROUND ----
 
@@ -142,7 +142,7 @@ function renderSimulation(ctx) {
   });
 
   // Add "walls" to occlusion map.  TODO: remove later.
-  //ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+  // ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // === SHADOWS ===
 
@@ -185,7 +185,6 @@ function renderSimulation(ctx) {
 
 
 function setup(response) {
-
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
@@ -220,7 +219,7 @@ function setup(response) {
 
   // Init g_asset.
   g_asset = {};
-  util.extendObject(g_asset, {raw: g_master.raw});
+  util.extendObject(g_asset, { raw: g_master.raw });
   util.extendObject(g_asset, response.assets);
 
   // --- Mouse ---
@@ -265,7 +264,7 @@ function setup(response) {
   spatialManager.init();
 
   // Temporary occlusion map from spatial manager.  TODO: remove later.
-  //g_testWOM = spatialManager.getWallOcclusionMap();
+  // g_testWOM = spatialManager.getWallOcclusionMap();
 
   // --- Start Game ---
 
@@ -438,13 +437,10 @@ g_debugGAME.render = (ctx) => {
 // START GAME
 // ==========
 
-assetManager.load({json: ['json/init.json']}, response => {
-
+assetManager.load({ json: ['json/init.json'] }, (response) => {
   const ji = response[Object.keys(response)[0]];
 
   chosenMap = ji.variables.chosenMap;
 
   mapHandler.openMap(chosenMap, setup);
 });
-
-
