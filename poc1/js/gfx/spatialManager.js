@@ -39,7 +39,7 @@ const spatialManager = (function () {
 
   // Tiles (grid)
   const tiles = [];
-  const tileSize = 32;
+  const tileSize = 16;
 
   let nextSpatialID = MIN_ENTITY; // make all valid IDs non-falsey (i.e. don't start at 0)
 

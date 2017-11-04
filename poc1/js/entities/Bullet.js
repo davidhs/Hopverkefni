@@ -9,7 +9,8 @@ function Bullet(descr) {
   this.setup(descr);
 
   // TODO: bind in JSON.
-  audioManager.play(g_url.bulletFire);
+  //audioManager.play(g_url.bulletFire);
+  audioManager.play(g_url.gunsound1);
 }
 
 Bullet.prototype = new Entity();
@@ -57,6 +58,8 @@ Bullet.prototype.update = function (du) {
       const canTakeHit = hitEntity.takeBulletHit;
       if (canTakeHit) canTakeHit.call(hitEntity);
 
+      audioManager.play(g_url.explosion1);
+
       entityManager.generateExplosion({
         cx: this.cx,
         cy: this.cy,
@@ -64,6 +67,7 @@ Bullet.prototype.update = function (du) {
 
       return entityManager.KILL_ME_NOW;
     } else if (potentialCollision < spatialManager.MIN_ENTITY) {
+      audioManager.play(g_url.explosion1);
       spatialManager.unregister(this);
       entityManager.generateExplosion({
         cx: this.cx,

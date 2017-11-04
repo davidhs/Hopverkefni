@@ -20,7 +20,7 @@
 
     "mouse": {
         "image": "raw.cursor",
-        "cursorLock": false
+        "cursorLock": true
     },
 
     "init": {
@@ -213,7 +213,13 @@
                     "bulletFire": "bulletFire.ogg",
                     "bulletZapped": "bulletZapped.ogg",
                     "rockEvapoate": "rockEvaporate.ogg",
-                    "rockSplit": "rockSplit.ogg"
+                    "rockSplit": "rockSplit.ogg",
+                    "dying": "dying.ogg",
+                    "gunsound1": "gunsound1.ogg",
+                    "running1": "running1.ogg",
+                    "impact1": "impact1.ogg",
+                    "explosion1": "explosion.ogg",
+                    "clawing": "clawing.ogg"
                 }
             }],
             "text": [{
