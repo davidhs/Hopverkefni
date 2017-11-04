@@ -44,15 +44,15 @@ const assetManager = (function () {
   processor.image = function (url, callback) {
     const img = new Image();
 
-    if (DEBUG) console.log(`${FILENAME}: Processing image: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing image: ${url}`);
 
     img.onload = function (evt) {
-      if (DEBUG) console.log(`${FILENAME}: Done processing image: ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing image: ${url}`);
       callback(img, url);
     };
 
     img.onerror = function (evt) {
-      if (DEBUG) console.log(`${FILENAME}: Done processing image (error): ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing image (error): ${url}`);
       callback(null, url);
     };
 
@@ -61,24 +61,24 @@ const assetManager = (function () {
 
   // Process audio, most likely not needed.
   processor.audio = function (url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing audio: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing audio: ${url}`);
     const audio = new Audio(url);
-    if (DEBUG) console.log(`${FILENAME}: Done processing audio: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Done processing audio: ${url}`);
     callback(audio, url);
   };
 
   // Processes text
   processor.text = function (url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing text: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing text: ${url}`);
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'text';
     xhr.onload = function () {
       if (xhr.status === 200) {
-        if (DEBUG) console.log(`${FILENAME}: Done processing text: ${url}`)
+        if (DEBUG) console.log(`${FILENAME}: Done processing text: ${url}`);
         callback(xhr.responseText, url);
       } else {
-        if (DEBUG) console.log(`${FILENAME}: Done processing text (error): ${url}`)
+        if (DEBUG) console.log(`${FILENAME}: Done processing text (error): ${url}`);
         callback(null, url);
       }
     };
@@ -86,25 +86,25 @@ const assetManager = (function () {
   };
 
   processor.xml = function (url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing XML: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing XML: ${url}`);
     processor.text(url, (response, url) => {
-      if (DEBUG) console.log(`${FILENAME}: Done processing XML: ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing XML: ${url}`);
       if (response === null) callback(null, url);
       const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(response, "text/xml");
+      const xmlDoc = parser.parseFromString(response, 'text/xml');
       callback(xmlDoc, url);
     });
   };
 
   processor.json = function (url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing JSON: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing JSON: ${url}`);
     processor.text(url, (response, url) => {
-      if (DEBUG) console.log(`${FILENAME}: Done processing JSON: ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing JSON: ${url}`);
       if (response === null) callback(null, url);
       const json = JSON.parse(response);
       callback(json, url);
     });
-  }
+  };
 
   // Each time an asset has been loaded this function
   // is called.
@@ -133,8 +133,6 @@ const assetManager = (function () {
 
         bundles.splice(i, 1);
         i -= 1;
-
-        
         bundle.callback(bundle.asset);
       }
     }
@@ -147,7 +145,6 @@ const assetManager = (function () {
      * { images: [urls...], audio: [urls...]
      */
   function load(categories, callback) {
-
     if (DEBUG) console.log(`${FILENAME}: Loading stuff...`);
     if (DEBUG && VERBOSE) console.log(`${FILENAME}: Loading:`, JSON.stringify(categories));
 
@@ -188,7 +185,7 @@ const assetManager = (function () {
 
     // Check if bundle is empty
     if (bundle.size === 0) {
-      if (DEBUG) console.log(`${FILENAME}: Bundle is empty.`)
+      if (DEBUG) console.log(`${FILENAME}: Bundle is empty.`);
       if (callback) callback(null);
       return;
     }
@@ -207,7 +204,7 @@ const assetManager = (function () {
       const urls = bundle.category[categoryName];
       for (let i = 0; i < urls.length; i += 1) {
         const url = urls[i];
-        if (!processor[categoryName]) throw Error("CATEGORY NOT SUPPORTED: ", categoryName);
+        if (!processor[categoryName]) throw Error('CATEGORY NOT SUPPORTED: ', categoryName);
         processor[categoryName](url, assetTick);
       }
     }
@@ -218,7 +215,7 @@ const assetManager = (function () {
   returnObject.load = load;
 
   if (DEBUG) returnObject.debug = {
-    bundles
+    bundles,
   };
 
   return returnObject;
