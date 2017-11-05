@@ -140,6 +140,10 @@
                 "cfg": {
                     "scale": 0.25
                 }
+            },
+            "heart":{
+              "dep": ["raw.heart"]
+
             }
         },
         "fastImage": {
@@ -174,7 +178,15 @@
                     "explosionSpritesheet5": "explosionSpritesheet5.png",
                     "explosionSpritesheet6": "explosionSpritesheet6.png",
                     "donkey": "notdonkey.png",
-                    "crosshair": "crosshair.png"
+                    "crosshair": "crosshair.png",
+                    "heart": "hp.png",
+                    "knife": "guns/knife.png",
+                    "rifle1": "guns/rifle.png",
+                    "handgun": "guns/handgun.png",
+                    "shotgun": "guns/shotgun.png"
+
+
+
                 }
             }],
             "audio": [{
