@@ -20,9 +20,6 @@ let chosenMap; // Defined in init.json
 // Map information
 let g_master;
 
-// The resolution of the shadow.
-let g_shadowSize;
-
 
 // Canvases (except g_canvas).
 const g_background = document.createElement('canvas'); // Background
@@ -105,6 +102,8 @@ function renderSimulation(ctx) {
   const w = g_canvas.width;
   const h = g_canvas.height;
 
+  const player = entityManager.getPlayer();
+
   // Clear canvases.
   ctxb.clearRect(0, 0, w, h);
   ctxm.clearRect(0, 0, w, h);
@@ -153,6 +152,9 @@ function renderSimulation(ctx) {
 
   // === SHADOWS ===
 
+  const pcx = g_viewport.mapO2IX(player.cx);
+  const pcy = g_viewport.mapO2IY(player.cy);
+
   // Draw the light.
   //
   // NB: color doesn't work and the blending doesn't
@@ -163,8 +165,8 @@ function renderSimulation(ctx) {
     b: 255,
   }, {
     occluder: g_occlusion,
-    x: g_canvas.width / 2,
-    y: g_canvas.height / 2,
+    x: pcx,
+    y: pcy
   });
 
   // === DEBUG ===
@@ -188,6 +190,8 @@ function renderSimulation(ctx) {
 
   // --- DRAW FOREGROUND ---
   ctx.drawImage(g_foreground, 0, 0);
+
+  //util.fillCircle(ctx, pcx, pcy, 10);
 }
 
 
@@ -198,11 +202,10 @@ function setup(response) {
 
   console.log(response);
 
+  g_viewport.stickToWorld(true);
+
 
   g_muted = map.cfg.muted ? map.cfg.muted : false;
-
-  // Set shadow size
-  g_shadowSize = map.cfg.shadowSize;
 
   // Setting world
   g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
@@ -245,13 +248,10 @@ function setup(response) {
   g_debugGAME.init();
 
   // Init g_url.
-  g_url = {};
-  util.extendObject(g_url, response.urls);
+  g_url = response.urls;
 
   // Init g_asset.
-  g_asset = {};
-  util.extendObject(g_asset, { raw: g_master.raw });
-  util.extendObject(g_asset, response.assets);
+  g_asset = response.assets;
 
   // --- Mouse ---
 
@@ -283,7 +283,7 @@ function setup(response) {
     g_asset.raw.text.lights,
     g_asset.raw.text.shadowMap,
     g_asset.raw.text.shadowMask,
-    g_shadowSize,
+    map.cfg.shadowSize ? map.cfg.shadowSize : 64,
   );
 
   // Experimental

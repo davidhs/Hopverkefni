@@ -51,7 +51,6 @@ const entityManager = (function () {
       cy,
       velX,
       velY,
-
       rotation,
     }));
   }
@@ -77,20 +76,6 @@ const entityManager = (function () {
     _genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
 
-  // TODO: yes, surely we don't, don't we?
-  function _generateRocks() {
-    const NUM_ROCKS = 1000;
-
-    for (let i = 0; i < NUM_ROCKS; i += 1) {
-      generateRock();
-    }
-  }
-
-  // TODO: remove this later
-  function toggleRocks() {
-    _bShowRocks = !_bShowRocks;
-  }
-
   function update(du) {
     for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
@@ -111,16 +96,11 @@ const entityManager = (function () {
         }
       }
     }
-
-    // TODO: remove this.
-    if (_rocks.length === 0) _generateRocks();
   }
 
   function render(ctx, cfg) {
     for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
-
-      if (!_bShowRocks && aCategory === _rocks) { continue; }
 
       for (let i = 0; i < aCategory.length; i += 1) {
         aCategory[i].render(ctx, cfg);
@@ -129,9 +109,8 @@ const entityManager = (function () {
   }
 
   function init() {
-    _generateRocks();
 
-    for (let i = 0; i < 100; i += 1) {
+    for (let i = 0; i < 0; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({
