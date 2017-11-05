@@ -1,6 +1,6 @@
 'use strict';
 
-/* global  document :true */
+/* global  util document :true */
 
 
 // A MORE ADVANCE LOADER SPECIFIC TO THIS
@@ -27,6 +27,7 @@ const assetLoader = (function () {
       const dependencies = entry.desc.dep || [];
       const cfg = entry.desc.cfg;
       // END OF PROLOGUE
+
   
       const inputObject = {};
       if (cfg) util.extendObject(inputObject, cfg);
@@ -34,12 +35,7 @@ const assetLoader = (function () {
       for (let i = 0; i < dependencies.length; i += 1) {
         const dependencyName = dependencies[i];
         const dependency = getAsset(group, dependencyName);
-        for (let j = 0, keys = Object.keys(inputObject); j < keys.length; j += 1) {
-          const propertyName = keys[j];
-          if (inputObject[propertyName] === dependencyName) {
-            inputObject[propertyName] = dependency;
-          }
-        }
+        util.objectStringReplacement(inputObject, dependencyName, dependency);
       }
   
       const obj = new constructor(inputObject);
@@ -76,6 +72,9 @@ const assetLoader = (function () {
     callback(retObject);
   }
 
+  let TICK_COUNT = 0;
+  const MAX_TICKS = 50;
+
   function tick() {
 
     for (let j = 0; j < groups.length; j += 1) {
@@ -93,7 +92,7 @@ const assetLoader = (function () {
       }
     }
 
-    if (rerun) {
+    if (rerun && TICK_COUNT++ < MAX_TICKS) {
       tick();
     }
   }
@@ -235,17 +234,10 @@ const assetLoader = (function () {
     processor[name] = generic(constructor);
   }
 
-  addProcessor('texture', Texture);
-  addProcessor('textureAtlas', TextureAtlas);
-  addProcessor('sequence', Sequence);
-  addProcessor('sprite', Sprite);
-  addProcessor('fastImage', FastImage);
-  addProcessor('tileMap', TileMap);
-
 
   const returnObject = {};
   returnObject.load = load;
-  returnObject.addProcessor
+  returnObject.addProcessor = addProcessor;
 
   return returnObject;
 
