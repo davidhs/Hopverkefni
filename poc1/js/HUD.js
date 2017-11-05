@@ -72,6 +72,8 @@
     HUD.isShotgun = true;
     HUD.isKnife = false;
   }
+}
+
 
 
 
