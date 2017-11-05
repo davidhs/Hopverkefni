@@ -67,15 +67,15 @@ TileMap.prototype.render = function (ctx) {
   const tileWidth = this.textureAtlas.tileWidth;
   const tileHeight = this.textureAtlas.tileHeight;
 
-  const tx1 = Math.ceil(wx1 / tileWidth);
-  const ty1 = Math.ceil(wy1 / tileHeight);
+  const tx1 = Math.floor(wx1 / tileWidth);
+  const ty1 = Math.floor(wy1 / tileHeight);
 
-  const tx2 = Math.ceil(wx2 / tileWidth);
-  const ty2 = Math.ceil(wy2 / tileHeight);
+  const tx2 = Math.floor(wx2 / tileWidth);
+  const ty2 = Math.floor(wy2 / tileHeight);
 
   // offset
-  const offx = Math.round(wx1 % tileWidth);
-  const offy = Math.round(wy1 % tileHeight);
+  const offx = Math.round(util.posmod(wx1, tileWidth));
+  const offy = Math.round(util.posmod(wy1, tileHeight));
 
   const m = ty2 - ty1;
   const n = tx2 - tx1;

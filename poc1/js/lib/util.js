@@ -168,6 +168,12 @@ const util = (function () {
     return false;
   };
 
+  // Returns a value that is always positive,
+  // or to be more accurate non-negative.
+  util.posmod = (value, modulus) => {
+    return (modulus + (value % modulus)) % modulus;
+  };
+
   util.inBounds = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
 
   util.clearCanvas = (ctx) => {
