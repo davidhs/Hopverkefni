@@ -43,6 +43,7 @@ function update(dt) {
   if (shouldSkipUpdate()) return;
 
   if (eatKey(TOGGLE_NOCLIP)) g_noClip = !g_noClip;
+  if (eatKey(TOGGLE_MUTED)) g_muted = !g_muted;
 
   // Remember this for later
   //

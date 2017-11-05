@@ -4,8 +4,11 @@
 
 // Animation
 
-function AnimatedImage(descr) {
-  util.extendObject(this, descr);
+function AnimatedImage(cfg) {
+
+  this.cx = util.value(cfg.cx, 0);
+  this.cy = util.value(cfg.cy, 0);
+  this.sequence = cfg.sequence ? cfg.sequence.sequence : [];
 }
 
 AnimatedImage.prototype.cx = 50;

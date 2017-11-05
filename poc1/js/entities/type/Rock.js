@@ -127,9 +127,9 @@ Rock.prototype.takeBulletHit = function () {
   if (this.scale > 0.25) {
     this._spawnFragment();
     this._spawnFragment();
-    audioManager.play(g_url.rockSplit);
+    audioManager.play(g_url.audio.rockSplit);
   } else {
-    audioManager.play(g_url.rockEvaporate);
+    audioManager.play(g_url.audio.rockEvaporate);
   }
 };
 

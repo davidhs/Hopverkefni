@@ -44,72 +44,69 @@
 
             H: toggle show collision volume<br>
             K: no clip<br>
+
+            <br><br>
+
+            M: mute
         </p>
         </div>
     </div>
 
 
-    <!-- L6 -->
-
-    <script src="js/lib/lighting.js"></script>
-    <script src="js/lib/shadows.js"></script>
+    <!-- LIB -->
     <script src="js/lib/util.js"></script>
-    <script src="js/lib/webglutil.js"></script>
-    <script src="js/lib/assetManager.js"></script>
+    <script src="js/lib/loader.js"></script>
+    <script src="js/lib/glutil.js"></script>
+    <script src="js/lib/consts.js"></script>
+    <script src="js/lib/audioManager.js"></script>
 
-    <script src="js/AudioManager.js"></script>
+    <!-- 2D GFX -->
 
-    <script src="js/gfx/FastImage.js"></script>
-    <script src="js/gfx/Texture.js"></script>
-    <script src="js/gfx/AnimatedImage.js"></script>
     <script src="js/gfx/TextureAtlas.js"></script>
+    <script src="js/gfx/AnimatedImage.js"></script>
+    <script src="js/gfx/Sprite.js"></script>
 
-    <!-- L6 -->
-    <script src="js/globals.js"></script>
-    <script src="js/consts.js"></script>
+    <script src="js/gfx/Texture.js"></script>
+    <script src="js/gfx/FastImage.js"></script>
+    <script src="js/gfx/Sequence.js"></script>
 
-    <!-- L6 -->
+    <!-- 3D GFX -->
+    <script src="js/gfx/webgl/lighting.js"></script>
+    <script src="js/gfx/webgl/shadows.js"></script>
+
+    <!-- GAME SPECIFIC GLOBALS -->
+    <script src="js/globals.js"></script>    
+
+    <!-- INPUT -->
     <script src="js/inputs/mouse.js"></script>
     <script src="js/inputs/keys.js"></script>
 
-    <!-- L5 -->
-    <script src="js/gfx/spatialManager.js"></script>
+    <!-- WORLD... SOMETHING... -->
+    <script src="js/screen/g_world.js"></script>
+    <script src="js/screen/g_viewport.js"></script>
+
+    <!-- ENTITIES -->
     <script src="js/entities/entityManager.js"></script>
+    <script src="js/entities/spatialManager.js"></script>
 
-    <!-- L4 -->
-    <script src="js/gfx/Sprite.js"></script>
-
-    <!-- -->
     <script src="js/entities/Entity.js"></script>
 
-    <!-- L3 -->
-    <script src="js/entities/Player.js"></script>
+    <script src="js/entities/type/Player.js"></script>
+    <script src="js/entities/type/Rock.js"></script>
+    <script src="js/entities/type/Bullet.js"></script>
+    <script src="js/entities/type/GenericEnemyOne.js"></script>
 
-    
-    <script src="js/entities/Rock.js"></script>
-    
-    
-    <script src="js/entities/Bullet.js"></script>
-    <script src="js/entities/GenericEnemyOne.js"></script>
+    <!-- PLUMBING -->
+    <script src="js/plumbing/update.js"></script>
+    <script src="js/plumbing/render.js"></script>
+    <script src="js/plumbing/main.js"></script>
 
-    <!-- L2 -->
-    <script src="js/update.js"></script>
-    <script src="js/render.js"></script>
+    <!-- EXPERIMENTAL -->
+    <script src="js/experimental/TileMap.js"></script>
+    <script src="js/experimental/mapHandler.js"></script>
+    <script src="js/lib/assetLoader.js"></script>
 
-    <!-- L1 -->
-    <!--<script src="js/AssetManager.js"></script>-->
-    <script src="js/main.js"></script>
-
-    <script src="js/gfx/g_world.js"></script>
-    <script src="js/gfx/g_viewport.js"></script>
-
-    <!-- L0.7 -->
-    <script src="js/TileMap.js"></script>
-    
-    <!-- L0.5 -->
-    <script src="js/mapHandler.js"></script>
-
-    <!-- L0 -->
+    <!-- GAME ITSELF -->
     <script src="js/GAME.js"></script>
 
 </body>

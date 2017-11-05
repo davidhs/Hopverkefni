@@ -85,7 +85,7 @@ GenericEnemyOne.prototype.update = function (du) {
     // In motion
     if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
     if (!this._soundRunning && len < 2 * g_viewport.getIW()) {
-      this._soundRunning = audioManager.play(g_url.running1, true);
+      this._soundRunning = audioManager.play(g_url.audio.running1, true);
     }
   }
 
@@ -142,15 +142,15 @@ GenericEnemyOne.prototype.attack = function (du) {
 
   this.attackCooldown += 50;
 
-  audioManager.play(g_url.clawing);
+  audioManager.play(g_url.audio.clawing);
 };
 
 GenericEnemyOne.prototype.takeBulletHit = function () {
   this.hp -= 25;
-  audioManager.play(g_url.impact1);
+  audioManager.play(g_url.audio.impact1);
 
   if (this.hp <= 0) {
-    audioManager.play(g_url.dying);
+    audioManager.play(g_url.audio.dying);
     this.kill();
   }
 };
