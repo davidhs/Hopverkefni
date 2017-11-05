@@ -23,8 +23,6 @@ let g_master;
 // The resolution of the shadow.
 let g_shadowSize;
 
-// Temporary stuff occlude walls.  TODO: remove me later
-let g_testWOM;
 
 // Canvases (except g_canvas).
 const g_background = document.createElement('canvas'); // Background
@@ -34,7 +32,17 @@ const g_foreground = document.createElement('canvas'); // Foreground
 const g_occlusion = document.createElement('canvas'); // Occlusion map
 const g_shadows = document.createElement('canvas'); // Shadows
 
+
+
+// TEMPORARY GLOBALS
+
+// Temporary stuff occlude walls.  TODO: remove me later
+let g_testWOM;
 const g_debugGAME = {};
+let g_tm;
+const g_debug = {};
+const g_debugCanvas = document.createElement('canvas');
+const DEBUG = false;
 
 // =============
 // GATHER INPUTS
@@ -92,7 +100,6 @@ function renderSimulation(ctx) {
   ctxf.imageSmoothingEnabled = false;
   ctxo.imageSmoothingEnabled = false;
   ctxs.imageSmoothingEnabled = false;
-
 
   // Width and height of rendering canvases.
   const w = g_canvas.width;
@@ -188,8 +195,32 @@ function setup(response) {
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
-  const raw = response.raw;
-  const urls = response.urls;
+
+  console.log(response);
+
+
+  g_muted = map.cfg.muted ? map.cfg.muted : false;
+
+  // Set shadow size
+  g_shadowSize = map.cfg.shadowSize;
+
+  // Setting world
+  g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
+  g_world.setHeight(map.cfg.world.width, map.cfg.world.unit);
+  g_world.setTileWidth(map.cfg.tile.width);
+  g_world.setTileHeight(map.cfg.tile.height);
+
+  // Set "rendering" canvas.
+  g_canvas.width = map.cfg.viewport.width;
+  g_canvas.height = map.cfg.viewport.height;
+
+  // Setting viewport
+  g_viewport.setIW(map.cfg.viewport.width);
+  g_viewport.setIH(map.cfg.viewport.height);
+
+  g_viewport.setOW(map.cfg.viewport.width);
+  g_viewport.setOH(map.cfg.viewport.height);
+
 
   // Store response in g_master.
   g_master = response;
@@ -249,9 +280,9 @@ function setup(response) {
   // Initialize shadows: load in shader source code and
   // resolution of shadow.
   shadows.init(
-    g_asset.raw.lights,
-    g_asset.raw.shadowMap,
-    g_asset.raw.shadowMask,
+    g_asset.raw.text.lights,
+    g_asset.raw.text.shadowMap,
+    g_asset.raw.text.shadowMask,
     g_shadowSize,
   );
 
@@ -272,7 +303,17 @@ function setup(response) {
   g_main.mainInit();
 }
 
-let g_tm;
+
+
+// ==========
+// START GAME
+// ==========
+
+
+loader.load({ json: { init: 'json/init.json'} }, (response) => {
+  chosenMap = response.json.init.variables.chosenMap;
+  mapHandler.openMap(chosenMap, setup);
+});
 
 
 // =========================
@@ -305,10 +346,7 @@ const fOcclusionMap = function (canvas) {
   return util.forAllPixels(canvas, occluder);
 };
 
-const g_debug = {};
 
-const g_debugCanvas = document.createElement('canvas');
-const DEBUG = false;
 
 g_debug.DEBUG_MODE = {
   UNKNOWN1: 0,
@@ -432,15 +470,3 @@ g_debugGAME.render = (ctx) => {
     }
   }
 };
-
-// ==========
-// START GAME
-// ==========
-
-assetManager.load({ json: ['json/init.json'] }, (response) => {
-  const ji = response[Object.keys(response)[0]];
-
-  chosenMap = ji.variables.chosenMap;
-
-  mapHandler.openMap(chosenMap, setup);
-});

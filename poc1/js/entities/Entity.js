@@ -26,10 +26,10 @@ functions... shared data properties are potentially quite confusing.
 
 function Entity() {}
 
-Entity.prototype.setup = function (descriptor) {
+Entity.prototype.setup = function (cfg) {
   // Apply all setup properies from the (optional) descriptor
 
-  util.extendObject(this, descriptor);
+  util.extendObject(this, cfg);
 
   // Get my (unique) spatial ID
   this._spatialID = spatialManager.getNewSpatialID();
@@ -37,6 +37,9 @@ Entity.prototype.setup = function (descriptor) {
   // I am not dead yet!
   this._isDeadNow = false;
 };
+
+Entity.prototype.hp = 100;
+Entity.prototype.maxHP = 100;
 
 Entity.prototype.setPos = function (cx, cy) {
   this.cx = cx;

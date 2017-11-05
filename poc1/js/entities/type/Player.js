@@ -110,7 +110,7 @@ Player.prototype.update = function (du) {
     // In motion
     if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
     if (!this._soundRunning) {
-      this._soundRunning = audioManager.play(g_url.running1);
+      this._soundRunning = audioManager.play(g_url.audio.running1);
     }
   }
 
