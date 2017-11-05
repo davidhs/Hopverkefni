@@ -4,8 +4,11 @@
 
 // Animation
 
-function AnimatedImage(descr) {
-  util.extendObject(this, descr);
+function AnimatedImage(cfg) {
+
+  this.cx = util.value(cfg.cx, 0);
+  this.cy = util.value(cfg.cy, 0);
+  this.sequence = cfg.sequence ? cfg.sequence.sequence : [];
 }
 
 AnimatedImage.prototype.cx = 50;
@@ -37,15 +40,20 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
 
   const idx = Math.floor(this.dt * this.rate);
 
-  if (idx >= this.sequence.length) {
+  if (idx >= this.sequence.sequence.length) {
     this.done = true;
     return;
   }
 
+  const ref = this.sequence.reference;
+  const seq = this.sequence.sequence;
 
-  const img = this.sequence[idx];
-  const w = img.width;
-  const h = img.height;
+  const term = seq[idx];
+
+  const tx = term[0];
+  const ty = term[1];
+  const w = ref.tileWidth;
+  const h = ref.tileHeight;
 
   let x = this.cx - w / 2;
   let y = this.cy - h / 2;
@@ -54,5 +62,6 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
   y -= g_viewport.getOY();
 
   // TODO: I don't like the FastImage thing.
-  ctx.drawImage(img.getImage(), x, y, w, h);
+  // ctx.drawImage(img, x, y, w, h);
+  ref.renderTile(ctx, tx, ty, x, y, w, h);
 };

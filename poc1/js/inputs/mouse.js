@@ -70,18 +70,21 @@ const g_mouse = (function () {
       }
     },
 
-    setFastImage: (img) => {
+    setImage: (img) => {
       theImage = img;
     },
-    getFastImage: () => theImage,
+    getImage: () => theImage,
     render: (ctx) => {
       // Convert Viewport/Canvas coordinates to World coordinates.
       const mx = g_mouse.x;
       const my = g_mouse.y;
 
+      const bx = -theImage.width / 2;
+      const by = -theImage.height / 2;
+
       if (!mouse.cursorLock && theImage) {
         g_canvas.style.cursor = 'none';
-        theImage.render(ctx, mx, my);
+        ctx.drawImage(theImage, bx + mx, by + my);
       }
 
       if (mouse.cursorLock && !theImage) {
@@ -92,7 +95,7 @@ const g_mouse = (function () {
       }
 
       if (mouse.cursorLock && theImage) {
-        theImage.render(ctx, mx, my);
+        ctx.drawImage(theImage, bx + mx, by + my);
       }
     },
     lockOn: (targetObject) => {

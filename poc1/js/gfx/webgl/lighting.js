@@ -1,3 +1,4 @@
+
 'use strict';
 
 /* global document shadows  :true */
@@ -6,6 +7,12 @@
 const lighting = (function () {
   const lightCanvas = document.createElement('canvas');
   const lightCtx = lightCanvas.getContext('2d');
+
+  const shadowCanvas = document.createElement('canvas');
+  const shadowCtx = shadowCanvas.getContext('2d');
+
+  document.getElementById('canvi').appendChild(lightCanvas);
+  document.getElementById('canvi').appendChild(shadowCanvas);
 
   function radialLight(ctx, color, cfg) {
     const r = color.r || 0;
@@ -22,6 +29,14 @@ const lighting = (function () {
     const h = ctx.canvas.height;
 
     const shadowMask = shadows.getShadowMask(cfg);
+    shadowCtx.fillStyle = "#f0";
+    shadowCtx.fillRect(0, 0, w, h);
+    shadowCtx.fill();
+    lightCtx.drawImage(shadowMask, 0, 0);
+
+    
+    shadowCanvas.width = w;
+    shadowCanvas.height = h;
 
     lightCanvas.width = w;
     lightCanvas.height = h;
@@ -45,6 +60,11 @@ const lighting = (function () {
     const dh = s;
 
     // Nobody told me how to blend the images.
+
+    lightCtx.globalCompositeOperation = 'source-over';
+    lightCtx.fillStyle = "#f0";
+    lightCtx.fillRect(0, 0, w, h);
+    lightCtx.fill();
     lightCtx.globalCompositeOperation = 'destination-in';
     lightCtx.drawImage(
       shadowMask,

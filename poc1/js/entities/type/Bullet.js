@@ -9,7 +9,8 @@ function Bullet(descr) {
   this.setup(descr);
 
   // TODO: bind in JSON.
-  audioManager.play(g_url.bulletFire);
+  //audioManager.play(g_url.bulletFire);
+  audioManager.play(g_url.audio.gunsound1);
 }
 
 Bullet.prototype = new Entity();
@@ -43,9 +44,7 @@ Bullet.prototype.update = function (du) {
   this.cx += this.velX * du;
   this.cy += this.velY * du;
 
-  if (!g_world.inBounds(this.cx, this.cy)) {
-    return entityManager.KILL_ME_NOW;
-  }
+  if (!g_world.inBounds(this.cx, this.cy)) return entityManager.KILL_ME_NOW;
 
   // TODO: this is just a total mess.
 
@@ -55,8 +54,11 @@ Bullet.prototype.update = function (du) {
     const hitEntity = this.findHitEntity();
 
     if (hitEntity) {
+      spatialManager.unregister(this);
       const canTakeHit = hitEntity.takeBulletHit;
       if (canTakeHit) canTakeHit.call(hitEntity);
+
+      audioManager.play(g_url.audio.explosion1);
 
       entityManager.generateExplosion({
         cx: this.cx,
@@ -64,7 +66,9 @@ Bullet.prototype.update = function (du) {
       });
 
       return entityManager.KILL_ME_NOW;
-    } else if (potentialCollision < 10) {
+    } else if (potentialCollision < spatialManager.MIN_ENTITY) {
+      audioManager.play(g_url.audio.explosion1);
+      spatialManager.unregister(this);
       entityManager.generateExplosion({
         cx: this.cx,
         cy: this.cy,
@@ -85,10 +89,11 @@ Bullet.prototype.getRadius = function () {
 };
 
 Bullet.prototype.takeBulletHit = function () {
+  spatialManager.unregister(this);
   this.kill();
 
   // TODO: bind in JSON.
-  audioManager.play(g_url.bulletZapped);
+  audioManager.play(g_url.audio.bulletZapped);
 };
 
 Bullet.prototype.render = function (ctx, cfg) {

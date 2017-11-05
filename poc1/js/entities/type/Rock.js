@@ -44,6 +44,11 @@ function Rock(descr) {
     spatialManager.register(this);
   }
 
+  if (false) {
+    this.cx = 100;
+    this.cy = 100;
+  }
+
   this.randomiseVelocity();
 }
 
@@ -122,9 +127,9 @@ Rock.prototype.takeBulletHit = function () {
   if (this.scale > 0.25) {
     this._spawnFragment();
     this._spawnFragment();
-    audioManager.play(g_url.rockSplit);
+    audioManager.play(g_url.audio.rockSplit);
   } else {
-    audioManager.play(g_url.rockEvaporate);
+    audioManager.play(g_url.audio.rockEvaporate);
   }
 };
 
@@ -137,6 +142,9 @@ Rock.prototype._spawnFragment = function () {
 };
 
 Rock.prototype.render = function (ctx, cfg) {
+  if (!g_viewport.inOuterSquareCircle(this.cx, this.cy, this.getRadius())) return;
+
+
   const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   this.sprite.scale = this.scale;

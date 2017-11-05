@@ -9,6 +9,9 @@
 * Á leikurinn að hafa quest/verkefni/missions/goal?
 
     * **Daníel:** Gætum skoðað það að hafa waves, sem verða alltaf erfiðar og erfiðar. Frekar easy að implementa og kominn survival fýlingur. Getum einnig leyft spilaranum að velja milli survival eða eitthvað annað.
+    
+* Ef við notum forrit eins og [Tiled](http://www.mapeditor.org/) til að búa til borð þá getum við tilgreint svæði í borðinu
+þar sem óvinir myndast.
 
 ### Á leikurinn að samanstanda af mismunandi borðum?
 
@@ -17,6 +20,8 @@
 **Alexander**:
   Mín skoðun er sú að þetta ætti að vera eitt stórt map, sem er endalaust og
   verður erfiðara með tímanumm, s.s. fleiri óvinir í einu og erfiðari
+
+**Davíð**: hvernig útfærir maður endalaust borð?  Annað, þá þarf maður að reiða á procedural generation.
 
 #### Er hægt að fara úr einu borði yfir í annað og aftur til baka eins oft og manni sýnist?
 
@@ -29,6 +34,8 @@
 #### "Open-world"?
 
 * **Daníel:** Ok það er verið að hugsa út fyrir kassann, love it! Davíð ertu með e-h hugmynd hvernig það væri gert með generator?
+
+* **Davíð:** Nei, hef lesið að nota preocedurally generated sé erfitt að meðhöndla þannig útkoman er flott.  T.d. ef leikmaðurinn byrjar fastur í vegg eða í svæði sem hann kemst ekki úr.
 
 #### Procedurally generated
   
@@ -58,6 +65,14 @@
 
 ## Tækni
 
+### Animation
+
+* **Davíð:**
+
+Það þarf að finna út hvernig teikna player-inn eða skrímsli.  Animation-ið þyrfti að bregðast við einhversskonar "áreiti" eins og leikmaðurinn sé á hreyfingur, er að skjóta, verður fyrir árás o.fl.
+
+Flott væri að hafa "góðan" stuðning fyrir animation.  T.d. það gæti verið kyndinn einhversstaðar á kortinu sem væri með animate-aðan eld.
+
 ### Hljóð
 
 * Ef hljóðgjafi er langt í burtu frá karakternum á þá að lækka í því?  Eða ef hljóðgjafinn er fyrir aftan vegg.
@@ -73,6 +88,19 @@
 * https://en.wikipedia.org/wiki/Pathfinding
 * https://en.wikipedia.org/wiki/Navigation_mesh
 
+**Davíð:** 
+
+Ein útfærsla á þessu vandamáli er að leggja net yfir heiminn í laginu eins og grind, þar sem hver hnútur væri tengdur aðlægum
+hnútum, þar sem hver leggur hefur ákveðna þyngd. Ef hnúturinn liggur ofan á svæði sem ekki er hægt að komast í gegnum er hann annaðhvort fjarlægður eða þyngd leggja í kringum hann sett í óendanlegt, t.d. eins og Number.MAX_VALUE.
+
+Markmiðið hér að finna leið, en ekki endilega stystu leið, í gegnum netið.
+
+Reiknirit Dijkstra, A*, eða önnur sambærileg reiknirit geta leyst þetta vandamál.
+
+Einnig viljum við kannski að hver dýnamískur hlutur er mismunandi á stærð, þannig ef hlutur A, sem væri lítill, og hlutur B, sem væri stór, væru svipað staðsettur og væri að reyna að komast á stað X, þá gæti A smogið sér í gegnum þröngan gang, en B þyrfti að finna aðra leið.
+
+Ein leið til að útfæra þetta væri þannig hver hnútur netinu viti hversu stóran hlut hann gæti geymt.
+
 #### Vandamál:
 * Ef maður skiptir borðinu upp í net þar sem leggur liggur milli hvers aðliggjandi hnúts upp/niður, hægri/vinstri og skáhallt, þá ef NPC fylgir leið í gegnum netið sem t.d. Dijkstra eða A* reikniritið gefur þá er sú leið jagged (sagtennt?).
 
@@ -84,12 +112,19 @@
 
 **Daníel:** Erum við að gera detection fyrir eitthvað sem hreyfist f. utan skotin? 
 
-### Shadows
+**Davíð:** Já, við athugum hvort dýnamískir hlutir rekast við aðra dýnamísk og statíska hluti (eins og veggir
+
+Hugmyndin mín væri að Spatial Manager sæi alfarið um að ákvarða hvort árekstur eigi sér stað og ef svo
+myndi tilkynna þeim hlutum sem væri að rekast saman og láta þá leysa áreksturinn.
+
+Ég hef hugsað mér að skipta hvernig Spatial Manager virkar í tvennt: (1) meðhöndlun á árekstri við statíska hluti, og
+(2) meðhöndlun á árekstri við dýnamíska hluti.  Statískir hlutir eru "þannig séð" fyrirfram ákveðnir og staðsetningin
+þarf ekki að uppfæra.  Dýnamískir hlutir eru erfiaðri, því þeir geta safnast saman.  Ein hugmynd, sem er núna í gangi en illa útfærð, er að skipta heiminum í "grind", þar sem hver reitur hefur á meðaltali ekki of marga hluti. Einnig væri hægt að skoða að nota [Quadtree](https://en.wikipedia.org/wiki/Quadtree) í staðinn fyrir að skipta heiminum niður í grind.
+
+### Shadows / ligting
 
 * https://en.wikipedia.org/wiki/Ray_casting
 * http://ncase.me/sight-and-light/
-
-### Lighting
 
 Hægt að nota sambærilega ray casting aðferð og notað er til að búa til skugga.
 

@@ -90,6 +90,16 @@ const util = (function () {
     return newImage;
   };
 
+  /**
+   * Assumes left1 <= right1 and left2 <= right2.
+   */
+  util.isIntervalIntersection = (left1, right1, left2, right2) => {
+    const c1 = left1 <= right2;
+    const c2 = right1 >= left2;
+
+    return c1 && c2;
+  };
+
   util.clampRange = (value, lowBound, highBound) => {
     if (value < lowBound) {
       value = lowBound;
@@ -156,6 +166,59 @@ const util = (function () {
     }
 
     return false;
+  };
+
+  function objectStringReplacement(obj, stringTarget, replacement) {
+    const c1 = obj === null;
+    const c2 = typeof obj === 'undefined';
+    const c3 = typeof el === 'number';
+    const c4 = typeof el === 'boolean';
+    const c5 = typeof el === 'function';
+    
+    if (obj === null || typeof obj === 'undefined' || typeof el === 'number' || typeof el === 'boolean') {
+      return;
+    }
+    
+    // Check if object is array,
+    // Check if object is "object"
+    
+    if (Array.isArray(obj)) {
+      // Assume is array
+      const arr = obj;
+      for (let i = 0; i < arr.length; i += 1) {
+        const el = arr[i];
+        if (typeof el === "string") {
+          if (el === stringTarget) {
+            arr[i] = replacement;
+          } else {
+            objectStringReplacement(el, stringTarget, replacement);
+          }
+        }
+      }
+    } else if (obj !== null && typeof obj !== 'undefined') {
+      // Assume is object
+      const keys = Object.keys(obj);
+      for (let i = 0; i < keys.length; i += 1) {
+        const key = keys[i];
+        const el = obj[key];
+        
+        if (typeof el === "string") {
+          if (el === stringTarget) {
+            obj[key] = replacement;
+          }
+        } else {
+          objectStringReplacement(el, stringTarget, replacement);
+        }
+      }
+    }
+  }
+
+  util.objectStringReplacement = objectStringReplacement;
+
+  // Returns a value that is always positive,
+  // or to be more accurate non-negative.
+  util.posmod = (value, modulus) => {
+    return (modulus + (value % modulus)) % modulus;
   };
 
   util.inBounds = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
@@ -293,6 +356,88 @@ const util = (function () {
 
     return l;
   };
+
+  util.value = (value, defaultValue) => {
+    if (typeof value !== "undefined") {
+      return value;
+    } else {
+      return defaultValue;
+    }
+  };
+
+  function xml2json(xml, cfg) {
+    let obj = {};
+
+    
+    if (typeof xml === 'undefined') throw Error();
+
+    let ignoreEmptyStrings = true;
+
+    // I'll do this later.  I want to be able to replace
+    // every of this names with something else.
+    let attributeHandle = "@attributes";
+    let textHandle = "#text";
+
+    if (xml.nodeType === XMLDocument.ELEMENT_NODE) {
+      if (xml.attributes.length > 0) {
+        obj[attributeHandle] = {};
+        for (let i = 0; i < xml.attributes.length; i += 1) {
+          const attribute = xml.attributes.item(i);
+          obj[attributeHandle][attribute.nodeName] = attribute.nodeValue;
+        }
+      }
+    }
+
+    if (xml.nodeType === XMLDocument.TEXT_NODE) {
+      obj = xml.nodeValue;
+    }
+
+    if (xml.nodeType === XMLDocument.DOCUMENT_NODE) {}
+
+
+    if (typeof xml.hasChildNodes !== 'undefined' && xml.hasChildNodes()) {
+      for (let i = 0; i < xml.childNodes.length; i += 1) {
+        const item = xml.childNodes.item(i);
+        const nodeName = item.nodeName;
+
+        if (typeof obj[nodeName] === 'undefined') {
+
+          const subtree = xml2json(item);
+
+          if (typeof subtree === "string") {
+            const str = ignoreEmptyStrings ? subtree.trim() : subtree;
+            if (str.length !== 0) {
+              obj[nodeName] = str;
+            }
+          } else {
+            obj[nodeName] = xml2json(item);
+          }
+        } else {
+          // Multi line text?
+          if (typeof obj[nodeName].push === "undefined") {
+            const oldObject = obj[nodeName];
+            obj[nodeName] = [];
+            obj[nodeName].push(oldObject);
+          }
+
+          const subtree = xml2json(item);
+
+          if (typeof subtree === "string") {
+            const str = ignoreEmptyStrings ? subtree.trim() : subtree;
+            if (str.length !== 0) {
+              obj[nodeName] = str;
+            }
+          } else {
+            obj[nodeName].push(subtree);
+          }
+        }
+      }
+    }
+
+    return obj;
+  };
+
+  util.xml2json = xml2json;
 
 
   return util;

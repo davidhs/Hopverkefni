@@ -15,26 +15,34 @@ let g_url = {}; // URLs are eventually placed here.
 let g_asset = {}; // Assets are loaded here.
 
 // Which map to open.
-const chosenMap = 'map2';
+let chosenMap; // Defined in init.json
 
 // Map information
 let g_master;
 
-// The resolution of the shadow.
-let g_shadowSize;
-
-// Temporary stuff occlude walls.  TODO: remove me later
-let g_testWOM;
 
 // Canvases (except g_canvas).
 const g_background = document.createElement('canvas'); // Background
 const g_midground = document.createElement('canvas'); // Midground
 const g_foreground = document.createElement('canvas'); // Foreground
+const g_hud = document.createElement('canvas'); // HUD
 
 const g_occlusion = document.createElement('canvas'); // Occlusion map
 const g_shadows = document.createElement('canvas'); // Shadows
 
+const g_pre = document.createElement('canvas');
+
+
+
+// TEMPORARY GLOBALS
+
+// Temporary stuff occlude walls.  TODO: remove me later
+let g_testWOM;
 const g_debugGAME = {};
+let g_tm;
+const g_debug = {};
+const g_debugCanvas = document.createElement('canvas');
+const DEBUG = false;
 
 // =============
 // GATHER INPUTS
@@ -86,31 +94,46 @@ function renderSimulation(ctx) {
   const ctxf = g_foreground.getContext('2d');
   const ctxo = g_occlusion.getContext('2d'); // Occlusion map context
   const ctxs = g_shadows.getContext('2d'); // Shadows context
+  const ctxh = g_hud.getContext('2d'); // HUD
+  const ctxp = g_pre.getContext('2d');
+
+  ctxb.imageSmoothingEnabled = false;
+  ctxm.imageSmoothingEnabled = false;
+  ctxf.imageSmoothingEnabled = false;
+  ctxo.imageSmoothingEnabled = false;
+  ctxs.imageSmoothingEnabled = false;
+  ctxh.imageSmoothingEnabled = false;
+  ctxp.imageSmoothingEnabled = false;
 
   // Width and height of rendering canvases.
   const w = g_canvas.width;
   const h = g_canvas.height;
 
+  const player = entityManager.getPlayer();
+
   // Clear canvases.
+  ctx.clearRect(0, 0, w, h);
   ctxb.clearRect(0, 0, w, h);
   ctxm.clearRect(0, 0, w, h);
   ctxf.clearRect(0, 0, w, h);
   ctxo.clearRect(0, 0, w, h);
   ctxs.clearRect(0, 0, w, h);
+  ctxh.clearRect(0, 0, w, h);
+  ctxp.clearRect(0, 0, w, h);
 
-  // Clear rendering canvas.
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, w, h);
 
   // === DRAWING TO VARIOUS CANVASES ===
 
   // --- BACKGROUND ---
 
   // Draw background.  TODO: remove later
-  g_asset.texture.background.render(ctxb);
+  // g_asset.texture.background.render(ctxb);
+
+  // Render better background.
+  g_tm.render(ctxb);
 
   // Draw alpha 0 background.  TODO: remove later
-  ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+  // ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // --- MIDGROUND ----
 
@@ -119,10 +142,6 @@ function renderSimulation(ctx) {
 
   // --- FOREGROUND ---
 
-  // Draw Cursor
-  if (g_mouse.getFastImage()) {
-    g_mouse.render(ctxf);
-  }
 
   // === OCCLUSION ===
 
@@ -132,9 +151,12 @@ function renderSimulation(ctx) {
   });
 
   // Add "walls" to occlusion map.  TODO: remove later.
-  ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
+  // ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   // === SHADOWS ===
+
+  const pcx = g_viewport.mapO2IX(player.cx);
+  const pcy = g_viewport.mapO2IY(player.cy);
 
   // Draw the light.
   //
@@ -146,31 +168,63 @@ function renderSimulation(ctx) {
     b: 255,
   }, {
     occluder: g_occlusion,
-    x: g_canvas.width / 2,
-    y: g_canvas.height / 2,
+    x: pcx,
+    y: pcy
   });
+
+  // === HUD ===
+  
+  // Draw Cursor
+  if (g_mouse.getImage()) {
+    g_mouse.render(ctxh);
+  }
 
   // === DEBUG ===
 
   // Draw debug stuff.
   g_debugGAME.render(ctx);
 
-  // === DRAW TO RENDERING CANVAS ===
+  // === DRAW TO BACK-RENDERING CANVAS ===
 
   // --- DRAW BACKGROUND ---
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(g_background, 0, 0);
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_background, 0, 0);
+  ctxp.globalAlpha = 1.0;
+  // --- DRAW FOREGROUND ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_foreground, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
   // --- DRAW LIGHTS/SHADOWS ---
-  ctx.globalCompositeOperation = 'lighter';
-  ctx.drawImage(g_shadows, 0, 0, w, h);
+  
+  ctxp.globalAlpha = 1.0;
+  ctxp.globalCompositeOperation = 'destination-in';
+  ctxp.drawImage(g_shadows, 0, 0, w, h);
+  
 
+  // TEMPORARY
   // --- DRAW MIDGROUND ---
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(g_midground, 0, 0);
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_midground, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
-  // --- DRAW FOREGROUND ---
-  ctx.drawImage(g_foreground, 0, 0);
+  // --- DRAW HUD ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_hud, 0, 0);
+  ctxp.globalAlpha = 1.0;
+
+
+
+
+
+  // === DRAW TO RENDERING CANVAS ===
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(g_pre, 0, 0);
+
+
+  //util.fillCircle(ctx, pcx, pcy, 10);
 }
 
 
@@ -178,8 +232,31 @@ function setup(response) {
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
-  const raw = response.raw;
-  const urls = response.urls;
+
+  console.log(response);
+
+  g_viewport.stickToWorld(true);
+
+
+  g_muted = map.cfg.muted ? map.cfg.muted : false;
+
+  // Setting world
+  g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
+  g_world.setHeight(map.cfg.world.width, map.cfg.world.unit);
+  g_world.setTileWidth(map.cfg.tile.width);
+  g_world.setTileHeight(map.cfg.tile.height);
+
+  // Set "rendering" canvas.
+  g_canvas.width = map.cfg.viewport.width;
+  g_canvas.height = map.cfg.viewport.height;
+
+  // Setting viewport
+  g_viewport.setIW(map.cfg.viewport.width);
+  g_viewport.setIH(map.cfg.viewport.height);
+
+  g_viewport.setOW(map.cfg.viewport.width);
+  g_viewport.setOH(map.cfg.viewport.height);
+
 
   // Store response in g_master.
   g_master = response;
@@ -200,32 +277,26 @@ function setup(response) {
   g_shadows.width = g_canvas.width;
   g_shadows.height = g_canvas.height;
 
+  g_hud.width = g_canvas.width;
+  g_hud.height = g_canvas.height;
+
+  g_pre.width = g_canvas.width;
+  g_pre.height = g_canvas.height;
+
   // Init debug
   g_debugGAME.init();
 
-  // Set g_url.
+  // Init g_url.
   g_url = response.urls;
 
-  // Set g_asset
+  // Init g_asset.
   g_asset = response.assets;
-
-  const stuff = {};
-
-  for (let i = 0, keys = Object.keys(urls); i < keys.length; i += 1) {
-    const name = keys[i];
-    const url = urls[name];
-
-    stuff[url] = raw[name];
-  }
-
-  util.extendObject(g_asset, raw);
-  util.extendObject(g_asset, assets);
 
   // --- Mouse ---
 
   // Set mouse cursor image.
   if (g_master.map.mouse.image) {
-    g_mouse.setFastImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
+    g_mouse.setImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
   }
 
   // Enable cursor lock, if applicable.
@@ -248,11 +319,14 @@ function setup(response) {
   // Initialize shadows: load in shader source code and
   // resolution of shadow.
   shadows.init(
-    g_asset.lights,
-    g_asset.shadowMap,
-    g_asset.shadowMask,
-    g_shadowSize,
+    g_asset.raw.text.lights,
+    g_asset.raw.text.shadowMap,
+    g_asset.raw.text.shadowMask,
+    map.cfg.shadowSize ? map.cfg.shadowSize : 64,
   );
+
+  // Experimental
+  g_tm = g_asset.tiledMap.tm1;
 
   // --- Spatial Manager ---
 
@@ -260,13 +334,40 @@ function setup(response) {
   spatialManager.init();
 
   // Temporary occlusion map from spatial manager.  TODO: remove later.
-  g_testWOM = spatialManager.getWallOcclusionMap();
+  // g_testWOM = spatialManager.getWallOcclusionMap();
 
   // --- Start Game ---
 
   // Start game!
   g_main.mainInit();
 }
+
+
+
+// ==========
+// START GAME
+// ==========
+
+function startGame() {
+
+
+  assetLoader.addProcessor('texture', Texture);
+  assetLoader.addProcessor('textureAtlas', TextureAtlas);
+  assetLoader.addProcessor('sequence', Sequence);
+  assetLoader.addProcessor('sprite', Sprite);
+  assetLoader.addProcessor('fastImage', FastImage);
+  assetLoader.addProcessor('tiledMap', TiledMap);
+  assetLoader.addProcessor('tiledTileset', TiledTileset);
+
+  loader.load({ json: { init: 'json/init.json'} }, (response) => {
+    chosenMap = response.json.init.variables.chosenMap;
+    mapHandler.openMap(chosenMap, setup);
+  });
+}
+
+startGame();
+
+
 
 
 // =========================
@@ -299,10 +400,7 @@ const fOcclusionMap = function (canvas) {
   return util.forAllPixels(canvas, occluder);
 };
 
-const g_debug = {};
 
-const g_debugCanvas = document.createElement('canvas');
-const DEBUG = false;
 
 g_debug.DEBUG_MODE = {
   UNKNOWN1: 0,
@@ -426,9 +524,3 @@ g_debugGAME.render = (ctx) => {
     }
   }
 };
-
-// ==========
-// START GAME
-// ==========
-
-mapHandler.openMap(chosenMap, setup);

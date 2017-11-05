@@ -20,11 +20,13 @@ const entityManager = (function () {
   const _bullets = [];
   const _players = [];
   const _explosions = [];
+  const _genericEnemiesOne = [];
 
   const _categories = [
     _rocks,
     _bullets,
     _players,
+    _genericEnemiesOne,
     _explosions,
   ];
 
@@ -49,7 +51,6 @@ const entityManager = (function () {
       cy,
       velX,
       velY,
-
       rotation,
     }));
   }
@@ -71,18 +72,8 @@ const entityManager = (function () {
     _rocks.push(new Rock(descr));
   }
 
-  // TODO: yes, surely we don't, don't we?
-  function _generateRocks() {
-    const NUM_ROCKS = 100;
-
-    for (let i = 0; i < NUM_ROCKS; i += 1) {
-      generateRock();
-    }
-  }
-
-  // TODO: remove this later
-  function toggleRocks() {
-    _bShowRocks = !_bShowRocks;
+  function generateGenericEnemyOne(cfg) {
+    _genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
 
   function update(du) {
@@ -105,16 +96,11 @@ const entityManager = (function () {
         }
       }
     }
-
-    // TODO: remove this.
-    if (_rocks.length === 0) _generateRocks();
   }
 
   function render(ctx, cfg) {
     for (let c = 0; c < _categories.length; c += 1) {
       const aCategory = _categories[c];
-
-      if (!_bShowRocks && aCategory === _rocks) { continue; }
 
       for (let i = 0; i < aCategory.length; i += 1) {
         aCategory[i].render(ctx, cfg);
@@ -123,7 +109,22 @@ const entityManager = (function () {
   }
 
   function init() {
-    _generateRocks();
+
+    
+    for (let i = 0; i < 0; i += 1) {
+      const cx = Math.random() * g_world.getWidth();
+      const cy = Math.random() * g_world.getHeight();
+      generateGenericEnemyOne({
+        cx: cx,
+        cy: cy,
+        sprite: g_asset.sprite.donkey,
+      });
+    }
+  }
+
+  function getPlayer() {
+    if (_players.length > 0) return _players[0];
+    return null;
   }
 
   return {
@@ -134,17 +135,14 @@ const entityManager = (function () {
     generateRock,
     generateExplosion,
     generatePlayer,
+    generateGenericEnemyOne,
     OK,
     KILL_ME_NOW,
 
     // FIXME: this is just a hack to get
     // the player's position so the viewport can
     // track the player.
-    getPos: () => {
-      if (_players.length > 0) {
-        return _players[0];
-      }
-      return null;
-    },
+    getPos: getPlayer,
+    getPlayer,
   };
 }());

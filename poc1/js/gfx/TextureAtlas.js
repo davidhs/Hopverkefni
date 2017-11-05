@@ -10,63 +10,39 @@
  * sprite sheet into 1000 images.
  *
  * https://en.wikipedia.org/wiki/Texture_atlas
+ * 
+ * {
+ *  image, tileWidth, tileHeight, nrOfTiles
+ * }
+ * 
+ * image, subimageHeight, nrOfSubimages
  */
-function TextureAtlas(image, subimageWidth, subimageHeight, nrOfSubimages) {
-  image = new FastImage({
-    image,
-  });
+function TextureAtlas(cfg) {
 
+  this.image = cfg.image;
 
-  this.image = image;
+  // Default behavior
 
-  const subimages = [];
-
-
-  this.subimageWidth = subimageWidth;
-  this.subimageHeight = subimageHeight;
-
-  const tw = subimageWidth;
-  const th = subimageHeight;
-
-  const m = Math.floor(image.height / th);
-  const n = Math.floor(image.width / tw);
-
-  this.rows = m;
-  this.cols = n;
-
-  this.nrOfSubimages = nrOfSubimages || m * n;
-
-
-  // Rows
-  for (let i = 0; i < m; i += 1) {
-    const ty = th * i;
-
-    const row = [];
-
-
-    // Columns
-    for (let j = 0; j < n; j += 1) {
-      const tx = tw * j;
-
-      const subimage = image.crop(tx, ty, tw, th);
-      row.push(subimage);
-    }
-
-    subimages.push(row);
-  }
-
-  this.subimages = subimages;
+  // JavaScript is garbage. If somewhere in the code,
+  //
+  //   x = 0;
+  //
+  // And later we set,
+  // 
+  //   let a = x || 3;
+  // 
+  // Where the 1 is a default value, then 
+  // a evaluates to 3. :(
+  this.primaryDirection = util.value(cfg.primaryDirection, 'right');
+  this.secondaryDirection = util.value(cfg.secondaryDirection, 'down');
+  this.mode = util.value(cfg.mode, 1);
+  this.tileWidth = util.value(cfg.tileWidth, 0);
+  this.tileHeight = util.value(cfg.tileHeight, 0);
+  this.rows = Math.ceil(this.image.height / this.tileHeight);
+  this.cols = Math.ceil(this.image.width / this.tileWidth);
+  this.nrOfTiles = util.value(cfg.nrOfTiles, this.rows * this.cols);
 }
 
-TextureAtlas.prototype.image = null;
-TextureAtlas.prototype.subimages = [];
-TextureAtlas.prototype.nrOfSubimages = 0;
-
-TextureAtlas.prototype.cols = 0;
-TextureAtlas.prototype.rows = 0;
-
-TextureAtlas.prototype.subimageWidth = 0;
-TextureAtlas.prototype.subimageHeight = 0;
 
 
 /**
@@ -74,15 +50,17 @@ TextureAtlas.prototype.subimageHeight = 0;
  * LR
  * TB
  */
-TextureAtlas.prototype.getSequence = function (description) {
-  const msg = description;
+TextureAtlas.prototype.getSequence = function (cfg) {
 
 
   const sequence = [];
 
+  const c1 = cfg.primaryDirection === 'right';
+  const c2 = cfg.secondaryDirection === 'down';
+  const nrOfTiles = cfg.nrOfTiles;
 
-  if (msg.rowFirst && msg.LR && msg.TB) {
-    const qty = msg.qty || this.nrOfSubimages;
+  if (c1 && c2) {
+    const qty = nrOfTiles || this.nrOfTiles;
 
     let count = 0;
 
@@ -93,7 +71,11 @@ TextureAtlas.prototype.getSequence = function (description) {
       for (let j = 0; j < n; j += 1) {
         count += 1;
 
-        sequence.push(this.subimages[i][j]);
+        sequence.push([j, i]);
+
+        //sequence.push(this.getTile(j, i));
+
+        //sequence.push(this.subimages[i][j]);
 
         if (count === qty) {
           i = m;
@@ -103,43 +85,78 @@ TextureAtlas.prototype.getSequence = function (description) {
     }
   }
 
-  return sequence;
+  return {
+    reference: this,
+    sequence: sequence
+  };
 };
 
-TextureAtlas.prototype.getSubimage = function (row, col) {
-  if (row >= this.subimages.length) {
-    console.error(this);
-    console.error(row, col);
-    throw Error();
-  } else if (col >= this.subimages[0].length) {
-    console.error(this);
-    console.error(row, col);
-    throw Error();
+/**
+ * Avoid using this method as much as possible.
+ * 
+ * Returns a canvas.
+ */
+TextureAtlas.prototype.getTile = function (tx, ty) {
+
+  if (tx < 0 || tx >= this.cols || ty < 0 || ty >= this.rows) return null;
+
+  if (!this._cachedTiles) {
+    this._cachedTiles = [];
   }
 
-  return this.subimages[row][col];
+  if (this._cachedTiles[ty] && this._cachedTiles[ty][tx]) {
+    return this._cachedTiles[ty][tx];
+  }
+
+  // TODO: cache tiles
+
+  const x = Math.floor(tx) * this.tileWidth;
+  const y = Math.floor(ty) * this.tileHeight;
+  const w = this.tileWidth;
+  const h = this.tileHeight;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+
+  const image = (this.image instanceof FastImage) ? this.image.getImage() : this.image;
+
+
+  ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
+
+  // Cache image
+  if (!this._cachedTiles[ty]) this._cachedTiles[ty] = [];
+
+  this._cachedTiles[ty][tx] = canvas;
+
+  return canvas;
 };
 
-TextureAtlas.prototype.renderSubimage = function (ctx, row, col, x, y, w, h) {
-  const img = this.getSubimage(row, col);
-
-  if (!img) {
-    console.error(row, col, this.subimages);
-    throw Error();
-  }
-
-  w = w || img.width;
-  h = h || img.height;
-
-  ctx.imageSmoothingEnabled = false;
-
-  if (w === img.width && h === img.height) {
-    ctx.drawImage(img.getImage(), x, y, w, h);
-  } else {
-    ctx.drawImage(
-      img.getImage(),
-      0, 0, img.width, img.height,
-      x, y, w, h,
-    );
-  }
+TextureAtlas.prototype.getIndex = function (tx, ty) {
+  return tx + ty * this.cols;
 };
+
+TextureAtlas.prototype.renderIndexTile = function (ctx, index, x, y, w, h) {
+  
+  const tx = index % this.cols;
+  const ty = Math.floor(index / this.cols);
+  this.renderTile(ctx, tx, ty, x, y, w, h);
+};
+
+TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h) {
+
+  // From this canvas
+  const sx = tx * this.tileWidth;
+  const sy = ty * this.tileHeight;
+  const sw = this.tileWidth;
+  const sh = this.tileHeight;
+
+  // Into that canvas
+  const dx = x;
+  const dy = y;
+  const dw = w;
+  const dh = h;
+
+  ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
+}

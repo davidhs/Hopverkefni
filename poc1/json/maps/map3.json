@@ -3,9 +3,9 @@
     "name": "Yet another test!",
     "cfg": {
         "world": {
-            "width": 2000,
-            "height": 2000,
-            "unit": "px"
+            "width": 1000,
+            "height": 1000,
+            "unit": "t"
         },
         "tile": {
             "width": 32,
@@ -15,11 +15,12 @@
         "viewport": {
             "width": 640,
             "height": 480
-        }
+        },
+        "muted": true
     },
 
     "mouse": {
-        "image": "assets.fastImage.cursor2",
+        "image": "assets.raw.image.cursor",
         "cursorLock": true
     },
 
@@ -40,15 +41,17 @@
     "assets": {
         "textureAtlas": {
             "dungeon": {
-                "dep": ["raw.dungeon"],
+                "dep": ["raw.image.dungeon"],
                 "cfg": {
+                    "image": "raw.image.dungeon",
                     "tileWidth": 16,
                     "tileHeight": 16
                 }
             },
             "explosion": {
-                "dep": ["raw.explosion"],
+                "dep": ["raw.image.explosion"],
                 "cfg": {
+                    "image": "raw.image.explosion",
                     "tileWidth": 100,
                     "tileHeight": 100,
                     "nrOfTiles": 74,
@@ -57,38 +60,53 @@
                 }
             },
             "explosionSpritesheet2": {
-                "dep": ["raw.explosionSpritesheet2"],
+                "dep": ["raw.image.explosionSpritesheet2"],
                 "cfg": {
+                    "image": "raw.image.explosionSpritesheet2",
                     "tileWidth": 16,
                     "tileHeight": 16
                 }
             },
             "explosionSpritesheet3": {
-                "dep": ["raw.explosionSpritesheet3"],
+                "dep": ["raw.image.explosionSpritesheet3"],
                 "cfg": {
+                    "image": "raw.image.explosionSpritesheet3",
                     "tileWidth": 16,
                     "tileHeight": 16
                 }
             },
             "explosionSpritesheet5": {
-                "dep": ["raw.explosionSpritesheet5"],
+                "dep": ["raw.image.explosionSpritesheet5"],
                 "cfg": {
+                    "image": "raw.image.explosionSpritesheet5",
                     "tileWidth": 16,
                     "tileHeight": 16
                 }
             },
             "explosionSpritesheet6": {
-                "dep": ["raw.explosionSpritesheet6"],
+                "dep": ["raw.image.explosionSpritesheet6"],
                 "cfg": {
+                    "image": "raw.image.explosionSpritesheet6",
                     "tileWidth": 16,
                     "tileHeight": 16
                 }
             },
             "blood": {
-                "dep": ["raw.blood"],
+                "dep": ["raw.image.blood"],
                 "cfg": {
+                    "image": "raw.image.blood",
                     "tileWidth": 512,
                     "tileHeight": 512
+                }
+            },
+            "spritesheet1": {
+                "dep": ["raw.image.tileset3"],
+                "cfg": {
+                    "image": "raw.image.tileset3",
+                    "mode": 0,
+                    "tileWidth": 32,
+                    "tileHeight": 32,
+                    "test": "abc"
                 }
             }
         },
@@ -100,9 +118,7 @@
                         "target": "textureAtlas.dungeon",
                         "coordinate": [1, 6]
                     },
-                    "scale": 4,
-                    "width": "world.width",
-                    "height": "world.height"
+                    "scale": 4
                 }
             }
         },
@@ -112,52 +128,82 @@
                 "cfg": {
                     "all": true,
                     "primaryDirection": "right",
-                    "secondaryDirection": "down"
+                    "secondaryDirection": "down",
+                    "textureAtlas": "textureAtlas.explosion"
                 }
             }
         },
         "sprite": {
             "rock": {
-                "dep": ["raw.rock"]
+                "dep": ["raw.image.rock"],
+                "cfg": {
+                    "image": "raw.image.rock"
+                }
             },
             "bullet": {
-                "dep": ["raw.bullet"],
+                "dep": ["raw.image.bullet"],
                 "cfg": {
-                    "scale": 0.15
+                    "scale": 0.15,
+                    "image": "raw.image.bullet"
                 }
             },
             "player": {
-                "dep": ["raw.rifle"],
+                "dep": ["raw.image.rifle"],
                 "cfg": {
-                    "scale": 0.3
+                    "scale": 0.2,
+                    "image": "raw.image.rifle"
                 }
             },
             "blood": {
-                "dep": ["raw.blood"]
-            },
-            "donkey": {
-                "dep": ["raw.donkey"],
+                "dep": ["raw.image.blood"],
                 "cfg": {
-                    "scale": 0.25
+                    "image": "raw.image.blood"
                 }
             },
-            "heart":{
-              "dep": ["raw.heart"]
-
+            "donkey": {
+                "dep": ["raw.image.donkey"],
+                "cfg": {
+                    "scale": 0.25,
+                    "image": "raw.image.donkey"
+                }
+            }
+        },
+        "tileMap": {
+            "tm2": {
+                "dep": ["raw.xml.test2map", "raw.xml.test2tileset", "textureAtlas.spritesheet1"],
+                "cfg": {
+                    "type": 1,
+                    "map": "raw.xml.test2map",
+                    "tileset": "raw.xml.test2tileset",
+                    "textureAtlas": "textureAtlas.spritesheet1"
+                }
+            },
+            "tm1": {
+                "dep": ["raw.xml.test1_tiledMapLayer", "raw.xml.test1_tileset", "textureAtlas.spritesheet1"],
+                "cfg": {
+                    "type": 1,
+                    "map": "raw.xml.test1_tiledMapLayer",
+                    "tileset": "raw.xml.test1_tileset",
+                    "textureAtlas": "textureAtlas.spritesheet1"
+                }
             }
         },
         "fastImage": {
             "cursor": {
-                "dep": ["raw.cursor"]
+                "dep": ["raw.image.cursor"],
+                "cfg": {
+                    "image": "raw.image.cursor"
+                }
             },
             "cursor2": {
-                "dep": ["raw.crosshair"],
+                "dep": ["raw.image.crosshair"],
                 "cfg": {
-                    "scale": 0.15,
+                    "scale": 0.05,
                     "bias": {
                         "x": "-50%",
                         "y": "-50%"
-                    }
+                    },
+                    "image": "raw.image.crosshair"
                 }
             }
         },
@@ -179,14 +225,7 @@
                     "explosionSpritesheet6": "explosionSpritesheet6.png",
                     "donkey": "notdonkey.png",
                     "crosshair": "crosshair.png",
-                    "heart": "hp.png",
-                    "knife": "guns/knife.png",
-                    "rifle1": "guns/rifle.png",
-                    "handgun": "guns/handgun.png",
-                    "shotgun": "guns/shotgun.png"
-
-
-
+                    "tileset3": "tileset3.png"
                 }
             }],
             "audio": [{
@@ -195,7 +234,13 @@
                     "bulletFire": "bulletFire.ogg",
                     "bulletZapped": "bulletZapped.ogg",
                     "rockEvapoate": "rockEvaporate.ogg",
-                    "rockSplit": "rockSplit.ogg"
+                    "rockSplit": "rockSplit.ogg",
+                    "dying": "dying.ogg",
+                    "gunsound1": "gunsound1.ogg",
+                    "running1": "running1.ogg",
+                    "impact1": "impact1.ogg",
+                    "explosion1": "explosion.ogg",
+                    "clawing": "clawing.ogg"
                 }
             }],
             "text": [{
@@ -204,6 +249,30 @@
                     "lights": "lights.vert",
                     "shadowMap": "shadowMap.frag",
                     "shadowMask": "shadowMask.frag"
+                }
+            }],
+            "json": [{
+                "prefix": "json/",
+                "paths": {
+                    "example1": "example.json"
+                }
+            }],
+            "xml": [{
+                "prefix": "xml/",
+                "paths": {
+                    "example2": "example.xml"
+                }
+            }, {
+                "prefix": "xml/",
+                "paths": {
+                    "test1_tiledMapLayer": "test1-tiledMapLayer.tmx",
+                    "test1_tileset": "test1-tileset.tsx"
+                }
+            }, {
+                "prefix": "xml/",
+                "paths": {
+                    "test2map": "test2-map.tmx",
+                    "test2tileset": "test2-tileset.tsx"
                 }
             }]
         }

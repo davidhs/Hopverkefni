@@ -18,6 +18,20 @@ const g_viewport = (function () {
   let outerWidth = 0;
   let outerHeight = 0;
 
+  let stuckToWorld = false;
+
+  // PRIVATE FUNCTIONS
+
+  function _ensureInWorld() {
+    const ww = g_world.getWidth();
+    const wh = g_world.getHeight();
+
+    if (outerX < 0) outerX = 0;
+    if (outerY < 0) outerY = 0;
+    if ((outerX + outerWidth) > ww) outerX = ww - outerWidth;
+    if ((outerY + outerHeight) > wh) outerY = wh - outerHeight;
+  }
+
   // PUBLIC FUNCTIONS
 
   /**
@@ -79,6 +93,7 @@ const g_viewport = (function () {
    */
   function setOW(ow) {
     outerWidth = ow;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -89,6 +104,7 @@ const g_viewport = (function () {
    */
   function setOH(oh) {
     outerHeight = oh;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -124,6 +140,7 @@ const g_viewport = (function () {
    */
   function setOX(ox) {
     outerX = ox;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -137,6 +154,7 @@ const g_viewport = (function () {
    */
   function setOY(oy) {
     outerY = oy;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -166,6 +184,7 @@ const g_viewport = (function () {
    */
   function setOCX(ocx) {
     outerX = ocx - outerWidth / 2;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -177,6 +196,7 @@ const g_viewport = (function () {
    */
   function setOCY(ocy) {
     outerY = ocy - outerHeight / 2;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -209,7 +229,7 @@ const g_viewport = (function () {
    * @param {Number} ox
    */
   function mapO2IX(ox) {
-    return (ow - outerX) * (innerWidth / outerWidth);
+    return (ox - outerX) * (innerWidth / outerWidth);
   }
 
 
@@ -220,7 +240,41 @@ const g_viewport = (function () {
    * @param {Number} oy
    */
   function mapO2IY(oy) {
-    return (oy - outerY) * (innerHeight / innerWidth);
+    // return (oy - outerY) * (innerHeight / innerWidth);
+    return (oy - outerY);
+  }
+
+
+  function inOuterSquareCircle(wcx, wcy, wr) {
+    return inOuterRectangleBounds(wcx - wr, wcy - wr, 2 * wr, 2 * wr);
+  }
+
+  function inOuterCircleBounds(wcx, wcy, wr) {
+    return inOuterSquareCircle(wcx, wcy, wr);
+  }
+
+  function inOuterRectangleBounds(wx, wy, ww, wh) {
+    const ax1 = getOX();
+    const ax2 = getOX() + getOW();
+
+    const ay1 = getOY();
+    const ay2 = getOY() + getOH();
+
+    const x1 = wx;
+    const x2 = wx + ww;
+
+    const y1 = wy;
+    const y2 = wy + wh;
+
+    const c1 = util.isIntervalIntersection(x1, x2, ax1, ax2);
+    const c2 = util.isIntervalIntersection(y1, y2, ay1, ay2);
+
+    return c1 && c2;
+  }
+
+  function stickToWorld(flag) {
+    stuckToWorld = flag;
+    if (stuckToWorld) _ensureInWorld();
   }
 
   // EXPOSURE
@@ -252,6 +306,12 @@ const g_viewport = (function () {
     mapI2OY,
     mapO2IX,
     mapO2IY,
+
+    inOuterSquareCircle,
+    inOuterCircleBounds,
+    inOuterRectangleBounds,
+
+    stickToWorld
   });
 
   return obj;
