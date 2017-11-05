@@ -168,6 +168,53 @@ const util = (function () {
     return false;
   };
 
+  function objectStringReplacement(obj, stringTarget, replacement) {
+    const c1 = obj === null;
+    const c2 = typeof obj === 'undefined';
+    const c3 = typeof el === 'number';
+    const c4 = typeof el === 'boolean';
+    const c5 = typeof el === 'function';
+    
+    if (obj === null || typeof obj === 'undefined' || typeof el === 'number' || typeof el === 'boolean') {
+      return;
+    }
+    
+    // Check if object is array,
+    // Check if object is "object"
+    
+    if (Array.isArray(obj)) {
+      // Assume is array
+      const arr = obj;
+      for (let i = 0; i < arr.length; i += 1) {
+        const el = arr[i];
+        if (typeof el === "string") {
+          if (el === stringTarget) {
+            arr[i] = replacement;
+          } else {
+            objectStringReplacement(el, stringTarget, replacement);
+          }
+        }
+      }
+    } else if (obj !== null && typeof obj !== 'undefined') {
+      // Assume is object
+      const keys = Object.keys(obj);
+      for (let i = 0; i < keys.length; i += 1) {
+        const key = keys[i];
+        const el = obj[key];
+        
+        if (typeof el === "string") {
+          if (el === stringTarget) {
+            obj[key] = replacement;
+          }
+        } else {
+          objectStringReplacement(el, stringTarget, replacement);
+        }
+      }
+    }
+  }
+
+  util.objectStringReplacement = objectStringReplacement;
+
   // Returns a value that is always positive,
   // or to be more accurate non-negative.
   util.posmod = (value, modulus) => {

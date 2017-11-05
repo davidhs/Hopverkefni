@@ -25,9 +25,12 @@ let g_master;
 const g_background = document.createElement('canvas'); // Background
 const g_midground = document.createElement('canvas'); // Midground
 const g_foreground = document.createElement('canvas'); // Foreground
+const g_hud = document.createElement('canvas'); // HUD
 
 const g_occlusion = document.createElement('canvas'); // Occlusion map
 const g_shadows = document.createElement('canvas'); // Shadows
+
+const g_pre = document.createElement('canvas');
 
 
 
@@ -91,12 +94,16 @@ function renderSimulation(ctx) {
   const ctxf = g_foreground.getContext('2d');
   const ctxo = g_occlusion.getContext('2d'); // Occlusion map context
   const ctxs = g_shadows.getContext('2d'); // Shadows context
+  const ctxh = g_hud.getContext('2d'); // HUD
+  const ctxp = g_pre.getContext('2d');
 
   ctxb.imageSmoothingEnabled = false;
   ctxm.imageSmoothingEnabled = false;
   ctxf.imageSmoothingEnabled = false;
   ctxo.imageSmoothingEnabled = false;
   ctxs.imageSmoothingEnabled = false;
+  ctxh.imageSmoothingEnabled = false;
+  ctxp.imageSmoothingEnabled = false;
 
   // Width and height of rendering canvases.
   const w = g_canvas.width;
@@ -105,15 +112,15 @@ function renderSimulation(ctx) {
   const player = entityManager.getPlayer();
 
   // Clear canvases.
+  ctx.clearRect(0, 0, w, h);
   ctxb.clearRect(0, 0, w, h);
   ctxm.clearRect(0, 0, w, h);
   ctxf.clearRect(0, 0, w, h);
   ctxo.clearRect(0, 0, w, h);
   ctxs.clearRect(0, 0, w, h);
+  ctxh.clearRect(0, 0, w, h);
+  ctxp.clearRect(0, 0, w, h);
 
-  // Clear rendering canvas.
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, w, h);
 
   // === DRAWING TO VARIOUS CANVASES ===
 
@@ -135,10 +142,6 @@ function renderSimulation(ctx) {
 
   // --- FOREGROUND ---
 
-  // Draw Cursor
-  if (g_mouse.getImage()) {
-    g_mouse.render(ctxf);
-  }
 
   // === OCCLUSION ===
 
@@ -169,27 +172,57 @@ function renderSimulation(ctx) {
     y: pcy
   });
 
+  // === HUD ===
+  
+  // Draw Cursor
+  if (g_mouse.getImage()) {
+    g_mouse.render(ctxh);
+  }
+
   // === DEBUG ===
 
   // Draw debug stuff.
   g_debugGAME.render(ctx);
 
-  // === DRAW TO RENDERING CANVAS ===
+  // === DRAW TO BACK-RENDERING CANVAS ===
 
   // --- DRAW BACKGROUND ---
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(g_background, 0, 0);
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_background, 0, 0);
+  ctxp.globalAlpha = 1.0;
+  // --- DRAW FOREGROUND ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_foreground, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
   // --- DRAW LIGHTS/SHADOWS ---
-  ctx.globalCompositeOperation = 'lighter';
-  ctx.drawImage(g_shadows, 0, 0, w, h);
+  
+  ctxp.globalAlpha = 1.0;
+  ctxp.globalCompositeOperation = 'destination-in';
+  ctxp.drawImage(g_shadows, 0, 0, w, h);
+  
 
+  // TEMPORARY
   // --- DRAW MIDGROUND ---
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.drawImage(g_midground, 0, 0);
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_midground, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
-  // --- DRAW FOREGROUND ---
-  ctx.drawImage(g_foreground, 0, 0);
+  // --- DRAW HUD ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_hud, 0, 0);
+  ctxp.globalAlpha = 1.0;
+
+
+
+
+
+  // === DRAW TO RENDERING CANVAS ===
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(g_pre, 0, 0);
+
 
   //util.fillCircle(ctx, pcx, pcy, 10);
 }
@@ -244,6 +277,12 @@ function setup(response) {
   g_shadows.width = g_canvas.width;
   g_shadows.height = g_canvas.height;
 
+  g_hud.width = g_canvas.width;
+  g_hud.height = g_canvas.height;
+
+  g_pre.width = g_canvas.width;
+  g_pre.height = g_canvas.height;
+
   // Init debug
   g_debugGAME.init();
 
@@ -287,7 +326,7 @@ function setup(response) {
   );
 
   // Experimental
-  g_tm = g_asset.tileMap.tm1;
+  g_tm = g_asset.tiledMap.tm1;
 
   // --- Spatial Manager ---
 
@@ -309,11 +348,26 @@ function setup(response) {
 // START GAME
 // ==========
 
+function startGame() {
 
-loader.load({ json: { init: 'json/init.json'} }, (response) => {
-  chosenMap = response.json.init.variables.chosenMap;
-  mapHandler.openMap(chosenMap, setup);
-});
+
+  assetLoader.addProcessor('texture', Texture);
+  assetLoader.addProcessor('textureAtlas', TextureAtlas);
+  assetLoader.addProcessor('sequence', Sequence);
+  assetLoader.addProcessor('sprite', Sprite);
+  assetLoader.addProcessor('fastImage', FastImage);
+  assetLoader.addProcessor('tiledMap', TiledMap);
+  assetLoader.addProcessor('tiledTileset', TiledTileset);
+
+  loader.load({ json: { init: 'json/init.json'} }, (response) => {
+    chosenMap = response.json.init.variables.chosenMap;
+    mapHandler.openMap(chosenMap, setup);
+  });
+}
+
+startGame();
+
+
 
 
 // =========================

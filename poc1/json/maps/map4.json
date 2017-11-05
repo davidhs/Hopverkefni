@@ -13,8 +13,8 @@
         },
         "shadowSize": 256,
         "viewport": {
-            "width": 640,
-            "height": 480
+            "width": 800,
+            "height": 600
         },
         "muted": true
     },
@@ -103,10 +103,24 @@
                 "dep": ["raw.image.tileset3"],
                 "cfg": {
                     "image": "raw.image.tileset3",
-                    "mode": 0,
                     "tileWidth": 32,
-                    "tileHeight": 32,
-                    "test": "abc"
+                    "tileHeight": 32
+                }
+            },
+            "tileset4": {
+                "dep": ["raw.image.ta_tileset4"],
+                "cfg": {
+                    "image": "raw.image.ta_tileset4",
+                    "tileWidth": 32,
+                    "tileHeight": 32
+                }
+            },
+            "terrain_atlas": {
+                "dep": ["raw.image.ta_terrainAtlas"],
+                "cfg": {
+                    "image": "raw.image.ta_terrainAtlas",
+                    "tileWidth": 32,
+                    "tileHeight": 32
                 }
             }
         },
@@ -168,23 +182,54 @@
                 }
             }
         },
-        "tileMap": {
-            "tm2": {
-                "dep": ["raw.xml.test2map", "raw.xml.test2tileset", "textureAtlas.spritesheet1"],
+        "tiledMap": {
+            "tm1": {
+                "dep": [
+                    "raw.xml.pmap1",
+                    "tiledTileset.map1tileset1",
+                    "tiledTileset.map1tileset2",
+                    "tiledTileset.map1tileset3"
+                ],
                 "cfg": {
                     "type": 1,
-                    "map": "raw.xml.test2map",
-                    "tileset": "raw.xml.test2tileset",
-                    "textureAtlas": "textureAtlas.spritesheet1"
+                    "map": "raw.xml.pmap1",
+                    "tilesets": [
+                        "tiledTileset.map1tileset2",
+                        "tiledTileset.map1tileset3",
+                        "tiledTileset.map1tileset1"
+                    ]
+                }
+            }
+        },
+        "tiledTileset": {
+            "map1tileset1": {
+                "dep": [
+                    "raw.xml.pmap1tileset1", 
+                    "textureAtlas.spritesheet1"
+                ],
+                "cfg": {
+                    "textureAtlas": "textureAtlas.spritesheet1",
+                    "cfg": "raw.xml.pmap1tileset1"
                 }
             },
-            "tm1": {
-                "dep": ["raw.xml.test1_tiledMapLayer", "raw.xml.test1_tileset", "textureAtlas.spritesheet1"],
+            "map1tileset2": {
+                "dep": [
+                    "raw.xml.pmap1tileset2", 
+                    "textureAtlas.tileset4"
+                ],
                 "cfg": {
-                    "type": 1,
-                    "map": "raw.xml.test1_tiledMapLayer",
-                    "tileset": "raw.xml.test1_tileset",
-                    "textureAtlas": "textureAtlas.spritesheet1"
+                    "textureAtlas": "textureAtlas.tileset4",
+                    "cfg": "raw.xml.pmap1tileset2"
+                }
+            },
+            "map1tileset3": {
+                "dep": [
+                    "raw.xml.pmap1tileset3", 
+                    "textureAtlas.terrain_atlas"
+                ],
+                "cfg": {
+                    "textureAtlas": "textureAtlas.terrain_atlas",
+                    "cfg": "raw.xml.pmap1tileset3"
                 }
             }
         },
@@ -212,20 +257,31 @@
                 "prefix": "img/",
                 "paths": {
                     "cursor": "cursor.png",
-                    "dungeon": "dungeonTileset.png",
-                    "explosion": "spritesheet1.png",
                     "rock": "rock.png",
                     "blood": "blood.png",
                     "bullet": "bullet.png",
                     "rifle": "survivor-shoot_rifle_0.png",
                     "blockMap": "block-map.png",
+                    "donkey": "notdonkey.png",
+                    "crosshair": "crosshair.png"
+                }
+            }, {
+                "prefix": "img/spritesheets/explosions/",
+                "paths": {
+                    "explosion": "spritesheet1.png",
                     "explosionSpritesheet2": "explosionSpritesheet2.png",
                     "explosionSpritesheet3": "explosionSpritesheet3.png",
                     "explosionSpritesheet5": "explosionSpritesheet5.png",
-                    "explosionSpritesheet6": "explosionSpritesheet6.png",
-                    "donkey": "notdonkey.png",
-                    "crosshair": "crosshair.png",
-                    "tileset3": "tileset3.png"
+                    "explosionSpritesheet6": "explosionSpritesheet6.png"
+                }
+            }, {
+                "prefix": "img/spritesheets/",
+                "paths": {
+                    "dungeon": "dungeonTileset.png",
+                    "tileset3": "tileset3.png",
+                    "ta_terrainAtlas": "terrain_atlas.png",
+                    "ta_tileset4": "tileset4.png"
+
                 }
             }],
             "audio": [{
@@ -256,16 +312,12 @@
                 "paths": {}
             }],
             "xml": [{
-                "prefix": "xml/",
+                "prefix": "xml/map1/",
                 "paths": {
-                    "test1_tiledMapLayer": "test1-tiledMapLayer.tmx",
-                    "test1_tileset": "test1-tileset.tsx"
-                }
-            }, {
-                "prefix": "xml/",
-                "paths": {
-                    "test2map": "test2-map.tmx",
-                    "test2tileset": "test2-tileset.tsx"
+                    "pmap1": "map1.tmx",
+                    "pmap1tileset1": "map1-tileset1.tsx",
+                    "pmap1tileset2": "map1-tileset2.tsx",
+                    "pmap1tileset3": "map1-tileset3.tsx"
                 }
             }]
         }

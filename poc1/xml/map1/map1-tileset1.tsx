@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset name="tileset3" tilewidth="32" tileheight="32" tilecount="3072" columns="64">
- <image source="../Downloads/tileset3.png" width="2048" height="1536"/>
+ <image source="../../img/spritesheets/tileset3.png" width="2048" height="1536"/>
  <tile id="1140">
   <properties>
    <property name="collision" type="bool" value="true"/>

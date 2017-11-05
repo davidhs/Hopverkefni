@@ -110,12 +110,13 @@ const entityManager = (function () {
 
   function init() {
 
+    
     for (let i = 0; i < 0; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({
-        cx,
-        cy,
+        cx: cx,
+        cy: cy,
         sprite: g_asset.sprite.donkey,
       });
     }
