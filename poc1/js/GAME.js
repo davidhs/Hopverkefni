@@ -193,6 +193,14 @@ function renderSimulation(ctx) {
       g: 255,
       b: 255
     }
+  }, {
+    x: g_viewport.mapI2OX(g_mouse.x),
+    y: g_viewport.mapI2OY(g_mouse.y),
+    color: {
+      r: 100,
+      g: 27,
+      b: 250
+    }
   }];
 
   for (let i = 0; i < lights.length; i += 1) {
@@ -275,7 +283,6 @@ function setup(response) {
   const map = response.map;
   const assets = response.assets;
 
-  console.log(response);
 
   g_viewport.stickToWorld(true);
 
@@ -374,6 +381,8 @@ function setup(response) {
 
   // Initialize spatial manager.
   spatialManager.init();
+
+  g_tm.addObstructions();
 
   // Temporary occlusion map from spatial manager.  TODO: remove later.
   // g_testWOM = spatialManager.getWallOcclusionMap();
