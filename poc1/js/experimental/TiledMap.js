@@ -51,8 +51,7 @@ function TiledMap(cfg) {
   this.map = map;
   this.tilesets = tilesets;
   this.data2Ds = data2Ds;
-
-  console.log(this);
+  this._spatialID = spatialManager.getNewSpatialID();
 }
 
 TiledMap.prototype._render = function (ctx, data2D, textureAtlas) {
@@ -153,6 +152,8 @@ TiledMap.prototype._render = function (ctx, index, cfg) {
             const h = tileHeight;
             
             const index = data2D[ty][tx];
+
+
   
             this._renderIndexTile(ctx, index, x, y, w, h, cfg);
           }
@@ -179,6 +180,65 @@ TiledMap.prototype.render = function (ctx, cfg) {
   this.renderBottom(ctx, cfg);
   this.renderMiddle(ctx, cfg);
   this.renderTop(ctx, cfg);
+};
+
+TiledMap.prototype.addObstructions = function () {
+  const tiles = spatialManager.debug().tiles;
+
+  const map = this.map;
+  const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
+
+
+  // Iterate through layers
+  
+  for (let i = 0; i < layers.length; i += 1) {
+    // Iterate through columns
+    const data2D = this.data2Ds[i];
+    for (let j = 0; j < this.heightInTiles; j += 1) {
+      for (let k = 0; k < this.widthInTiles; k += 1) {
+        
+        const tx = k;
+        const ty = j;
+
+        
+        const index = data2D[ty][tx];
+
+        if (index !== 0) {
+          let sidx = -1;
+          let sgid = -1;
+  
+          for (let z = 0; z < map.tileset.length; z++) {
+            const gid = parseInt(map.tileset[z]["@attributes"].firstgid, 10);
+            if (gid > index) {
+              z = map.tileset.length;
+            } else {
+              sidx = z;
+              sgid = gid;
+            }
+          }
+          
+          if (index - sgid < 0) {
+            throw Error();
+          }
+        
+          const tidx = index - sgid;
+          
+          const tlut = this.tilesets[sidx].tlut;
+
+
+          if (tlut[tidx]) {
+            if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
+
+              if (!tiles[ty]) tiles[ty] = [];
+
+              tiles[ty][tx] = 2; // wall
+
+            } 
+          }
+        }
+      }
+    }
+  }
 };
 
 /*

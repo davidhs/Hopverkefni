@@ -2,7 +2,6 @@
 function TiledTileset(cfg) {
     this.cfg = util.xml2json(cfg.cfg).tileset;
     this.textureAtlas = cfg.textureAtlas;
-    console.log(this);
 
     this.tilewidth = parseInt(this.cfg["@attributes"].tilewidth);
     this.tileheight = parseInt(this.cfg["@attributes"].tileheight);

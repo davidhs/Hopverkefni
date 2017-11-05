@@ -32,6 +32,22 @@
    </properties>
   </objectgroup>
  </tile>
+ <tile id="730">
+  <objectgroup draworder="index">
+   <properties>
+    <property name="castShadow" type="bool" value="true"/>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </objectgroup>
+ </tile>
+ <tile id="731">
+  <objectgroup draworder="index">
+   <properties>
+    <property name="castShadow" type="bool" value="true"/>
+    <property name="collision" type="bool" value="true"/>
+   </properties>
+  </objectgroup>
+ </tile>
  <tile id="852">
   <objectgroup draworder="index">
    <properties>
