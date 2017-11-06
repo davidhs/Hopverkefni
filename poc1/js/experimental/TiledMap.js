@@ -51,15 +51,14 @@ function TiledMap(cfg) {
   this.map = map;
   this.tilesets = tilesets;
   this.data2Ds = data2Ds;
-
-  console.log(this);
+  this._spatialID = spatialManager.getNewSpatialID();
 }
 
 TiledMap.prototype._render = function (ctx, data2D, textureAtlas) {
 
 };
 
-TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h) {
+TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
 
   
 
@@ -89,16 +88,41 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h) {
   }
 
   const tidx = index - sgid;
-  
-  this.tilesets[sidx].textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+
+  const textureAtlas = this.tilesets[sidx].textureAtlas;
+  const tlut = this.tilesets[sidx].tlut;
+
+    if (cfg && cfg.occlusion) {
+
+        const pkg = tlut[tidx];
+
+        if (pkg) {
+
+          /*
+            const oldFillStyle = ctx.fillStyle;
+            ctx.fillStyle = "#000";
+            ctx.fillRect(x, y, w, h);
+            ctx.fill();
+            ctx.fillStyle = oldFillStyle;
+            */
+
+            textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+        }
+
+    } else {
+        textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+    }
 };
 
-TiledMap.prototype.render = function (ctx) {
+TiledMap.prototype._render = function (ctx, index, cfg) {
   const wx1 = g_viewport.getOX();
   const wy1 = g_viewport.getOY();
 
   const wx2 = g_viewport.getOX() + g_viewport.getOW();
   const wy2 = g_viewport.getOY() + g_viewport.getOH();
+
+
+
 
   const tileWidth = this.tileWidth;
   const tileHeight = this.tileHeight;
@@ -117,21 +141,100 @@ TiledMap.prototype.render = function (ctx) {
 
   // LAYERS
   const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
-  for (let li = 0; li < layers.length; li += 1) {
+  const data2D = this.data2Ds[index];
+  
+      for (let ty = ty1, i = 0; ty <= ty2; ty += 1, i += 1) {
+        for (let tx = tx1, j = 0; tx <= tx2; tx += 1, j += 1) {
+          if (ty >= 0 && ty < this.heightInTiles && tx >= 0 && tx < this.widthInTiles) {
+            const x = -offx + j * tileWidth;
+            const y = -offy + i * tileHeight;
+            const w = tileWidth;
+            const h = tileHeight;
+            
+            const index = data2D[ty][tx];
 
-    const data2D = this.data2Ds[li];
 
-    for (let ty = ty1, i = 0; ty <= ty2; ty += 1, i += 1) {
-      for (let tx = tx1, j = 0; tx <= tx2; tx += 1, j += 1) {
-        if (ty >= 0 && ty < this.heightInTiles && tx >= 0 && tx < this.widthInTiles) {
-          const x = -offx + j * tileWidth;
-          const y = -offy + i * tileHeight;
-          const w = tileWidth;
-          const h = tileHeight;
+  
+            this._renderIndexTile(ctx, index, x, y, w, h, cfg);
+          }
+        }
+      }
+
+};
+
+TiledMap.prototype.renderBottom = function (ctx, cfg) {
+  this._render(ctx, 0, cfg);
+};
+
+TiledMap.prototype.renderMiddle = function (ctx, cfg) {
+  this._render(ctx, 1, cfg);
+
+};
+
+TiledMap.prototype.renderTop = function (ctx, cfg) {
+  this._render(ctx, 2, cfg);
+
+};
+
+TiledMap.prototype.render = function (ctx, cfg) {
+  this.renderBottom(ctx, cfg);
+  this.renderMiddle(ctx, cfg);
+  this.renderTop(ctx, cfg);
+};
+
+TiledMap.prototype.addObstructions = function () {
+  const tiles = spatialManager.debug().tiles;
+
+  const map = this.map;
+  const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
+
+
+  // Iterate through layers
+  
+  for (let i = 0; i < layers.length; i += 1) {
+    // Iterate through columns
+    const data2D = this.data2Ds[i];
+    for (let j = 0; j < this.heightInTiles; j += 1) {
+      for (let k = 0; k < this.widthInTiles; k += 1) {
+        
+        const tx = k;
+        const ty = j;
+
+        
+        const index = data2D[ty][tx];
+
+        if (index !== 0) {
+          let sidx = -1;
+          let sgid = -1;
+  
+          for (let z = 0; z < map.tileset.length; z++) {
+            const gid = parseInt(map.tileset[z]["@attributes"].firstgid, 10);
+            if (gid > index) {
+              z = map.tileset.length;
+            } else {
+              sidx = z;
+              sgid = gid;
+            }
+          }
           
-          const index = data2D[ty][tx];
+          if (index - sgid < 0) {
+            throw Error();
+          }
+        
+          const tidx = index - sgid;
+          
+          const tlut = this.tilesets[sidx].tlut;
 
-          this._renderIndexTile(ctx, index, x, y, w, h);
+
+          if (tlut[tidx]) {
+            if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
+
+              if (!tiles[ty]) tiles[ty] = [];
+
+              tiles[ty][tx] = 2; // wall
+
+            } 
+          }
         }
       }
     }
