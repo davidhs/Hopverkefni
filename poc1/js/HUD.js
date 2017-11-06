@@ -8,6 +8,15 @@
 
 
 
+  loader.load({
+    image: {
+      heart: "img/hp.png",
+      handgun: "img/guns/handgun.png",
+      shotgun: "img/guns/shotgun.png",
+      rifle: "img/guns/rifle.png",
+      knife: "img/guns/knife.png"
+    }
+  }, loader.callback(null));
 
 
   //globals for health bar
