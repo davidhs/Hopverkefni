@@ -204,7 +204,7 @@
         "tiledTileset": {
             "map1tileset1": {
                 "dep": [
-                    "raw.xml.pmap1tileset1", 
+                    "raw.xml.pmap1tileset1",
                     "textureAtlas.spritesheet1"
                 ],
                 "cfg": {
@@ -214,7 +214,7 @@
             },
             "map1tileset2": {
                 "dep": [
-                    "raw.xml.pmap1tileset2", 
+                    "raw.xml.pmap1tileset2",
                     "textureAtlas.tileset4"
                 ],
                 "cfg": {
@@ -224,7 +224,7 @@
             },
             "map1tileset3": {
                 "dep": [
-                    "raw.xml.pmap1tileset3", 
+                    "raw.xml.pmap1tileset3",
                     "textureAtlas.terrain_atlas"
                 ],
                 "cfg": {
@@ -263,7 +263,12 @@
                     "rifle": "survivor-shoot_rifle_0.png",
                     "blockMap": "block-map.png",
                     "donkey": "notdonkey.png",
-                    "crosshair": "crosshair.png"
+                    "crosshair": "crosshair.png",
+                    "heart": "hp.png",
+                    "knife": "guns/knife.png",
+                    "rifle1": "guns/rifle.png",
+                    "handgun": "guns/handgun.png",
+                    "shotgun": "guns/shotgun.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",

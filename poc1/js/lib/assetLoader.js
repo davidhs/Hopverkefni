@@ -28,18 +28,18 @@ const assetLoader = (function () {
       const cfg = entry.desc.cfg;
       // END OF PROLOGUE
 
-  
+
       const inputObject = {};
       if (cfg) util.extendObject(inputObject, cfg);
-  
+
       for (let i = 0; i < dependencies.length; i += 1) {
         const dependencyName = dependencies[i];
         const dependency = getAsset(group, dependencyName);
         util.objectStringReplacement(inputObject, dependencyName, dependency);
       }
-  
+
       const obj = new constructor(inputObject);
-  
+
       // START OF EPILOGUE
       if (!group.returnAsset[type]) group.returnAsset[type] = {};
       group.returnAsset[type][name] = obj;
@@ -121,7 +121,7 @@ const assetLoader = (function () {
         k = dependencies.length; // => break
       }
     }
-        
+
     if (!had) return;
 
     const result = processor[bundle.type](group, bundleIndex);
@@ -158,7 +158,7 @@ const assetLoader = (function () {
         assetCatalog[name] = raw[cat][handle];
       }
     }
-    
+
     for (let j = 0; j < _types.length; j += 1) {
       const type = _types[j];
       const typeCatalog = assets[type];
@@ -175,7 +175,7 @@ const assetLoader = (function () {
     }
 
     groups.push(group);
-    
+
     tick();
   }
 
@@ -205,7 +205,7 @@ const assetLoader = (function () {
       stuffToFetch[type] = _loremIpsum(raw[type]);
 
       // Process URLs
-      
+
       const typeList = raw[type];
       for (let j = 0; j < typeList.length; j += 1) {
         const prefix = typeList[j].prefix;
