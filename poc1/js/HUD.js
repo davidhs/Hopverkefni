@@ -6,6 +6,10 @@
   const HUD = {};
 
 
+
+
+
+
   //globals for health bar
   HUD.xHP = 30;
   HUD.yHP = 10;
@@ -104,11 +108,11 @@
 
   //draw the defult gun, as for now,
 
-  HUD.rifle.addEventListener('load', function(){
+  HUD.handgun.addEventListener('load', function(){
     HUD.ctx.beginPath();
-    HUD.ctx.drawImage(HUD.rifle, 280,40,100,30);
+    HUD.ctx.drawImage(HUD.handgun, 280,40,60,30);
   }, false);
-  HUD.rifle.src = 'img/guns/rifle.png'; //set source path
+  HUD.handgun.src = 'img/guns/handgun.png'; //set source path
 
 
 
