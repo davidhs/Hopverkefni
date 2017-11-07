@@ -32,14 +32,14 @@ const g_shadows = document.createElement('canvas'); // Shadows
 
 const g_pre = document.createElement('canvas');
 
-<<<<<<< HEAD
+
 //Alexander
-const g_radar = document.getElementById("rightCanvas"); //radar
-=======
+const g_radar = document.createElement('canvas'); //radar
+
 document.getElementById('canvi').appendChild(g_occlusion);
 document.getElementById('canvi').appendChild(g_shadows);
 
->>>>>>> master
+
 
 
 // TEMPORARY GLOBALS
@@ -77,6 +77,7 @@ function updateSimulation(du) {
 
   //Alexander
   Minimap.update(du);
+  //HUD.update(du);
 
   // Set viewport to follow player.
   g_viewport.setOCX(entityManager.getPos().cx);
@@ -176,8 +177,14 @@ function renderSimulation(ctx) {
   // ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
   //Alexander
+
   // === RADAR ===
   Minimap.render(ctxr);
+
+  // === HUD ===
+  HUD.render(ctxh);
+
+
 
 
   // === SHADOWS ===
@@ -241,7 +248,7 @@ function renderSimulation(ctx) {
     }
   }
 
-  // Subtract occluders from shadow 
+  // Subtract occluders from shadow
 
   ctxs.drawImage(g_occlusion, 0, 0);
 
@@ -295,6 +302,18 @@ function renderSimulation(ctx) {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(g_pre, 0, 0);
+
+  /*
+  ctx.fillstyle = "#000";
+  ctx.fillRect(0,0,100,100);
+  ctx.drawImage(g_radar);*/
+
+  //HUD
+  ctx.fillstyle = "#ffffff";
+  ctx.fillRect(0, g_viewport.getIH() -100, g_viewport.getIW(), 200);
+  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100);
+
+
 
 
   //util.fillCircle(ctx, pcx, pcy, 10);
