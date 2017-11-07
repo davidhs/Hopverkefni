@@ -32,6 +32,8 @@ const g_shadows = document.createElement('canvas'); // Shadows
 
 const g_pre = document.createElement('canvas');
 
+//Alexander
+const g_radar = document.getElementById("rightCanvas"); //radar
 
 
 // TEMPORARY GLOBALS
@@ -67,6 +69,9 @@ function updateSimulation(du) {
   // Update entities.
   entityManager.update(du);
 
+  //Alexander
+  Minimap.update(du);
+
   // Set viewport to follow player.
   g_viewport.setOCX(entityManager.getPos().cx);
   g_viewport.setOCY(entityManager.getPos().cy);
@@ -97,6 +102,9 @@ function renderSimulation(ctx) {
   const ctxh = g_hud.getContext('2d'); // HUD
   const ctxp = g_pre.getContext('2d');
 
+  //Alexander
+  const ctxr = g_radar.getContext('2d'); //radar
+
   ctxb.imageSmoothingEnabled = false;
   ctxm.imageSmoothingEnabled = false;
   ctxf.imageSmoothingEnabled = false;
@@ -104,7 +112,7 @@ function renderSimulation(ctx) {
   ctxs.imageSmoothingEnabled = false;
   ctxh.imageSmoothingEnabled = false;
   ctxp.imageSmoothingEnabled = false;
-
+  ctxr.imageSmoothingEnabled = false;
   // Width and height of rendering canvases.
   const w = g_canvas.width;
   const h = g_canvas.height;
@@ -120,6 +128,9 @@ function renderSimulation(ctx) {
   ctxs.clearRect(0, 0, w, h);
   ctxh.clearRect(0, 0, w, h);
   ctxp.clearRect(0, 0, w, h);
+
+  //Alexander
+  ctxr.clearRect(0,0,w,h);
 
 
   // === DRAWING TO VARIOUS CANVASES ===
@@ -153,6 +164,11 @@ function renderSimulation(ctx) {
   // Add "walls" to occlusion map.  TODO: remove later.
   // ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
+  //Alexander
+  // === RADAR ===
+  Minimap.render(ctxr);
+
+
   // === SHADOWS ===
 
   const pcx = g_viewport.mapO2IX(player.cx);
@@ -173,7 +189,7 @@ function renderSimulation(ctx) {
   });
 
   // === HUD ===
-  
+
   // Draw Cursor
   if (g_mouse.getImage()) {
     g_mouse.render(ctxh);
@@ -196,11 +212,11 @@ function renderSimulation(ctx) {
   ctxp.globalAlpha = 1.0;
 
   // --- DRAW LIGHTS/SHADOWS ---
-  
+
   ctxp.globalAlpha = 1.0;
   ctxp.globalCompositeOperation = 'destination-in';
   ctxp.drawImage(g_shadows, 0, 0, w, h);
-  
+
 
   // TEMPORARY
   // --- DRAW MIDGROUND ---
