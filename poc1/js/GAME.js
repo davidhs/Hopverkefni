@@ -193,15 +193,19 @@ function renderSimulation(ctx) {
       g: 255,
       b: 255
     }
-  }, {
-    x: g_viewport.mapI2OX(g_mouse.x),
-    y: g_viewport.mapI2OY(g_mouse.y),
-    color: {
-      r: 100,
-      g: 27,
-      b: 250
-    }
   }];
+
+  if (false) {
+    lights.push({
+      x: g_viewport.mapI2OX(g_mouse.x),
+      y: g_viewport.mapI2OY(g_mouse.y),
+      color: {
+        r: 100,
+        g: 27,
+        b: 250
+      }
+    });
+  }
 
   for (let i = 0; i < lights.length; i += 1) {
     const light = lights[i];
