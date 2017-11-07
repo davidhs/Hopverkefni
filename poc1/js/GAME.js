@@ -32,8 +32,14 @@ const g_shadows = document.createElement('canvas'); // Shadows
 
 const g_pre = document.createElement('canvas');
 
+<<<<<<< HEAD
 //Alexander
 const g_radar = document.getElementById("rightCanvas"); //radar
+=======
+document.getElementById('canvi').appendChild(g_occlusion);
+document.getElementById('canvi').appendChild(g_shadows);
+
+>>>>>>> master
 
 
 // TEMPORARY GLOBALS
@@ -141,8 +147,8 @@ function renderSimulation(ctx) {
   // g_asset.texture.background.render(ctxb);
 
   // Render better background.
-  g_tm.render(ctxb);
-
+  g_tm.renderBottom(ctxb);
+  g_tm.renderMiddle(ctxb);
   // Draw alpha 0 background.  TODO: remove later
   // ctxb.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
@@ -150,6 +156,7 @@ function renderSimulation(ctx) {
 
   // Draw entities to midground.
   entityManager.render(ctxm);
+  g_tm.renderTop(ctxm);
 
   // --- FOREGROUND ---
 
@@ -158,6 +165,10 @@ function renderSimulation(ctx) {
 
   // Add entities to occlusion map.
   entityManager.render(ctxo, {
+    occlusion: true,
+  });
+
+  g_tm.renderMiddle(ctxo, {
     occlusion: true,
   });
 
@@ -174,19 +185,65 @@ function renderSimulation(ctx) {
   const pcx = g_viewport.mapO2IX(player.cx);
   const pcy = g_viewport.mapO2IY(player.cy);
 
-  // Draw the light.
-  //
-  // NB: color doesn't work and the blending doesn't
-  // work very well.
-  lighting.radialLight(ctxs, {
-    r: 232,
-    g: 217,
-    b: 255,
+
+  // Lights!
+
+  const lights = [{
+    x: player.cx,
+    y: player.cy,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255
+    }
   }, {
-    occluder: g_occlusion,
-    x: pcx,
-    y: pcy
-  });
+    x: 78,
+    y: 317,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255
+    }
+  }, {
+    x: 570,
+    y: 636,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255
+    }
+  }];
+
+  if (false) {
+    lights.push({
+      x: g_viewport.mapI2OX(g_mouse.x),
+      y: g_viewport.mapI2OY(g_mouse.y),
+      color: {
+        r: 100,
+        g: 27,
+        b: 250
+      }
+    });
+  }
+
+  for (let i = 0; i < lights.length; i += 1) {
+    const light = lights[i];
+    const x = g_viewport.mapO2IX(light.x);
+    const y =  g_viewport.mapO2IY(light.y);
+    const color = light.color;
+    if (g_viewport.inInnerBoundsPoint(x, y, g_viewport.getIW() / 2, g_viewport.getIH() / 2)) {
+
+      lighting.radialLight(ctxs, color, {
+        occluder: g_occlusion,
+        x: x,
+        y: y
+      });
+    }
+  }
+
+  // Subtract occluders from shadow 
+
+  ctxs.drawImage(g_occlusion, 0, 0);
 
   // === HUD ===
 
@@ -249,7 +306,6 @@ function setup(response) {
   const map = response.map;
   const assets = response.assets;
 
-  console.log(response);
 
   g_viewport.stickToWorld(true);
 
@@ -348,6 +404,8 @@ function setup(response) {
 
   // Initialize spatial manager.
   spatialManager.init();
+
+  g_tm.addObstructions();
 
   // Temporary occlusion map from spatial manager.  TODO: remove later.
   // g_testWOM = spatialManager.getWallOcclusionMap();
