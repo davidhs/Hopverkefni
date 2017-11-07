@@ -244,6 +244,11 @@ const g_viewport = (function () {
     return (oy - outerY);
   }
 
+  function inOuterBoundsPoint(wcx, wcy) {
+    const c1 = wcx >= getOX() && wcx <= getOX() + getOW();
+    const c2 = wcy >= getOY() && wcy <= getOY() + getOH();
+    return c1 && c2;
+  }
 
   function inOuterSquareCircle(wcx, wcy, wr) {
     return inOuterRectangleBounds(wcx - wr, wcy - wr, 2 * wr, 2 * wr);
@@ -270,6 +275,13 @@ const g_viewport = (function () {
     const c2 = util.isIntervalIntersection(y1, y2, ay1, ay2);
 
     return c1 && c2;
+  }
+
+  function inInnerBoundsPoint(x, y, padX, padY) {
+    const c1 = x >= innerX - padX && x <= innerX + innerWidth + padY;
+    const c2 = y >= innerY - padX && y <= innerY + innerHeight + padY;
+    return c1 && c2;
+
   }
 
   function stickToWorld(flag) {
@@ -307,6 +319,9 @@ const g_viewport = (function () {
     mapO2IX,
     mapO2IY,
 
+    inInnerBoundsPoint,
+
+    inOuterBoundsPoint,
     inOuterSquareCircle,
     inOuterCircleBounds,
     inOuterRectangleBounds,
