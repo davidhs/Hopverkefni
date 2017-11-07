@@ -130,12 +130,14 @@ Player.prototype.update = function (du) {
 
   // COLLISION CHECKING
 
+  // 
+
 
   const oldX = this.cx;
   const oldY = this.cy;
 
-  const newX = this.cx + du * this.velX;
-  const newY = this.cy + du * this.velY;
+  let newX = this.cx + du * this.velX;
+  let newY = this.cy + du * this.velY;
 
   this.cx = newX;
   this.cy = newY;
@@ -149,20 +151,22 @@ Player.prototype.update = function (du) {
     let flags = spatialManager.register(this);
 
     // Wall crap
-    if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
-      if (flags < spatialManager.MIN_ENTITY) {
+    if (flags !== spatialManager.NO_CONFLICT && flags < spatialManager.MIN_ENTITY) {
+
+
+      if (flags !== spatialManager.NO_CONFLICT) {
         this.cx = newX;
         this.cy = oldY;
         flags = spatialManager.register(this);
       }
 
-      if (flags < spatialManager.MIN_ENTITY) {
+      if (flags !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
-        this.cy = oldY;
+        this.cy = newY;
         flags = spatialManager.register(this);
       }
 
-      if (flags) {
+      if (flags !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = oldY;
         flags = spatialManager.register(this);
