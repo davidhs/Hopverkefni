@@ -12,6 +12,8 @@
 
 function Weapon(descr) {
   this.setup(descr);
+  this.sprite = this.sprite || g_asset.sprite.pistol;
+  this.scale = 1;
 
   this.type = this.type;
   this.slot = this.slot;
@@ -19,7 +21,7 @@ function Weapon(descr) {
   this.splash = this.splash || 0;
   this.ammo = this.ammo;
   this.clipSize = this.clipSize;
-  this.ammoInClip = this.ammoInClip;
+  this.ammoInClip = this.clipSize;
   this.reloadTime = this.reloadTime || 1;
   this.fireRate = this.fireRate || 2;
   this.through = this.through || 0;
@@ -36,7 +38,7 @@ const MACHETE = new Weapon({
   slot: 1,
   damage: 100,
   ammo: Math.infinity,
-  clipSize: 1,
+  clipSize: Math.infinity,
   fireRate: 2,
   pickedUp: true,
 });
@@ -50,6 +52,7 @@ const USP = new Weapon({
   clipSize: 12,
   fireRate: 2,
   accuray: 0.8,
+  pickedUp: true,
 });
 
 // Leone Shotgun
@@ -118,6 +121,7 @@ const RAY = new Weapon({
 });
 
 Weapon.prototype.fire = function () {
+  console.log('FIRE ' + this.ammoInClip);
   if (this.ammoInClip > 0) {
     this.ammoInClip -= 1;
   } else {
