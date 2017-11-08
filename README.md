@@ -1,8 +1,6 @@
 # Hopverkefni
 Lokaverkefni TOL308G
 
-![](example.png)
-
 ## Basic
 Sjá stöðuna á verkefni => ´git status´
 

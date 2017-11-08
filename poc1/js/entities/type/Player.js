@@ -26,6 +26,14 @@ Player.prototype.KEY_DOWN = keyCode('S');
 Player.prototype.KEY_LEFT = keyCode('A');
 Player.prototype.KEY_RIGHT = keyCode('D');
 
+Player.prototype.KNIFE = keyCode('1');
+Player.prototype.PISTOL = keyCode('2');
+Player.prototype.SHOTGUN = keyCode('3');
+Player.prototype.RIFLE = keyCode('4');
+Player.prototype.MAGNUM = keyCode('5');
+Player.prototype.HEAVYMG = keyCode('6');
+Player.prototype.RAYGUN = keyCode('7');
+
 Player.prototype.rotation = 0;
 Player.prototype.cx = 200;
 Player.prototype.cy = 200;
@@ -33,6 +41,9 @@ Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
+Player.prototype.weapons = [true, true, false, true,
+  false, false, false];
+Player.prototype.weaponSelected = 1;
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -92,6 +103,37 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
+  if (eatKey(this.KNIFE) && this.weapons[0]) {
+    console.log('Machete selected!');
+    this.weaponSelected = 1;
+  }
+
+  if (eatKey(this.PISTOL) && this.weapons[1]) {
+    console.log('Pistol selected!');
+    this.weaponSelected = 2;
+  }
+
+  if (eatKey(this.SHOTGUN) && this.weapons[2]) {
+    console.log('Shotgun selected!');
+    this.weaponSelected = 3;
+  }
+
+  if (g_keys[this.RIFLE]) {
+    this.weaponSelected = 4;
+  }
+
+  if (g_keys[this.MAGNUM]) {
+    this.weaponSelected = 5;
+  }
+
+  if (g_keys[this.HEAVYMG]) {
+    this.weaponSelected = 6;
+  }
+
+  if (g_keys[this.RAYGUN]) {
+    this.weaponSelected = 7;
+  }
+
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
   if (noHorAcc) this.velX *= slowDown;
@@ -130,7 +172,7 @@ Player.prototype.update = function (du) {
 
   // COLLISION CHECKING
 
-  // 
+  //
 
 
   const oldX = this.cx;
