@@ -37,6 +37,7 @@ const g_pre = document.createElement('canvas');
 
 //Alexander
 const g_radar = document.createElement('canvas'); //radar
+const g_hudbar = document.createElement('canvas');
 
 document.getElementById('canvi').appendChild(g_occlusion);
 document.getElementById('canvi').appendChild(g_shadows);
@@ -83,8 +84,8 @@ function updateSimulation(du) {
 
   //Alexander
   Minimap.update(du);
-  //HUD.update(du);
 
+  HUD.update(du);
   // Set viewport to follow player.
   g_viewport.setOCX(entityManager.getPos().cx);
   g_viewport.setOCY(entityManager.getPos().cy);
@@ -118,6 +119,7 @@ function renderSimulation(ctx) {
 
   //Alexander
   const ctxr = g_radar.getContext('2d'); //radar
+  const ctxhb = g_hudbar.getContext('2d'); //HUDBAR
 
   ctxb.imageSmoothingEnabled = false;
   ctxm.imageSmoothingEnabled = false;
@@ -126,10 +128,10 @@ function renderSimulation(ctx) {
   ctxs.imageSmoothingEnabled = false;
   ctxh.imageSmoothingEnabled = false;
   ctxp.imageSmoothingEnabled = false;
-
-  ctxr.imageSmoothingEnabled = false;
-
   ctxt.imageSmoothingEnabled = false;
+  ctxr.imageSmoothingEnabled = false;
+  ctxhb.imageSmoothingEnabled = false;
+
 
 
   // Width and height of rendering canvases.
@@ -151,6 +153,7 @@ function renderSimulation(ctx) {
 
   //Alexander
   ctxr.clearRect(0,0,w,h);
+  ctxhb.clearRect(0,0,w,h);
 
 
   // === DRAWING TO VARIOUS CANVASES ===
@@ -197,8 +200,8 @@ function renderSimulation(ctx) {
   // === RADAR ===
   Minimap.render(ctxr);
 
-  // === HUD ===
-  HUD.render(ctxh);
+  // === HUDBAR ===
+  HUD.render(ctxhb);
 
 
 
@@ -333,9 +336,9 @@ function renderSimulation(ctx) {
   ctx.drawImage(g_radar);*/
 
   //HUD
-  ctx.fillstyle = "#ffffff";
+/*  ctx.fillstyle = "#ffffff";
   ctx.fillRect(0, g_viewport.getIH() -100, g_viewport.getIW(), 200);
-  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100);
+  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100);*/
 
 
 

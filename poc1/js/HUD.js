@@ -19,6 +19,7 @@
   var yHP = 10;
   var hpLost = 0;
 
+
   //Keycodes
   var KEY_RIFLE = '1'.charCodeAt(0);
   var KEY_HANDGUN = '2'.charCodeAt(0);
@@ -106,12 +107,12 @@
 
 
 
-  update = function(du){
+  function update(du){
 
 
   }
 
-  render = function(ctx){
+  function render(ctx){
 
 
 
