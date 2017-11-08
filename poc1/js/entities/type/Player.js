@@ -74,6 +74,7 @@ Player.prototype.update = function (du) {
 
   if (g_keys[this.KEY_UP]) {
     this.velY = Math.max(this.velY - this.acceleration * du, -this.maxSpeed);
+    console.log(cx + ' ' + cy);
     noVerAcc = false;
   }
 
@@ -130,7 +131,7 @@ Player.prototype.update = function (du) {
 
   // COLLISION CHECKING
 
-  // 
+  //
 
 
   const oldX = this.cx;

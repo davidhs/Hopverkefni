@@ -60,7 +60,7 @@ TiledMap.prototype._render = function (ctx, data2D, textureAtlas) {
 
 TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
 
-  
+
 
   // BLANK?
   if (index === 0) {
@@ -72,7 +72,7 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
   let sgid = -1;
 
   const map = this.map;
-  
+
   for (let z = 0; z < map.tileset.length; z++) {
     const gid = parseInt(map.tileset[z]["@attributes"].firstgid, 10);
     if (gid > index) {
@@ -82,7 +82,7 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
       sgid = gid;
     }
   }
-  
+
   if (index - sgid < 0) {
     throw Error();
   }
@@ -142,7 +142,7 @@ TiledMap.prototype._render = function (ctx, index, cfg) {
   // LAYERS
   const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
   const data2D = this.data2Ds[index];
-  
+
       for (let ty = ty1, i = 0; ty <= ty2; ty += 1, i += 1) {
         for (let tx = tx1, j = 0; tx <= tx2; tx += 1, j += 1) {
           if (ty >= 0 && ty < this.heightInTiles && tx >= 0 && tx < this.widthInTiles) {
@@ -150,9 +150,9 @@ TiledMap.prototype._render = function (ctx, index, cfg) {
             const y = -offy + i * tileHeight;
             const w = tileWidth;
             const h = tileHeight;
-            
+
             const index = data2D[ty][tx];
-  
+
             this._renderIndexTile(ctx, index, x, y, w, h, cfg);
           }
         }
@@ -233,7 +233,7 @@ TiledMap.prototype.addObstructions = function () {
           // Selection
           let sidx = -1;
           let sgid = -1;
-  
+
           for (let tileSetIdx = 0; tileSetIdx < map.tileset.length; tileSetIdx++) {
             const gid = parseInt(map.tileset[tileSetIdx]["@attributes"].firstgid, 10);
             if (gid > gidx) {
@@ -244,7 +244,7 @@ TiledMap.prototype.addObstructions = function () {
               sgid = gid;
             }
           }
-          
+
           if (gidx - sgid < 0) {
             throw Error();
           }
@@ -267,12 +267,12 @@ TiledMap.prototype.addObstructions = function () {
 
           const percentage = count / total;
 
-          
+
 
           if (tlut[tidx] && percentage > 0.25) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, sx, sy);
-            } 
+            }
           }
         }
 
@@ -318,7 +318,7 @@ TiledMap.prototype.addObstructions = function () {
         if (index !== 0) {
           let sidx = -1;
           let sgid = -1;
-  
+
           for (let tileSetIdx = 0; tileSetIdx < map.tileset.length; tileSetIdx++) {
             const gid = parseInt(map.tileset[tileSetIdx]["@attributes"].firstgid, 10);
             if (gid > index) {
@@ -329,13 +329,13 @@ TiledMap.prototype.addObstructions = function () {
               sgid = gid;
             }
           }
-          
+
           if (index - sgid < 0) {
             throw Error();
           }
 
           const tileset = this.tilesets[sidx];
-        
+
           const tidx = index - sgid;
           const tlut = tileset.tlut;
           const ta = tileset.textureAtlas;
@@ -352,9 +352,9 @@ TiledMap.prototype.addObstructions = function () {
           const sample = ta.sample(tx, ty, perX, perY);
 
           if (ITER++ % 537 === 0) {
-            console.log();
-            console.log(qx, qy, tx, ty, fx, fy, perX, perY);
-            console.log(sample);
+            //console.log();
+            //console.log(qx, qy, tx, ty, fx, fy, perX, perY);
+            //console.log(sample);
           }
 
           //console.log(sample)
@@ -364,10 +364,10 @@ TiledMap.prototype.addObstructions = function () {
 
               // Sample texture atlas
 
-              
+
 
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, smColIdx, smRowIdx);
-            } 
+            }
           }
         }
       }
@@ -376,23 +376,23 @@ TiledMap.prototype.addObstructions = function () {
 
 
   // Iterate through layers
-  
+
   /*
   for (let i = 0; i < layers.length; i += 1) {
     // Iterate through columns
     const data2D = this.data2Ds[i];
     for (let j = 0; j < this.heightInTiles; j += 1) {
       for (let k = 0; k < this.widthInTiles; k += 1) {
-        
+
         const tx = k;
         const ty = j;
-        
+
         const index = data2D[ty][tx];
 
         if (index !== 0) {
           let sidx = -1;
           let sgid = -1;
-  
+
           for (let z = 0; z < map.tileset.length; z++) {
             const gid = parseInt(map.tileset[z]["@attributes"].firstgid, 10);
             if (gid > index) {
@@ -402,20 +402,20 @@ TiledMap.prototype.addObstructions = function () {
               sgid = gid;
             }
           }
-          
+
           if (index - sgid < 0) {
             throw Error();
           }
-        
+
           const tidx = index - sgid;
-          
+
           const tlut = this.tilesets[sidx].tlut;
 
 
           if (tlut[tidx]) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, tx, ty);
-            } 
+            }
           }
 
         }
