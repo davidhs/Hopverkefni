@@ -4,49 +4,24 @@
  g_world entityManager g_asset :true */
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Bullet(descr) {
+function Powerups(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
+  this.sprite = this.sprite;
 
-  // TODO: bind in JSON.
-  // audioManager.play(g_url.bulletFire);
-  audioManager.play(g_url.audio.gunsound1);
+  audioManager.play(g_url.audio.powerup);
 }
 
-Bullet.prototype = new Entity();
+Powerups.prototype = new Entity();
 
-// Initial, inheritable, default values
-Bullet.prototype.rotation = 0;
-Bullet.prototype.cx = 200;
-Bullet.prototype.cy = 200;
-Bullet.prototype.velX = 1;
-Bullet.prototype.velY = 1;
 
-// Convert times from milliseconds to "nominal" time units.
 
-// TODO: bind in JSON
-Bullet.prototype.lifeSpan = 3000 / NOMINAL_UPDATE_INTERVAL;
-
-Bullet.prototype.update = function (du) {
+Powerups.prototype.update = function (du) {
   spatialManager.unregister(this);
 
-  this.lifeSpan -= du;
-
-  if (this.lifeSpan < 0) return entityManager.KILL_ME_NOW;
-
-  // ==================
-  // COLLISION HANDLING
-  // ==================
-
-  const oldCX = this.cx;
-  const oldCY = this.cy;
-
-  this.cx += this.velX * du;
-  this.cy += this.velY * du;
+  if (this.pickUpPower) return entityManager.KILL_ME_NOW;
 
   if (!g_world.inBounds(this.cx, this.cy)) return entityManager.KILL_ME_NOW;
-
-  // TODO: this is just a total mess.
 
   const potentialCollision = spatialManager.register(this);
 
@@ -55,7 +30,7 @@ Bullet.prototype.update = function (du) {
 
     if (hitEntity) {
       spatialManager.unregister(this);
-      const canTakeHit = hitEntity.takeBulletHit;
+      const canTakeHit = hitEntity.takePowerupsHit;
       if (canTakeHit) canTakeHit.call(hitEntity);
 
       audioManager.play(g_url.audio.explosion1);
@@ -83,31 +58,18 @@ Bullet.prototype.update = function (du) {
   return entityManager.OK;
 };
 
-// TODO: bind in JSON.
-Bullet.prototype.getRadius = function () {
-  return 4;
-};
-
-Bullet.prototype.takeBulletHit = function () {
-  spatialManager.unregister(this);
-  this.kill();
-
-  // TODO: bind in JSON.
-  audioManager.play(g_url.audio.bulletZapped);
-};
-
-Bullet.prototype.render = function (ctx, cfg) {
+Powerups.prototype.render = function (ctx, cfg) {
   if (cfg && cfg.occlusion) return;
 
   // TODO: bind in JSON, or just throw away.
-  const fadeThresh = Bullet.prototype.lifeSpan / 3;
+  const fadeThresh = Powerups.prototype.lifeSpan / 3;
 
   if (this.lifeSpan < fadeThresh) {
     ctx.globalAlpha = this.lifeSpan / fadeThresh;
   }
 
   // TODO: bind in JSON.
-  g_asset.sprite.bullet.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
+  g_asset.sprite.Powerups.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
 
   ctx.globalAlpha = 1;
 };

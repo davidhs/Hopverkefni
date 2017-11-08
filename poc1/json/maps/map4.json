@@ -21,7 +21,7 @@
 
     "mouse": {
         "image": "assets.raw.image.cursor",
-        "cursorLock": true
+        "cursorLock": false
     },
 
     "init": {
@@ -177,7 +177,7 @@
             "donkey": {
                 "dep": ["raw.image.donkey"],
                 "cfg": {
-                    "scale": 0.25,
+                    "scale": 0.15,
                     "image": "raw.image.donkey"
                 }
             }

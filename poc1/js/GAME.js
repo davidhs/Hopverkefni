@@ -25,6 +25,7 @@ let g_master;
 const g_background = document.createElement('canvas'); // Background
 const g_midground = document.createElement('canvas'); // Midground
 const g_foreground = document.createElement('canvas'); // Foreground
+const g_top = document.createElement('canvas');
 const g_hud = document.createElement('canvas'); // HUD
 
 const g_occlusion = document.createElement('canvas'); // Occlusion map
@@ -32,12 +33,17 @@ const g_shadows = document.createElement('canvas'); // Shadows
 
 const g_pre = document.createElement('canvas');
 
+<<<<<<< HEAD
 
 //Alexander
 const g_radar = document.createElement('canvas'); //radar
 
 document.getElementById('canvi').appendChild(g_occlusion);
 document.getElementById('canvi').appendChild(g_shadows);
+=======
+//document.getElementById('canvi').appendChild(g_occlusion);
+//document.getElementById('canvi').appendChild(g_shadows);
+>>>>>>> master
 
 
 
@@ -108,6 +114,7 @@ function renderSimulation(ctx) {
   const ctxs = g_shadows.getContext('2d'); // Shadows context
   const ctxh = g_hud.getContext('2d'); // HUD
   const ctxp = g_pre.getContext('2d');
+  const ctxt = g_top.getContext('2d');
 
   //Alexander
   const ctxr = g_radar.getContext('2d'); //radar
@@ -119,7 +126,12 @@ function renderSimulation(ctx) {
   ctxs.imageSmoothingEnabled = false;
   ctxh.imageSmoothingEnabled = false;
   ctxp.imageSmoothingEnabled = false;
+<<<<<<< HEAD
   ctxr.imageSmoothingEnabled = false;
+=======
+  ctxt.imageSmoothingEnabled = false;
+
+>>>>>>> master
   // Width and height of rendering canvases.
   const w = g_canvas.width;
   const h = g_canvas.height;
@@ -135,6 +147,7 @@ function renderSimulation(ctx) {
   ctxs.clearRect(0, 0, w, h);
   ctxh.clearRect(0, 0, w, h);
   ctxp.clearRect(0, 0, w, h);
+  ctxt.clearRect(0, 0, w, h);
 
   //Alexander
   ctxr.clearRect(0,0,w,h);
@@ -157,7 +170,8 @@ function renderSimulation(ctx) {
 
   // Draw entities to midground.
   entityManager.render(ctxm);
-  g_tm.renderTop(ctxm);
+
+  g_tm.renderTop(ctxt);
 
   // --- FOREGROUND ---
 
@@ -165,9 +179,11 @@ function renderSimulation(ctx) {
   // === OCCLUSION ===
 
   // Add entities to occlusion map.
+  if (false) {
   entityManager.render(ctxo, {
     occlusion: true,
   });
+}
 
   g_tm.renderMiddle(ctxo, {
     occlusion: true,
@@ -275,18 +291,27 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_foreground, 0, 0);
   ctxp.globalAlpha = 1.0;
 
-  // --- DRAW LIGHTS/SHADOWS ---
-
-  ctxp.globalAlpha = 1.0;
-  ctxp.globalCompositeOperation = 'destination-in';
-  ctxp.drawImage(g_shadows, 0, 0, w, h);
-
-
   // TEMPORARY
   // --- DRAW MIDGROUND ---
   ctxp.globalCompositeOperation = 'source-over';
   ctxp.drawImage(g_midground, 0, 0);
   ctxp.globalAlpha = 1.0;
+
+  // --- DRAW LIGHTS/SHADOWS ---
+
+  ctxp.globalAlpha = 1.0;
+  ctxp.globalCompositeOperation = 'destination-in';
+  ctxp.drawImage(g_shadows, 0, 0, w, h);
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
+
+
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_top, 0, 0);
+  ctxp.globalAlpha = 1.0;
+  
 
   // --- DRAW HUD ---
   ctxp.globalCompositeOperation = 'source-over';
@@ -374,6 +399,9 @@ function setup(response) {
   g_pre.width = g_canvas.width;
   g_pre.height = g_canvas.height;
 
+  g_top.width = g_canvas.width;
+  g_top.height = g_canvas.height;
+
   // Init debug
   g_debugGAME.init();
 
@@ -422,7 +450,7 @@ function setup(response) {
   // --- Spatial Manager ---
 
   // Initialize spatial manager.
-  spatialManager.init();
+  spatialManager.init(g_world.getWidth(), g_world.getHeight());
 
   g_tm.addObstructions();
 

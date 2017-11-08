@@ -21,6 +21,7 @@ const entityManager = (function () {
   const _players = [];
   const _explosions = [];
   const _genericEnemiesOne = [];
+  const _weapon = [];
 
   const _categories = [
     _rocks,
@@ -28,6 +29,7 @@ const entityManager = (function () {
     _players,
     _genericEnemiesOne,
     _explosions,
+    _weapon,
   ];
 
   let _bShowRocks = true;
@@ -59,6 +61,10 @@ const entityManager = (function () {
     _players.push(new Player(descr));
   }
 
+  function generateWeapon(descr) {
+    _weapon.push(new Weapon(descr));
+  }
+
   // TODO: bind in JSON which type explosion,
   // and explosion rate.
   function generateExplosion(descr) {
@@ -83,6 +89,16 @@ const entityManager = (function () {
 
       while (i < aCategory.length) {
         const status = aCategory[i].update(du);
+
+        if (aCategory[i] instanceof GenericEnemyOne) {
+          const tx = spatialManager.toX(aCategory[i].cx);
+          const ty = spatialManager.toY(aCategory[i].cy);
+  
+          spatialManager.carveShortestPath(tx, ty);
+        }
+
+
+        //tiles.carveShortestPath(sx, sy, 99, 99);
 
         if (status === KILL_ME_NOW) {
           // Probably superfluous
@@ -110,8 +126,8 @@ const entityManager = (function () {
 
   function init() {
 
-    
-    for (let i = 0; i < 0; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
+
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({
@@ -136,6 +152,7 @@ const entityManager = (function () {
     generateExplosion,
     generatePlayer,
     generateGenericEnemyOne,
+    generateWeapon,
     OK,
     KILL_ME_NOW,
 
