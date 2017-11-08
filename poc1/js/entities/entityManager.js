@@ -126,7 +126,7 @@ const entityManager = (function () {
 
   function init() {
 
-    for (let i = 0; i < 5; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
 
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
