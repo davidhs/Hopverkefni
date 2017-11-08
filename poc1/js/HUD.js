@@ -2,7 +2,6 @@
 
 /* global  document :true */
 
-console.log("hello");
 
   const HUD = (function () {
 
