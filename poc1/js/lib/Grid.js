@@ -17,6 +17,11 @@ function Grid(width, height, obj) {
         grid.push(row);
     };
 
+
+    const openPQ = new PriorityQueue();
+    openPQ.setComparator((a, b) => a > b);
+    this._openPQ = openPQ;
+
     this._grid = grid;
     this._stamp = 0;
 }
@@ -178,8 +183,6 @@ Grid.prototype.carveShortestPath = function (sx, sy, dx, dy) {
     // TODO AGGRESSIVELY CACHE RESULT
 
     // SHOULD ONLY UPDATE WHEN MOVING
-    
-
 
     /*
     for (let i = 0; i < this.height; i += 1) {
@@ -199,12 +202,11 @@ Grid.prototype.carveShortestPath = function (sx, sy, dx, dy) {
 
     if (!this.get(sx, sy).stamp) {
         moved = true;
+        this._openPQ._size = 0;
     } else if (this.get(sx, sy).stamp !== this._stamp) {
         moved = true;
     } else {
         moved = false;
-
-        
     }
 
 
