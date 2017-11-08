@@ -22,8 +22,39 @@ function TiledMap(cfg) {
   const data2Ds = [];
 
   const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
+  this.layers = layers;
+
+  // BOTTOM (BACKGROUND) LAYERS
+  this.isBottomLayer = {};
+
+
+  // MIDDLE LAYERS (CAST SHADOWS)
+  this.isMiddleLayer = {};
+
+  // TOP LAYERS (OVERHEAD)
+  this.isTopLayer = {};
 
   for (let i = 0; i < layers.length; i += 1) {
+
+    const layer = layers[i];
+    const name = this._getLayerName(layer);
+    
+
+
+    // LAYER TYPE
+
+    const atr = layer.properties.property['@attributes'];
+    if (atr.name === 'level') {
+      const lvl = parseInt(atr.value, 10);
+      if (lvl === 0) {
+        this.isBottomLayer[name] = true;
+      } else if (lvl === 1) {
+        this.isMiddleLayer[name] = true;
+      } else if (lvl === 2) {
+        this.isTopLayer[name] = true;
+      }
+    }
+
     const data = layers[i].data;
     const data1D = data['#text'].split(',').map(x => parseInt(x, 10));
 
@@ -53,6 +84,10 @@ function TiledMap(cfg) {
   this.data2Ds = data2Ds;
   this._spatialID = spatialManager.getNewSpatialID();
 }
+
+TiledMap.prototype._getLayerName = function (layer) {
+  return layer['@attributes'].name;
+};
 
 TiledMap.prototype._render = function (ctx, data2D, textureAtlas) {
 
@@ -161,16 +196,37 @@ TiledMap.prototype._render = function (ctx, index, cfg) {
 };
 
 TiledMap.prototype.renderBottom = function (ctx, cfg) {
-  this._render(ctx, 0, cfg);
+  const layers = this.layers;
+  for (let i = 0; i < layers.length; i += 1) {
+    const layer = layers[i];
+    const name = this._getLayerName(layer);
+    if (this.isBottomLayer[name]) {
+      this._render(ctx, i, cfg);
+    }
+  }
 };
 
 TiledMap.prototype.renderMiddle = function (ctx, cfg) {
-  this._render(ctx, 1, cfg);
+  const layers = this.layers;
+  for (let i = 0; i < layers.length; i += 1) {
+    const layer = layers[i];
+    const name = this._getLayerName(layer);
+    if (this.isMiddleLayer[name]) {
+      this._render(ctx, i, cfg);
+    }
+  }
 
 };
 
 TiledMap.prototype.renderTop = function (ctx, cfg) {
-  this._render(ctx, 2, cfg);
+  const layers = this.layers;
+  for (let i = 0; i < layers.length; i += 1) {
+    const layer = layers[i];
+    const name = this._getLayerName(layer);
+    if (this.isTopLayer[name]) {
+      this._render(ctx, i, cfg);
+    }
+  }
 
 };
 
@@ -281,6 +337,8 @@ TiledMap.prototype.addObstructions = function () {
   }
   */
 
+  console.log("TRUE");
+
   //if (true) return;
 
   // Spatial manager
@@ -289,6 +347,7 @@ TiledMap.prototype.addObstructions = function () {
 
   let ITER = 0;
 
+  /*
   // Iterate through layers.
   for (let layerIdx = 0; layerIdx < layers.length; layerIdx += 1) {
 
@@ -351,7 +410,7 @@ TiledMap.prototype.addObstructions = function () {
 
           const sample = ta.sample(tx, ty, perX, perY);
 
-          if (ITER++ % 537 === 0) {
+          if (ITER++ % 537 === -1) {
             console.log();
             console.log(qx, qy, tx, ty, fx, fy, perX, perY);
             console.log(sample);
@@ -372,12 +431,12 @@ TiledMap.prototype.addObstructions = function () {
         }
       }
     }
-  }
+  }*/
 
 
   // Iterate through layers
   
-  /*
+  
   for (let i = 0; i < layers.length; i += 1) {
     // Iterate through columns
     const data2D = this.data2Ds[i];
@@ -421,7 +480,7 @@ TiledMap.prototype.addObstructions = function () {
         }
       }
     }
-  }*/
+  }
 
 };
 

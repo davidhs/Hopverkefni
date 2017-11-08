@@ -11,8 +11,8 @@ const lighting = (function () {
   const shadowCanvas = document.createElement('canvas');
   const shadowCtx = shadowCanvas.getContext('2d');
 
-  document.getElementById('canvi').appendChild(lightCanvas);
-  document.getElementById('canvi').appendChild(shadowCanvas);
+  //document.getElementById('canvi').appendChild(lightCanvas);
+  //document.getElementById('canvi').appendChild(shadowCanvas);
 
   function radialLight(ctx, color, cfg) {
     const r = color.r || 0;
