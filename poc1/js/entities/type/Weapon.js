@@ -3,7 +3,7 @@
 /* global audioManager g_url Entity NOMINAL_UPDATE_INTERVAL spatialManager
  g_world entityManager g_asset :true */
 
-// A generic contructor which accepts an arbitrary descriptor object
+// A generic contructor which accepts an arbitrary descriptor object /
 // function Weapon(descr) {
 //     for (var property in descr) {
 //         this[property] = descr[property];
