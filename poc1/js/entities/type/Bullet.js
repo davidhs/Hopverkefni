@@ -10,7 +10,11 @@ function Bullet(descr) {
 
   // TODO: bind in JSON.
   // audioManager.play(g_url.bulletFire);
+<<<<<<< HEAD:poc1/js/entities/Bullet.js
+  audioManager.play(g_url.gunsound1);
+=======
   audioManager.play(g_url.audio.gunsound1);
+>>>>>>> e7ee6304a7fe0e61a7121d19ac7e9345f504a44e:poc1/js/entities/type/Bullet.js
 }
 
 Bullet.prototype = new Entity();
