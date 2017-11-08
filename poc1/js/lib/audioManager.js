@@ -1,6 +1,6 @@
 'use strict';
 
-/* global Audio :true */
+/* global Audio g_muted :true */
 
 /* jshint browser: true, devel: true, globalstrict: true */
 
@@ -19,16 +19,26 @@
 // Later on the URL might take position and occlusion map as parameter to
 // modify the sound, e.g. sound that is farther away isn't as loud,  sound
 // that is blocked by some corner or "outside" is muffled.
-//
+//ds
 // NB: if it caches audio, then it doesn't do it for very long...
 const audioManager = (function () {
   const aa = {};
+
+  let muted = false;
 
 
   // Audio files are initially loaded by the asset manager.
   // It appears by doing so the audio file is cached, so `new Audio(...)'
   // appears to play the cached audio file.
   function play(url, loop) {
+
+    if (g_muted) {
+      if (!muted) mute();
+      return;
+    }
+
+    if (muted) unmute();
+
     loop = (typeof loop !== 'undefined') ? loop : false;
 
     if (!aa[url]) {
@@ -65,6 +75,29 @@ const audioManager = (function () {
     }
 
     return handle;
+  }
+
+  function mute() {
+    if (muted) return;
+    muted = true;
+
+    for (let i = 0, urls = Object.keys(aa); i < urls.length; i += 1) {
+      const url = urls[i];
+      const audioList = aa[url];
+      for (let j = 0; j < audioList.length; j += 1) {
+        const audio = audioList[j];
+        if (!audio.paused) {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.loop = false;
+        }
+      }
+    }
+  }
+
+  function unmute() {
+    if (!muted) return;
+    muted = false;
   }
 
   // Expose properties and functions.

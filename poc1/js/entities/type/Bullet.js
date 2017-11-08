@@ -10,7 +10,11 @@ function Bullet(descr) {
 
   // TODO: bind in JSON.
   // audioManager.play(g_url.bulletFire);
+<<<<<<< HEAD:poc1/js/entities/Bullet.js
   audioManager.play(g_url.gunsound1);
+=======
+  audioManager.play(g_url.audio.gunsound1);
+>>>>>>> e7ee6304a7fe0e61a7121d19ac7e9345f504a44e:poc1/js/entities/type/Bullet.js
 }
 
 Bullet.prototype = new Entity();
@@ -58,7 +62,7 @@ Bullet.prototype.update = function (du) {
       const canTakeHit = hitEntity.takeBulletHit;
       if (canTakeHit) canTakeHit.call(hitEntity);
 
-      audioManager.play(g_url.explosion1);
+      audioManager.play(g_url.audio.explosion1);
 
       entityManager.generateExplosion({
         cx: this.cx,
@@ -67,7 +71,7 @@ Bullet.prototype.update = function (du) {
 
       return entityManager.KILL_ME_NOW;
     } else if (potentialCollision < spatialManager.MIN_ENTITY) {
-      audioManager.play(g_url.explosion1);
+      audioManager.play(g_url.audio.explosion1);
       spatialManager.unregister(this);
       entityManager.generateExplosion({
         cx: this.cx,
@@ -93,7 +97,7 @@ Bullet.prototype.takeBulletHit = function () {
   this.kill();
 
   // TODO: bind in JSON.
-  audioManager.play(g_url.bulletZapped);
+  audioManager.play(g_url.audio.bulletZapped);
 };
 
 Bullet.prototype.render = function (ctx, cfg) {

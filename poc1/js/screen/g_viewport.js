@@ -18,6 +18,20 @@ const g_viewport = (function () {
   let outerWidth = 0;
   let outerHeight = 0;
 
+  let stuckToWorld = false;
+
+  // PRIVATE FUNCTIONS
+
+  function _ensureInWorld() {
+    const ww = g_world.getWidth();
+    const wh = g_world.getHeight();
+
+    if (outerX < 0) outerX = 0;
+    if (outerY < 0) outerY = 0;
+    if ((outerX + outerWidth) > ww) outerX = ww - outerWidth;
+    if ((outerY + outerHeight) > wh) outerY = wh - outerHeight;
+  }
+
   // PUBLIC FUNCTIONS
 
   /**
@@ -79,6 +93,7 @@ const g_viewport = (function () {
    */
   function setOW(ow) {
     outerWidth = ow;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -89,6 +104,7 @@ const g_viewport = (function () {
    */
   function setOH(oh) {
     outerHeight = oh;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -124,6 +140,7 @@ const g_viewport = (function () {
    */
   function setOX(ox) {
     outerX = ox;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -137,6 +154,7 @@ const g_viewport = (function () {
    */
   function setOY(oy) {
     outerY = oy;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -166,6 +184,7 @@ const g_viewport = (function () {
    */
   function setOCX(ocx) {
     outerX = ocx - outerWidth / 2;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -177,6 +196,7 @@ const g_viewport = (function () {
    */
   function setOCY(ocy) {
     outerY = ocy - outerHeight / 2;
+    if (stuckToWorld) _ensureInWorld();
   }
 
 
@@ -220,9 +240,15 @@ const g_viewport = (function () {
    * @param {Number} oy
    */
   function mapO2IY(oy) {
-    return (oy - outerY) * (innerHeight / innerWidth);
+    // return (oy - outerY) * (innerHeight / innerWidth);
+    return (oy - outerY);
   }
 
+  function inOuterBoundsPoint(wcx, wcy) {
+    const c1 = wcx >= getOX() && wcx <= getOX() + getOW();
+    const c2 = wcy >= getOY() && wcy <= getOY() + getOH();
+    return c1 && c2;
+  }
 
   function inOuterSquareCircle(wcx, wcy, wr) {
     return inOuterRectangleBounds(wcx - wr, wcy - wr, 2 * wr, 2 * wr);
@@ -249,6 +275,18 @@ const g_viewport = (function () {
     const c2 = util.isIntervalIntersection(y1, y2, ay1, ay2);
 
     return c1 && c2;
+  }
+
+  function inInnerBoundsPoint(x, y, padX, padY) {
+    const c1 = x >= innerX - padX && x <= innerX + innerWidth + padY;
+    const c2 = y >= innerY - padX && y <= innerY + innerHeight + padY;
+    return c1 && c2;
+
+  }
+
+  function stickToWorld(flag) {
+    stuckToWorld = flag;
+    if (stuckToWorld) _ensureInWorld();
   }
 
   // EXPOSURE
@@ -281,9 +319,14 @@ const g_viewport = (function () {
     mapO2IX,
     mapO2IY,
 
+    inInnerBoundsPoint,
+
+    inOuterBoundsPoint,
     inOuterSquareCircle,
     inOuterCircleBounds,
     inOuterRectangleBounds,
+
+    stickToWorld
   });
 
   return obj;
