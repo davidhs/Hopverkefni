@@ -18,9 +18,6 @@
  * image, subimageHeight, nrOfSubimages
  */
 function TextureAtlas(cfg) {
-<<<<<<< HEAD
-  this.image = cfg.image;
-=======
 
   // If cfg.image is Image, convert to canvas
 
@@ -36,7 +33,6 @@ function TextureAtlas(cfg) {
   } else {
     this.image = img;
   }
->>>>>>> e7ee6304a7fe0e61a7121d19ac7e9345f504a44e
 
   // Default behavior
 
