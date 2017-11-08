@@ -1,22 +1,27 @@
 const Minimap = (function () {
-  const Minimap = {};
-
-  Minimap.canvas = document.getElementById("rightCanvas");
-  Minimap.ctx = Minimap.canvas.getContext("2d");
-  Minimap.cx = 0;
-  Minimap.cy = 0;
-
-  Minimap.width = g_viewport.getIW() / 10;
-
-  Minimap.height = g_viewport.getIH()/2;
-  console.log(Minimap.height);
-  Minimap.ctx.beginPath();
-  Minimap.ctx.rect(Minimap.cx,Minimap.cy,Minimap.width,Minimap.height)
-  Minimap.ctx.fill();
 
 
 
 
+  var cx = 0;
+  var cy = 0;
+
+  var width = 0;
+  var height = 0;
+
+  //position of player
+  var p_cx = 0;
+  var p_cy = 0;
+
+
+
+
+  function drawMinimap(ctxr){
+  ctxr.beginPath();
+  ctxr.rect(cx,cy,width,height);
+  ctxr.fill();
+
+}
 
 
 
@@ -25,6 +30,28 @@ const Minimap = (function () {
 
 
 
-  return Minimap;
+
+
+  function update(du){
+    width = g_viewport.getIW()/4;
+    height = g_viewport.getIH()/4;
+
+
+  }
+
+  function render(ctxr){
+    drawMinimap(ctxr);
+
+
+  }
+
+
+
+
+  return{
+    update,
+    render
+  }
+
 
 }());

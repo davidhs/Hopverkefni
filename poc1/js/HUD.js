@@ -2,88 +2,84 @@
 
 /* global  document :true */
 
+
   const HUD = (function () {
-  const HUD = {};
 
 
 
 
-  loader.load({
-    image: {
-      heart: "img/hp.png",
-      handgun: "img/guns/handgun.png",
-      shotgun: "img/guns/shotgun.png",
-      rifle: "img/guns/rifle.png",
-      knife: "img/guns/knife.png"
-    }
-  }, loader.callback(null));
+
+
+
+
 
 
   //globals for health bar
-  HUD.xHP = 30;
-  HUD.yHP = 10;
-  HUD.hpLost = 0;
+  var xHP = 30;
+  var yHP = 10;
+  var hpLost = 0;
 
   //Keycodes
-  HUD.KEY_RIFLE = '1'.charCodeAt(0);
-  HUD.KEY_HANDGUN = '2'.charCodeAt(0);
-  HUD.KEY_SHOTGUN = '3'.charCodeAt(0);
-  HUD.KEY_KNIFE = '5'.charCodeAt(0);
+  var KEY_RIFLE = '1'.charCodeAt(0);
+  var KEY_HANDGUN = '2'.charCodeAt(0);
+  var KEY_SHOTGUN = '3'.charCodeAt(0);
+  var KEY_KNIFE = '5'.charCodeAt(0);
 
 
   //toggle on or off weapon images
-  HUD.isRifle = true;
-  HUD.isHandgun = false;
-  HUD.isShotgun = false;
-  HUD.isKnife = false;
+  var isRifle = true;
+  var isHandgun = false;
+  var isShotgun = false;
+  var isKnife = false;
 
 
-  HUD.canvas = document.getElementById('hudCanvas');
-  HUD.ctx = HUD.canvas.getContext('2d');
-  HUD.ctx.beginPath();
-  HUD.ctx.fillStyle= "#ffffff"
-  HUD.ctx.rect(0,0,640,70);
-  HUD.ctx.fill();
+  //draw
+  function draw(){
+  ctx.beginPath();
+  ctx.fillStyle= "#ffffff"
+  ctx.rect(0,0,640,70);
+  ctx.fill();
+}
 
 
   //create images
-  HUD.heart = new Image();
-  HUD.knife = new Image();
-  HUD.shotgun = new Image();
-  HUD.rifle = new Image();
-  HUD.handgun = new Image();
+  var heart = new Image();
+  var knife = new Image();
+  var shotgun = new Image();
+  var rifle = new Image();
+  var handgun = new Image();
 
 
 
 
   //witch weapon should appear on the screen, later
   //witch weapon do you choose
-  HUD.witchweapon = function(){
-    if(eatKey(this.KEY_HANDGUN)){
-      HUD.isRifle = false;
-      HUD.isHandgun = true;
-      HUD.isShotgun = false;
-      HUD.isKnife = false;
+  function  witchweapon(){
+    if(eatKey(KEY_HANDGUN)){
+      isRifle = false;
+      isHandgun = true;
+      isShotgun = false;
+      isKnife = false;
     }
 
-    if(eatKey(this.KEY_RIFLE)){
-    HUD.isRifle = true;
-    HUD.isHandgun = false;
-    HUD.isShotgun = false;
-    HUD.isKnife = false;
+    if(eatKey(KEY_RIFLE)){
+    isRifle = true;
+    isHandgun = false;
+    isShotgun = false;
+    isKnife = false;
 
   }
-  if(eatKey(this.KEY_SHOTGUN)){
-    HUD.isRifle = false;
-    HUD.isHandgun = false;
-    HUD.isShotgun = true;
-    HUD.isKnife = false;
+  if(eatKey(KEY_SHOTGUN)){
+    isRifle = false;
+    isHandgun = false;
+    isShotgun = true;
+    isKnife = false;
   }
-  if(eatKey(this.KEY_KNIFE)){
-    HUD.isRifle = false;
-    HUD.isHandgun = false;
-    HUD.isShotgun = true;
-    HUD.isKnife = false;
+  if(eatKey(KEY_KNIFE)){
+    isRifle = false;
+    isHandgun = false;
+    isShotgun = true;
+    isKnife = false;
   }
 }
 
@@ -92,49 +88,32 @@
 
 
 
-  //draw heart in front of health bar
-  HUD.heart.addEventListener('load', function() {
-  HUD.ctx.beginPath();
-  HUD.ctx.drawImage(HUD.heart,10,10,15,15);
-  }, false);
-  HUD.heart.src = 'img/hp.png'; // Set source path
 
 
 
-  function draw_healthbar(x, y, perclost, width, thickness){
-    HUD.ctx.beginPath();
-    HUD.ctx.fillStyle=  "#ff0000";
-    HUD.ctx.rect(x,y,width*(1-perclost), thickness);
-    HUD.ctx.fill();
+
+  function draw_healthbar(ctx, x, y, perclost, width, thickness){
+    ctx.beginPath();
+    ctx.fillStyle=  "#ff0000";
+    ctx.rect(x,y,width*(1-perclost), thickness);
+    ctx.fill();
   }
 
 
-  //when you lose hp you call this, but
-  //perclost goes higher depends on how much
-  //hp you lose
-  draw_healthbar(HUD.xHP, HUD.yHP, 0,100, 15);
-
-
-  //draw the defult gun, as for now,
-
-  HUD.handgun.addEventListener('load', function(){
-    HUD.ctx.beginPath();
-    HUD.ctx.drawImage(HUD.handgun, 280,40,60,30);
-  }, false);
-  HUD.handgun.src = 'img/guns/handgun.png'; //set source path
 
 
 
-  HUD.update = function(du){
-
-    //if you are hit
-
-    //if hit then call
-    //(draw_healthbar(HUD.xHP, HUD.yHP, hpLost++,100, 15))
 
 
-    //if you press buttons 1 to 5, you change weapon
-    //and another weapon appears on the screen
+
+  update = function(du){
+
+
+  }
+
+  render = function(ctx){
+
+
 
   }
 
@@ -144,5 +123,8 @@
 
 
 
-  return HUD;
+  return{
+    update,
+    render
+  }
 }());

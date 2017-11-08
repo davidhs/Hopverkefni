@@ -67,6 +67,10 @@ const g_mouse = (function () {
         } else {
           mouse.cursorLock = false;
         }
+      } else if (type === 'click') {
+        console.log('Mouse Clicked!');
+      } else {
+        console.log(type, evt, obj);
       }
     },
 
@@ -82,20 +86,21 @@ const g_mouse = (function () {
       const bx = -theImage.width / 2;
       const by = -theImage.height / 2;
 
-      if (!mouse.cursorLock && theImage) {
-        g_canvas.style.cursor = 'none';
-        ctx.drawImage(theImage, bx + mx, by + my);
-      }
+      if (theImage) {
 
-      if (mouse.cursorLock && !theImage) {
-        const oldStyle = ctx.fillStyle;
-        ctx.fillStyle = '#0f0';
-        util.fillCircle(ctx, mx, my, 10);
-        ctx.fillStyle = oldStyle;
-      }
-
-      if (mouse.cursorLock && theImage) {
-        ctx.drawImage(theImage, bx + mx, by + my);
+        if (!mouse.cursorLock) {
+          g_canvas.style.cursor = 'none';
+          ctx.drawImage(theImage, bx + mx, by + my);
+        } else {
+          ctx.drawImage(theImage, bx + mx, by + my);
+        }
+      } else {
+        if (mouse.cursorLock) {
+          const oldStyle = ctx.fillStyle;
+          ctx.fillStyle = '#0f0';
+          util.fillCircle(ctx, mx, my, 10);
+          ctx.fillStyle = oldStyle;
+        }
       }
     },
     lockOn: (targetObject) => {
@@ -127,6 +132,8 @@ const g_mouse = (function () {
 }());
 
 
+// MOUSE EVENTS
+
 window.addEventListener('mousedown', (evt) => {
   g_mouse.handleEvent('mousedown', evt, g_canvas);
 });
@@ -136,3 +143,28 @@ window.addEventListener('mouseup', (evt) => {
 window.addEventListener('mousemove', (evt) => {
   g_mouse.handleEvent('mousemove', evt, g_canvas);
 });
+window.addEventListener('click', (evt) => {
+  g_mouse.handleEvent('click', evt, g_canvas);
+});
+
+
+// TOUCH EVENTS
+
+/*
+window.addEventListener("touchstart", evt => {
+  console.log('touchstart');
+  g_mouse.handleEvent('touchstart', evt, g_canvas);
+}, false);
+window.addEventListener("touchend", evt => {
+  console.log('touchend');
+  g_mouse.handleEvent('touchend', evt, g_canvas);
+}, false);
+window.addEventListener("touchcancel", evt => {
+  console.log('touchcancel');
+  g_mouse.handleEvent('touchcancel', evt, g_canvas);
+}, false);
+window.addEventListener("touchmove", evt => {
+  console.log('touchmove');
+  g_mouse.handleEvent('touchmove', evt, g_canvas);
+}, false);
+*/

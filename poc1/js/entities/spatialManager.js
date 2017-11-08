@@ -25,7 +25,7 @@
  * for spatial lookup.  It only indicates potential collisions.  It's
  * up to the entities themselves to resolve the collisions themselves.
  */
-const spatialManager = (function () {
+const spatialManagerOld = (function () {
   // PRIVATE DATA
 
   // SPATIAL ID TYPES

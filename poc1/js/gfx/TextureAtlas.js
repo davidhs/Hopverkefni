@@ -10,16 +10,29 @@
  * sprite sheet into 1000 images.
  *
  * https://en.wikipedia.org/wiki/Texture_atlas
- * 
+ *
  * {
  *  image, tileWidth, tileHeight, nrOfTiles
  * }
- * 
+ *
  * image, subimageHeight, nrOfSubimages
  */
 function TextureAtlas(cfg) {
 
-  this.image = cfg.image;
+  // If cfg.image is Image, convert to canvas
+
+  const img = cfg.image;
+
+  if (img instanceof Image) {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    this.image = canvas;
+  } else {
+    this.image = img;
+  }
 
   // Default behavior
 
@@ -28,10 +41,11 @@ function TextureAtlas(cfg) {
   //   x = 0;
   //
   // And later we set,
-  // 
+  //
   //   let a = x || 3;
-  // 
-  // Where the 1 is a default value, then 
+  //   let a = !x ? 0 : 4;
+  //
+  // Where the 1 is a default value, then
   // a evaluates to 3. :(
   this.primaryDirection = util.value(cfg.primaryDirection, 'right');
   this.secondaryDirection = util.value(cfg.secondaryDirection, 'down');
@@ -43,16 +57,12 @@ function TextureAtlas(cfg) {
   this.nrOfTiles = util.value(cfg.nrOfTiles, this.rows * this.cols);
 }
 
-
-
 /**
  * rowFirst
  * LR
  * TB
  */
 TextureAtlas.prototype.getSequence = function (cfg) {
-
-
   const sequence = [];
 
   const c1 = cfg.primaryDirection === 'right';
@@ -73,9 +83,9 @@ TextureAtlas.prototype.getSequence = function (cfg) {
 
         sequence.push([j, i]);
 
-        //sequence.push(this.getTile(j, i));
+        // sequence.push(this.getTile(j, i));
 
-        //sequence.push(this.subimages[i][j]);
+        // sequence.push(this.subimages[i][j]);
 
         if (count === qty) {
           i = m;
@@ -87,17 +97,16 @@ TextureAtlas.prototype.getSequence = function (cfg) {
 
   return {
     reference: this,
-    sequence: sequence
+    sequence: sequence,
   };
 };
 
 /**
  * Avoid using this method as much as possible.
- * 
+ *
  * Returns a canvas.
  */
 TextureAtlas.prototype.getTile = function (tx, ty) {
-
   if (tx < 0 || tx >= this.cols || ty < 0 || ty >= this.rows) return null;
 
   if (!this._cachedTiles) {
@@ -137,15 +146,43 @@ TextureAtlas.prototype.getIndex = function (tx, ty) {
   return tx + ty * this.cols;
 };
 
+TextureAtlas.prototype.sample = function (tx, ty, x, y) {
+
+  const ctx = this.image.getContext('2d');
+
+  const sx = tx * this.tileWidth;
+  const sy = ty * this.tileHeight;
+  const sw = this.tileWidth;
+  const sh = this.tileHeight;
+
+  x = Math.floor(x);
+  y = Math.floor(y);
+
+
+
+  const index = 4 * (x + y * this.tileWidth);
+
+  if (!this._data) {
+    this._data = ctx.getImageData(sx, sy, sw, sh).data;
+  }
+
+  const data = this._data;
+
+  const r = data[index];
+  const g = data[index + 1];
+  const b = data[index + 2];
+  const a = data[index + 3];
+
+  return {r, g, b, a};
+};
+
 TextureAtlas.prototype.renderIndexTile = function (ctx, index, x, y, w, h) {
-  
   const tx = index % this.cols;
   const ty = Math.floor(index / this.cols);
   this.renderTile(ctx, tx, ty, x, y, w, h);
 };
 
 TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h) {
-
   // From this canvas
   const sx = tx * this.tileWidth;
   const sy = ty * this.tileHeight;
@@ -159,4 +196,4 @@ TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h) {
   const dh = h;
 
   ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
-}
+};
