@@ -23,6 +23,7 @@ function Weapon(descr) {
   this.clipSize = this.clipSize;
   this.ammoInClip = this.clipSize;
   this.reloadTime = this.reloadTime || 1;
+  this.bulletSpeed = this.bulletSpeed || 15;
   this.fireRate = this.fireRate || 2;
   this.through = this.through || 0;
   this.accuracy = this.accuray || 1;
@@ -50,6 +51,7 @@ const USP = new Weapon({
   damage: 30,
   ammo: 96,
   clipSize: 12,
+  bulletSpeed: 20,
   fireRate: 2,
   accuray: 0.8,
   pickedUp: true,
@@ -62,6 +64,7 @@ const LEONE = new Weapon({
   damage: 20,
   ammo: 32,
   clipSize: 8,
+  bulletSpeed: 15,
   reloadTime: 4,
   fireRate: 1.2,
   accuray: 0.5,
@@ -76,6 +79,7 @@ const AK = new Weapon({
   ammo: 90,
   clipSize: 30,
   reloadTime: 2,
+  bulletSpeed: 25,
   fireRate: 3,
   through: 2,
   accuray: 0.9,
@@ -90,6 +94,7 @@ const MAGNUM = new Weapon({
   ammo: 30,
   clipSize: 10,
   reloadTime: 3,
+  bulletSpeed: 35,
   fireRate: 1,
   through: 4,
   pickedUp: false,
@@ -103,6 +108,7 @@ const M249 = new Weapon({
   ammo: 200,
   clipSize: 100,
   reloadTime: 6,
+  bulletSpeed: 20,
   fireRate: 2,
   through: 2,
   pickedUp: false,
@@ -115,6 +121,7 @@ const RAY = new Weapon({
   damage: 1000,
   ammo: 10,
   clipSize: 30,
+  bulletSpeed: 100,
   reloadTime: 3,
   fireRate: 3,
   pickedUp: false,
@@ -122,8 +129,16 @@ const RAY = new Weapon({
 
 Weapon.prototype.fire = function () {
   console.log('FIRE ' + this.ammoInClip);
+
   if (this.ammoInClip > 0) {
     this.ammoInClip -= 1;
+    entityManager.fireBullet(
+      cx,
+      cy,
+      velX,
+      velY,
+      rotation,
+    );
   } else {
     console.log('Realod!');
   }
