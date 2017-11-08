@@ -184,6 +184,8 @@ Player.prototype.update = function (du) {
   this.cx = newX;
   this.cy = newY;
 
+  
+
   if (!g_noClip) {
     if (!g_world.inBounds(this.cx, this.cy, 0)) {
       this.cx = oldX;
@@ -191,6 +193,8 @@ Player.prototype.update = function (du) {
     }
 
     let flags = spatialManager.register(this);
+    //console.log(flags);
+    
 
     // Wall crap
     if (flags !== spatialManager.NO_CONFLICT && flags < spatialManager.MIN_ENTITY) {
