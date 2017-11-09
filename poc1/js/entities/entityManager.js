@@ -32,7 +32,7 @@ const entityManager = (function () {
     _weapon,
   ];
 
-  let _bShowRocks = true;
+  const _bShowRocks = true;
 
   // "PRIVATE" METHODS
 
@@ -90,15 +90,10 @@ const entityManager = (function () {
       while (i < aCategory.length) {
         const status = aCategory[i].update(du);
 
-        if (aCategory[i] instanceof GenericEnemyOne) {
-          const tx = spatialManager.toX(aCategory[i].cx);
-          const ty = spatialManager.toY(aCategory[i].cy);
-  
-          spatialManager.carveShortestPath(tx, ty);
-        }
+        if (aCategory[i] instanceof GenericEnemyOne) { /* ... */ }
 
 
-        //tiles.carveShortestPath(sx, sy, 99, 99);
+        // tiles.carveShortestPath(sx, sy, 99, 99);
 
         if (status === KILL_ME_NOW) {
           // Probably superfluous
@@ -125,14 +120,12 @@ const entityManager = (function () {
   }
 
   function init() {
-
-    for (let i = 0; i < 50; i += 1) {
-
+    for (let i = 0; i < 0; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({
-        cx: cx,
-        cy: cy,
+        cx,
+        cy,
         sprite: g_asset.sprite.donkey,
       });
     }

@@ -87,20 +87,17 @@ const g_mouse = (function () {
       const by = -theImage.height / 2;
 
       if (theImage) {
-
         if (!mouse.cursorLock) {
           g_canvas.style.cursor = 'none';
           ctx.drawImage(theImage, bx + mx, by + my);
         } else {
           ctx.drawImage(theImage, bx + mx, by + my);
         }
-      } else {
-        if (mouse.cursorLock) {
-          const oldStyle = ctx.fillStyle;
-          ctx.fillStyle = '#0f0';
-          util.fillCircle(ctx, mx, my, 10);
-          ctx.fillStyle = oldStyle;
-        }
+      } else if (mouse.cursorLock) {
+        const oldStyle = ctx.fillStyle;
+        ctx.fillStyle = '#0f0';
+        util.fillCircle(ctx, mx, my, 10);
+        ctx.fillStyle = oldStyle;
       }
     },
     lockOn: (targetObject) => {

@@ -34,7 +34,7 @@ const TOGGLE_NOCLIP = 'K'.charCodeAt(0);
 let g_noClip = false;
 
 
-/// NOT CONSTANTS
+// NOT CONSTANTS
 // NOT CONSTAN
 const TOGGLE_MUTED = 'M'.charCodeAt(0);
 let g_muted = false;

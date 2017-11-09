@@ -33,9 +33,8 @@ const g_shadows = document.createElement('canvas'); // Shadows
 
 const g_pre = document.createElement('canvas');
 
-//document.getElementById('canvi').appendChild(g_occlusion);
-//document.getElementById('canvi').appendChild(g_shadows);
-
+// document.getElementById('canvi').appendChild(g_occlusion);
+// document.getElementById('canvi').appendChild(g_shadows);
 
 
 // TEMPORARY GLOBALS
@@ -68,6 +67,11 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+  const tx = spatialManager.toX(g_mouse.x);
+  const ty = spatialManager.toY(g_mouse.y);
+
+  spatialManager.carveShortestPath(tx, ty);
+
   // Update entities.
   entityManager.update(du);
 
@@ -156,10 +160,10 @@ function renderSimulation(ctx) {
 
   // Add entities to occlusion map.
   if (false) {
-  entityManager.render(ctxo, {
-    occlusion: true,
-  });
-}
+    entityManager.render(ctxo, {
+      occlusion: true,
+    });
+  }
 
   g_tm.renderMiddle(ctxo, {
     occlusion: true,
@@ -182,24 +186,24 @@ function renderSimulation(ctx) {
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }, {
     x: 78,
     y: 317,
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }, {
     x: 570,
     y: 636,
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }];
 
   if (false) {
@@ -209,32 +213,31 @@ function renderSimulation(ctx) {
       color: {
         r: 100,
         g: 27,
-        b: 250
-      }
+        b: 250,
+      },
     });
   }
 
   for (let i = 0; i < lights.length; i += 1) {
     const light = lights[i];
     const x = g_viewport.mapO2IX(light.x);
-    const y =  g_viewport.mapO2IY(light.y);
+    const y = g_viewport.mapO2IY(light.y);
     const color = light.color;
     if (g_viewport.inInnerBoundsPoint(x, y, g_viewport.getIW() / 2, g_viewport.getIH() / 2)) {
-
       lighting.radialLight(ctxs, color, {
         occluder: g_occlusion,
-        x: x,
-        y: y
+        x,
+        y,
       });
     }
   }
 
-  // Subtract occluders from shadow 
+  // Subtract occluders from shadow
 
   ctxs.drawImage(g_occlusion, 0, 0);
 
   // === HUD ===
-  
+
   // Draw Cursor
   if (g_mouse.getImage()) {
     g_mouse.render(ctxh);
@@ -263,7 +266,7 @@ function renderSimulation(ctx) {
   ctxp.globalAlpha = 1.0;
 
   // --- DRAW LIGHTS/SHADOWS ---
-  
+
   ctxp.globalAlpha = 1.0;
   ctxp.globalCompositeOperation = 'destination-in';
   ctxp.drawImage(g_shadows, 0, 0, w, h);
@@ -272,7 +275,7 @@ function renderSimulation(ctx) {
   ctxp.globalCompositeOperation = 'source-over';
   ctxp.drawImage(g_top, 0, 0);
   ctxp.globalAlpha = 1.0;
-  
+
 
   // --- DRAW HUD ---
   ctxp.globalCompositeOperation = 'source-over';
@@ -280,17 +283,14 @@ function renderSimulation(ctx) {
   ctxp.globalAlpha = 1.0;
 
 
-
-
-
   // === DRAW TO RENDERING CANVAS ===
 
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(g_pre, 0, 0);
 
 
-  //util.fillCircle(ctx, pcx, pcy, 10);
+  // util.fillCircle(ctx, pcx, pcy, 10);
 }
 
 
@@ -413,14 +413,11 @@ function setup(response) {
 }
 
 
-
 // ==========
 // START GAME
 // ==========
 
 function startGame() {
-
-
   assetLoader.addProcessor('texture', Texture);
   assetLoader.addProcessor('textureAtlas', TextureAtlas);
   assetLoader.addProcessor('sequence', Sequence);
@@ -429,15 +426,13 @@ function startGame() {
   assetLoader.addProcessor('tiledMap', TiledMap);
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
-  loader.load({ json: { init: 'json/init.json'} }, (response) => {
+  loader.load({ json: { init: 'json/init.json' } }, (response) => {
     chosenMap = response.json.init.variables.chosenMap;
     mapHandler.openMap(chosenMap, setup);
   });
 }
 
 startGame();
-
-
 
 
 // =========================
@@ -469,7 +464,6 @@ const fOcclusionMap = function (canvas) {
 
   return util.forAllPixels(canvas, occluder);
 };
-
 
 
 g_debug.DEBUG_MODE = {

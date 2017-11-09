@@ -28,6 +28,8 @@ function Weapon(descr) {
 
 
 Weapon.prototype = new Entity();
+
+// TODO vont að hafa mikið af global breytum.
 // USP Pistol
 const MACHETE = new Weapon({
   type: 'Knife',
@@ -123,7 +125,7 @@ const RAY = new Weapon({
 });
 
 Weapon.prototype.fire = function (cx, cy, velX, velY, rotation) {
-  console.log('FIRE ' + this.ammoInClip);
+  console.log(`FIRE ${this.ammoInClip}`);
 
   if (this.ammoInClip > 0) {
     this.ammoInClip -= 1;

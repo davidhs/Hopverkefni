@@ -42,10 +42,10 @@ Player.prototype.velY = 0;
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
 Player.prototype.weaponsBar = [true, true, true, false];
-//Player.prototype.PIS = [true, 1, 10, 12];
-//Player.prototype.AK = [true, 2, 20, 30];
+// Player.prototype.PIS = [true, 1, 10, 12];
+// Player.prototype.AK = [true, 2, 20, 30];
 
-//console.log(pistol);
+// console.log(pistol);
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -128,11 +128,11 @@ Player.prototype.update = function (du) {
   // if (g_keys[this.MAGNUM]) {
   //   this.weaponSelected = 4;
   // }
-//
+  //
   // if (g_keys[this.HEAVYMG]) {
   //   this.weaponSelected = 5;
   // }
-//
+  //
   // if (g_keys[this.RAYGUN]) {
   //   this.weaponSelected = 6;
   // }
@@ -170,7 +170,6 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
-
     this.fireBullet();
   }
 
@@ -182,12 +181,11 @@ Player.prototype.update = function (du) {
   const oldX = this.cx;
   const oldY = this.cy;
 
-  let newX = this.cx + du * this.velX;
-  let newY = this.cy + du * this.velY;
+  const newX = this.cx + du * this.velX;
+  const newY = this.cy + du * this.velY;
 
   this.cx = newX;
   this.cy = newY;
-
 
 
   if (!g_noClip) {
@@ -197,13 +195,11 @@ Player.prototype.update = function (du) {
     }
 
     let flags = spatialManager.register(this);
-    //console.log(flags);
+    // console.log(flags);
 
 
     // Wall crap
     if (flags !== spatialManager.NO_CONFLICT && flags < spatialManager.MIN_ENTITY) {
-
-
       if (flags !== spatialManager.NO_CONFLICT) {
         this.cx = newX;
         this.cy = oldY;
