@@ -1,6 +1,10 @@
 # Hopverkefni
 Lokaverkefni TOL308G
 
+## Hudbar upplýsingar:
+KEY G = lækka lífið, test fyrir hits, byrjar í grænu og breytir um lit.
+KEY 1,2,4 = breyta um bissu
+
 ## Basic
 Sjá stöðuna á verkefni => ´git status´
 
