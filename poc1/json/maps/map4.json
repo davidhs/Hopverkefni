@@ -268,7 +268,8 @@
                     "knife": "guns/knife.png",
                     "rifle1": "guns/rifle.png",
                     "handgun": "guns/handgun.png",
-                    "shotgun": "guns/shotgun.png"
+                    "shotgun": "guns/shotgun.png",
+                    "Hbackground": "HUD.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",

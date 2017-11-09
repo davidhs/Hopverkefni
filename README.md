@@ -1,6 +1,7 @@
 # Hopverkefni
 Lokaverkefni TOL308G
 
+
 ## HUDBAR upplýsingar
 KEY G = lækka lífið, sem gerist þegar þú ert hittur, byrjar í grænu og breytir um lit.
 
@@ -36,7 +37,7 @@ Núna ætti ´git remote´ að sýna "origin" á skjánum.
 ´git pull origin master´ sækir öll ný skjöl og uppfærir þau sem þú ert með.
 
 ## Dæmi með git branch og fara i tad
-git branch -b Notandi 
+git branch -b Notandi
 ### Gera prufu skrá og commit-a
 touch test.txt
 

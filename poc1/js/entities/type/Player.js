@@ -100,6 +100,7 @@ Player.prototype.update = function (du) {
   if (g_keys[this.KEY_UP]) {
     this.velY = Math.max(this.velY - this.acceleration * du, -this.maxSpeed);
     noVerAcc = false;
+
   }
 
   if (g_keys[this.KEY_DOWN]) {
@@ -117,19 +118,40 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
+<<<<<<< HEAD
   if (eatKey(this.PISTOL) && this.weaponsSelection[1]) {
     console.log('PISTOL selected!');
     this.weaponSelected = this.PIS[1];
+=======
+
+  if (eatKey(this.PISTOL) && this.weaponsBar[0]) {
+    console.log('PISTOL selected!');
+    console.log(entityManager.generateWeapon);
+    this.weaponSelected = entityManager.generateWeapon;
+
+
+    HUD.witchWeapon('handgun');
+
+>>>>>>> 7bc703b491e09b3e58558b343f4edeb45ee71d7f
   }
 
   if (eatKey(this.RIFLE) && this.weaponsSelection[2]) {
     console.log('AK selected!');
     this.weaponSelected = this.AK;
+
+    HUD.witchWeapon('rifle');
+
   }
 
   if (eatKey(this.SHOTGUN) && this.weaponsSelection[3]) {
     console.log('Shotgun selected!');
+
     this.weaponSelected = 2;
+
+
+
+    HUD.witchWeapon('shotgun');
+
   }
 
   // if (g_keys[this.RIFLE]) {
