@@ -1,6 +1,5 @@
 'use strict';
 
-
 const DEBUG_PLAYER = false;
 
 /* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
@@ -26,13 +25,14 @@ Player.prototype.KEY_DOWN = keyCode('S');
 Player.prototype.KEY_LEFT = keyCode('A');
 Player.prototype.KEY_RIGHT = keyCode('D');
 
-Player.prototype.KNIFE = keyCode('1');
-Player.prototype.PISTOL = keyCode('2');
+Player.prototype.KNIFE = keyCode('9');
+Player.prototype.PISTOL = keyCode('1');
 Player.prototype.SHOTGUN = keyCode('3');
-Player.prototype.RIFLE = keyCode('4');
+Player.prototype.RIFLE = keyCode('2');
 Player.prototype.MAGNUM = keyCode('5');
 Player.prototype.HEAVYMG = keyCode('6');
 Player.prototype.RAYGUN = keyCode('7');
+
 
 Player.prototype.rotation = 0;
 Player.prototype.cx = 200;
@@ -41,9 +41,11 @@ Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
-Player.prototype.weapons = [true, true, false, true,
-  false, false, false];
-Player.prototype.weaponSelected = 1;
+Player.prototype.weaponsBar = [true, true, true, false];
+//Player.prototype.PIS = [true, 1, 10, 12];
+//Player.prototype.AK = [true, 2, 20, 30];
+
+//console.log(pistol);
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -104,54 +106,51 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
-  if (eatKey(this.KNIFE) && this.weapons[0]) {
-    console.log('Machete selected!');
-    this.weaponSelected = 1;
 
-
-
-    HUD.witchWeapon('knife');
-
-  }
-
-  if (eatKey(this.PISTOL) && this.weapons[1]) {
-    console.log('Pistol selected!');
-    this.weaponSelected = 2;
-
+  if (eatKey(this.PISTOL) && this.weaponsBar[0]) {
+    console.log('PISTOL selected!');
+    console.log(entityManager.generateWeapon);
+    this.weaponSelected = entityManager.generateWeapon;
 
 
     HUD.witchWeapon('handgun');
+
+  }
+
+  if (eatKey(this.RIFLE) && this.weaponsBar[0]) {
+    console.log('AK selected!');
+    this.weaponSelected = this.AK;
+
+    HUD.witchWeapon('rifle');
+
   }
 
   if (eatKey(this.SHOTGUN) && this.weapons[2]) {
     console.log('Shotgun selected!');
-    this.weaponSelected = 3;
+
+    this.weaponSelected = 2;
 
 
 
     HUD.witchWeapon('shotgun');
+
   }
 
-  if (g_keys[this.RIFLE]) {
-    this.weaponSelected = 4;
+  // if (g_keys[this.RIFLE]) {
+  //   this.weaponSelected = 3;
+  // }
 
-
-
-
-    HUD.witchWeapon('rifle');
-  }
-
-  if (g_keys[this.MAGNUM]) {
-    this.weaponSelected = 5;
-  }
-
-  if (g_keys[this.HEAVYMG]) {
-    this.weaponSelected = 6;
-  }
-
-  if (g_keys[this.RAYGUN]) {
-    this.weaponSelected = 7;
-  }
+  // if (g_keys[this.MAGNUM]) {
+  //   this.weaponSelected = 4;
+  // }
+//
+  // if (g_keys[this.HEAVYMG]) {
+  //   this.weaponSelected = 5;
+  // }
+//
+  // if (g_keys[this.RAYGUN]) {
+  //   this.weaponSelected = 6;
+  // }
 
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
@@ -186,6 +185,7 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
+
     this.fireBullet();
   }
 

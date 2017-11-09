@@ -48,9 +48,9 @@ const HUD = (function () {
 
   //toggle on or off weapon images
   var isRifle = false;
-  var isHandgun = false;
+  var isHandgun = true;
   var isShotgun = false;
-  var isKnife = true;
+  var isKnife = false;
 
 
 
@@ -200,6 +200,11 @@ const HUD = (function () {
       var height = 50;
       ctx.beginPath();
       ctx.drawImage(rifle, x, y, width, height);
+    }
+
+    //
+    if(isShotgun){
+      console.log('shotgun');
     }
 
   }
