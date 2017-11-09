@@ -265,10 +265,6 @@
                     "donkey": "notdonkey.png",
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
-                    "knife": "guns/knife.png",
-                    "rifle1": "guns/rifle.png",
-                    "handgun": "guns/handgun.png",
-                    "shotgun": "guns/shotgun.png",
                     "Hbackground": "HUD.png"
                 }
             }, {
@@ -287,8 +283,15 @@
                     "tileset3": "tileset3.png",
                     "ta_terrainAtlas": "terrain_atlas.png",
                     "ta_tileset4": "tileset4.png"
-
                 }
+            }, {
+              "prefix": "img/guns/",
+              "paths": {
+                "knife": "knife.png",
+                "rifle1": "rifle.png",
+                "handgun": "handgun.png",
+                "shotgun": "shotgun.png"
+              }
             }],
             "audio": [{
                 "prefix": "audio/",

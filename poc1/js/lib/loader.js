@@ -168,7 +168,7 @@ const loader = (function () {
    * Loads assets off of your computer as specified in `categories'.
    * Doesn't even have to be an array.
    *
-   * @param {{image: string[], audio: string[], text: string[], json: string[], xml: string[]}} categories
+   * @param {{image:string[],audio:string[],text:string[],json:string[],xml:string[]}} categories
    * @param {function} callback
    */
   function load(categories, callback) {

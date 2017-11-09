@@ -145,6 +145,7 @@ PriorityQueue.prototype.setComparator = function (fn) {
 };
 
 
+// unit test
 if (true) {
   (function () {
     // UNIT TEST
@@ -168,7 +169,6 @@ if (true) {
 
     while (!a.isEmpty()) {
       const val = a.dequeue();
-      console.log(val);
       if (val !== b1[idx]) {
         console.error(`Got ${val} but expected ${b1[idx]}`);
         throw Error();
