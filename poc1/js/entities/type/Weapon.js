@@ -1,8 +1,5 @@
 'use strict';
 
-/* global audioManager g_url Entity NOMINAL_UPDATE_INTERVAL spatialManager
- g_world entityManager g_asset :true */
-
 // A generic contructor which accepts an arbitrary descriptor object /
 // function Weapon(descr) {
 //     for (var property in descr) {
@@ -14,7 +11,6 @@ function Weapon(descr) {
   this.setup(descr);
   this.sprite = this.sprite || g_asset.sprite.pistol;
   this.scale = 1;
-
   this.type = this.type;
   this.slot = this.slot;
   this.damage = this.damage;
@@ -32,11 +28,10 @@ function Weapon(descr) {
 
 
 Weapon.prototype = new Entity();
-
 // USP Pistol
 const MACHETE = new Weapon({
   type: 'Knife',
-  slot: 1,
+  slot: 0,
   damage: 100,
   ammo: Math.infinity,
   clipSize: Math.infinity,
@@ -47,7 +42,7 @@ const MACHETE = new Weapon({
 // USP Pistol
 const USP = new Weapon({
   type: 'Pistal',
-  slot: 2,
+  slot: 1,
   damage: 30,
   ammo: 96,
   clipSize: 12,
@@ -60,7 +55,7 @@ const USP = new Weapon({
 // Leone Shotgun
 const LEONE = new Weapon({
   type: 'Shotgun',
-  slot: 3,
+  slot: 2,
   damage: 20,
   ammo: 32,
   clipSize: 8,
@@ -74,7 +69,7 @@ const LEONE = new Weapon({
 // AK Rifle
 const AK = new Weapon({
   type: 'Rifle',
-  slot: 4,
+  slot: 3,
   damage: 70,
   ammo: 90,
   clipSize: 30,
@@ -89,7 +84,7 @@ const AK = new Weapon({
 // Magnum Sniper
 const MAGNUM = new Weapon({
   type: 'Sniper',
-  slot: 5,
+  slot: 4,
   damage: 150,
   ammo: 30,
   clipSize: 10,
@@ -103,7 +98,7 @@ const MAGNUM = new Weapon({
 // M249 Heavy Machine Gun
 const M249 = new Weapon({
   type: 'MG',
-  slot: 6,
+  slot: 5,
   damage: 70,
   ammo: 200,
   clipSize: 100,
@@ -117,7 +112,7 @@ const M249 = new Weapon({
 // Ray Gun
 const RAY = new Weapon({
   type: 'RAYGUN',
-  slot: 7,
+  slot: 6,
   damage: 1000,
   ammo: 10,
   clipSize: 30,
@@ -127,7 +122,7 @@ const RAY = new Weapon({
   pickedUp: false,
 });
 
-Weapon.prototype.fire = function () {
+Weapon.prototype.fire = function (cx, cy, velX, velY, rotation) {
   console.log('FIRE ' + this.ammoInClip);
 
   if (this.ammoInClip > 0) {
