@@ -1,10 +1,15 @@
 # Hopverkefni
 Lokaverkefni TOL308G
 
+## HUDBAR upplýsingar
+KEY G = lækka lífið, sem gerist þegar þú ert hittur, byrjar í grænu og breytir um lit.
+KEY 1,2,4 = breyta um bissu
+
 ## Basic
 Sjá stöðuna á verkefni => ´git status´
 
 Sjá branches og í hverju þú ert í => ´git branch -a´
+
 
 
 ## Skrá username og password (svo þið þurfið ekki að gera það fyrir hvert push)
