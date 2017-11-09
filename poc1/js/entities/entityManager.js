@@ -63,6 +63,7 @@ const entityManager = (function () {
 
   function generateWeapon(descr) {
     _weapon.push(new Weapon(descr));
+    console.log(_weapon);
   }
 
   // TODO: bind in JSON which type explosion,
@@ -90,7 +91,14 @@ const entityManager = (function () {
       while (i < aCategory.length) {
         const status = aCategory[i].update(du);
 
-        if (aCategory[i] instanceof GenericEnemyOne) { /* ... */ }
+        if (aCategory[i] instanceof GenericEnemyOne) {
+          if (false) {
+            const tx = spatialManager.toX(aCategory[i].cx);
+            const ty = spatialManager.toY(aCategory[i].cy);
+
+            spatialManager.carveShortestPath(tx, ty);
+          }
+        }
 
 
         // tiles.carveShortestPath(sx, sy, 99, 99);

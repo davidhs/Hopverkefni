@@ -25,13 +25,15 @@ Player.prototype.KEY_DOWN = keyCode('S');
 Player.prototype.KEY_LEFT = keyCode('A');
 Player.prototype.KEY_RIGHT = keyCode('D');
 
-Player.prototype.KNIFE = keyCode('9');
+Player.prototype.RELOAD = keyCode('R');
+
+Player.prototype.KNIFE = keyCode('0');
 Player.prototype.PISTOL = keyCode('1');
-Player.prototype.SHOTGUN = keyCode('3');
-Player.prototype.RIFLE = keyCode('2');
-Player.prototype.MAGNUM = keyCode('5');
-Player.prototype.HEAVYMG = keyCode('6');
-Player.prototype.RAYGUN = keyCode('7');
+Player.prototype.SHOTGUN = keyCode('2');
+Player.prototype.RIFLE = keyCode('3');
+Player.prototype.MAGNUM = keyCode('4');
+Player.prototype.HEAVYMG = keyCode('5');
+Player.prototype.RAYGUN = keyCode('6');
 
 
 Player.prototype.rotation = 0;
@@ -41,11 +43,20 @@ Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
-Player.prototype.weaponsBar = [true, true, true, false];
-// Player.prototype.PIS = [true, 1, 10, 12];
-// Player.prototype.AK = [true, 2, 20, 30];
+// Pistol (1) is default
+Player.prototype.useWeapon = 1;
+// Knife, Pistol, Shotgun, Rifle,
+// Sniper, HeavyMG, Raygun
+Player.prototype.weaponsSelection =
+  [true, true, true, false,
+    false, false, false];
 
-// console.log(pistol);
+// Slot, Speed, FireRate (per. sec), Reload (in sec), Magazine Size, Ammo in Magazine, Total Ammo
+const PIS = [1, 10, 2, 1, 12, 12, 96];
+const SHO = [2, 15, 1.5, 6, 8, 8, 40];
+const AK = [3, 20, 5, 2, 30, 30, 90];
+
+//  console.log(pistol);
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -56,6 +67,7 @@ Player.prototype.decay = 0.5;
 
 // This here is (currently) the firing rate.  Maybe different
 // types of weapons should have different firing rates.
+// NOTE: Works actually like a reload time
 Player.prototype.bulletCooldown = 0;
 
 Player.prototype.update = function (du) {
@@ -88,6 +100,7 @@ Player.prototype.update = function (du) {
   if (g_keys[this.KEY_UP]) {
     this.velY = Math.max(this.velY - this.acceleration * du, -this.maxSpeed);
     noVerAcc = false;
+
   }
 
   if (g_keys[this.KEY_DOWN]) {
@@ -105,20 +118,34 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
+
   if (eatKey(this.PISTOL) && this.weaponsBar[0]) {
     console.log('PISTOL selected!');
     console.log(entityManager.generateWeapon);
     this.weaponSelected = entityManager.generateWeapon;
+
+
+    HUD.witchWeapon('handgun');
+
   }
 
-  if (eatKey(this.RIFLE) && this.weaponsBar[0]) {
+  if (eatKey(this.RIFLE) && this.weaponsSelection[2]) {
     console.log('AK selected!');
     this.weaponSelected = this.AK;
+
+    HUD.witchWeapon('rifle');
+
   }
 
-  if (eatKey(this.SHOTGUN) && this.weapons[2]) {
+  if (eatKey(this.SHOTGUN) && this.weaponsSelection[3]) {
     console.log('Shotgun selected!');
+
     this.weaponSelected = 2;
+
+
+
+    HUD.witchWeapon('shotgun');
+
   }
 
   // if (g_keys[this.RIFLE]) {
@@ -173,6 +200,9 @@ Player.prototype.update = function (du) {
     this.fireBullet();
   }
 
+  if (eatKey(this.RELOAD)) {
+    this.reloadWeapon();
+  }
   // COLLISION CHECKING
 
   //
@@ -248,10 +278,19 @@ Player.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
+Player.prototype.reloadWeapon = function () {
+  this.PIS[5] = this.PIS[4];
+  this.PIS[6] -= this.PIS[4];
+};
+
 // TODO: maybe we wan't different bullets?
 Player.prototype.fireBullet = function () {
   if (!g_mouse.isDown) return;
-
+  if (this.PIS[5] === 0) {
+    console.log('RELOAD');
+    return;
+  }
+  this.PIS[5] -= 1;
   if (this.bulletCooldown > 0) return;
 
   // TODO: bind in JSON how long each bullet lives
