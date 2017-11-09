@@ -20,7 +20,7 @@ const TOGGLE_CLEAR = 'C'.charCodeAt(0);
 const TOGGLE_BOX = 'B'.charCodeAt(0);
 const TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
 const TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
-const TOGGLE_RENDER = 'R'.charCodeAt(0);
+const TOGGLE_RENDER = '0'.charCodeAt(0);
 
 const TOGGLE_SHOW_COLLISION_VOLUME = 'H'.charCodeAt(0);
 

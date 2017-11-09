@@ -7,24 +7,44 @@
 //     }
 // }
 
-function Weapon(descr) {
-  this.setup(descr);
-  this.sprite = this.sprite || g_asset.sprite.pistol;
-  this.scale = 1;
-  this.type = this.type;
-  this.slot = this.slot;
+function Weapon(
+  name, damage, ammo, magazine, magazineAmmos,
+  reloadTime, bulletSpeed, fireRate, through, accuracy
+) {
+  this.name = this.name;
   this.damage = this.damage;
-  this.splash = this.splash || 0;
   this.ammo = this.ammo;
-  this.clipSize = this.clipSize;
-  this.ammoInClip = this.clipSize;
+  this.magazine = this.magazine;
+  this.magazineAmmos = this.magazineAmmos;
   this.reloadTime = this.reloadTime || 1;
   this.bulletSpeed = this.bulletSpeed || 15;
   this.fireRate = this.fireRate || 2;
   this.through = this.through || 0;
   this.accuracy = this.accuray || 1;
-  this.pickedUp = this.pickedUp || false;
 }
+
+const pistol = new Weapon('Pistol', 22, 96, 12, 12, 1, 10, 2, 0, 1);
+const shotgun = new Weapon('Shotgun', 14, 40, 8, 8, 4, 14, 2, 0, 1);
+const ak = new Weapon('Rifle', 87, 90, 30, 30, 2, 20, 6, 1, 1);
+
+// function Weapon(descr) {
+//   this.setup(descr);
+//   this.sprite = this.sprite || g_asset.sprite.pistol;
+//   this.scale = 1;
+//   this.type = this.type;
+//   this.slot = this.slot;
+//   this.damage = this.damage;
+//   this.splash = this.splash || 0;
+//   this.ammo = this.ammo;
+//   this.clipSize = this.clipSize;
+//   this.ammoInClip = this.clipSize;
+//   this.reloadTime = this.reloadTime || 1;
+//   this.bulletSpeed = this.bulletSpeed || 15;
+//   this.fireRate = this.fireRate || 2;
+//   this.through = this.through || 0;
+//   this.accuracy = this.accuray || 1;
+//   this.pickedUp = this.pickedUp || false;
+// }
 
 
 Weapon.prototype = new Entity();
