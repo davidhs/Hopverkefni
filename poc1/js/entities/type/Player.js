@@ -59,7 +59,7 @@ const knife = {
   bulletSpeed: Infinity,
   fireRate: 5,
   reloadTime: 0,
-  ammo: Math.infi,
+  ammo: Infinity,
   magazineSize: Infinity,
   magazineAmmo: Infinity,
 };
