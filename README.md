@@ -3,6 +3,7 @@ Lokaverkefni TOL308G
 
 ## HUDBAR upplýsingar
 KEY G = lækka lífið, sem gerist þegar þú ert hittur, byrjar í grænu og breytir um lit.
+
 KEY 1,2,4 = breyta um bissu
 
 ## Basic
