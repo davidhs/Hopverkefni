@@ -119,6 +119,7 @@ function renderSimulation(ctx) {
 
   //Alexander
   const ctxr = g_radar.getContext('2d'); //radar
+  const ctxhb = g_hudbar.getContext('2d'); //HUDBAR
 
 
   ctxb.imageSmoothingEnabled = false;
@@ -130,6 +131,7 @@ function renderSimulation(ctx) {
   ctxp.imageSmoothingEnabled = false;
   ctxt.imageSmoothingEnabled = false;
   ctxr.imageSmoothingEnabled = false;
+  ctxhb.imageSmoothingEnabled = false;
 
 
 
@@ -153,6 +155,7 @@ function renderSimulation(ctx) {
 
   //Alexander
   ctxr.clearRect(0,0,w,h);
+  ctxhb.clearRect(0,0,w,h);
 
 
   // === DRAWING TO VARIOUS CANVASES ===
@@ -200,7 +203,9 @@ function renderSimulation(ctx) {
   Minimap.render(ctxr);
 
   // === HUDBAR ===
+
   HUD.render(ctxh);
+
 
 
 
