@@ -13,3 +13,5 @@ package-lock.json
 # If Git is merging (or fails to merge?) then files like this are created.
 *.orig
 
+# Please, no log files.
+.log
