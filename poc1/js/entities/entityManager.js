@@ -63,6 +63,7 @@ const entityManager = (function () {
 
   function generateWeapon(descr) {
     _weapon.push(new Weapon(descr));
+    console.log(_weapon);
   }
 
   // TODO: bind in JSON which type explosion,
@@ -93,7 +94,7 @@ const entityManager = (function () {
         if (aCategory[i] instanceof GenericEnemyOne) {
           const tx = spatialManager.toX(aCategory[i].cx);
           const ty = spatialManager.toY(aCategory[i].cy);
-  
+
           spatialManager.carveShortestPath(tx, ty);
         }
 

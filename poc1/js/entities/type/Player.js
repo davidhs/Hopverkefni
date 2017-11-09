@@ -86,6 +86,7 @@ Player.prototype.update = function (du) {
   if (g_keys[this.KEY_UP]) {
     this.velY = Math.max(this.velY - this.acceleration * du, -this.maxSpeed);
     noVerAcc = false;
+
   }
 
   if (g_keys[this.KEY_DOWN]) {
@@ -106,20 +107,38 @@ Player.prototype.update = function (du) {
   if (eatKey(this.KNIFE) && this.weapons[0]) {
     console.log('Machete selected!');
     this.weaponSelected = 1;
+
+
+
+    HUD.witchWeapon('knife');
+
   }
 
   if (eatKey(this.PISTOL) && this.weapons[1]) {
     console.log('Pistol selected!');
     this.weaponSelected = 2;
+
+
+
+    HUD.witchWeapon('handgun');
   }
 
   if (eatKey(this.SHOTGUN) && this.weapons[2]) {
     console.log('Shotgun selected!');
     this.weaponSelected = 3;
+
+
+
+    HUD.witchWeapon('shotgun');
   }
 
   if (g_keys[this.RIFLE]) {
     this.weaponSelected = 4;
+
+
+
+
+    HUD.witchWeapon('rifle');
   }
 
   if (g_keys[this.MAGNUM]) {
@@ -184,7 +203,7 @@ Player.prototype.update = function (du) {
   this.cx = newX;
   this.cy = newY;
 
-  
+
 
   if (!g_noClip) {
     if (!g_world.inBounds(this.cx, this.cy, 0)) {
@@ -194,7 +213,7 @@ Player.prototype.update = function (du) {
 
     let flags = spatialManager.register(this);
     //console.log(flags);
-    
+
 
     // Wall crap
     if (flags !== spatialManager.NO_CONFLICT && flags < spatialManager.MIN_ENTITY) {
