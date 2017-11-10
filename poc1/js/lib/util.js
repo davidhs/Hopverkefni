@@ -174,20 +174,20 @@ const util = (function () {
     const c3 = typeof el === 'number';
     const c4 = typeof el === 'boolean';
     const c5 = typeof el === 'function';
-    
+
     if (obj === null || typeof obj === 'undefined' || typeof el === 'number' || typeof el === 'boolean') {
       return;
     }
-    
+
     // Check if object is array,
     // Check if object is "object"
-    
+
     if (Array.isArray(obj)) {
       // Assume is array
       const arr = obj;
       for (let i = 0; i < arr.length; i += 1) {
         const el = arr[i];
-        if (typeof el === "string") {
+        if (typeof el === 'string') {
           if (el === stringTarget) {
             arr[i] = replacement;
           } else {
@@ -201,8 +201,8 @@ const util = (function () {
       for (let i = 0; i < keys.length; i += 1) {
         const key = keys[i];
         const el = obj[key];
-        
-        if (typeof el === "string") {
+
+        if (typeof el === 'string') {
           if (el === stringTarget) {
             obj[key] = replacement;
           }
@@ -217,9 +217,7 @@ const util = (function () {
 
   // Returns a value that is always positive,
   // or to be more accurate non-negative.
-  util.posmod = (value, modulus) => {
-    return (modulus + (value % modulus)) % modulus;
-  };
+  util.posmod = (value, modulus) => (modulus + (value % modulus)) % modulus;
 
   util.inBounds = (value, minValue, maxValue) => (value >= minValue) && (value <= maxValue);
 
@@ -358,25 +356,24 @@ const util = (function () {
   };
 
   util.value = (value, defaultValue) => {
-    if (typeof value !== "undefined") {
+    if (typeof value !== 'undefined') {
       return value;
-    } else {
-      return defaultValue;
     }
+    return defaultValue;
   };
 
   function xml2json(xml, cfg) {
     let obj = {};
 
-    
+
     if (typeof xml === 'undefined') throw Error();
 
-    let ignoreEmptyStrings = true;
+    const ignoreEmptyStrings = true;
 
     // I'll do this later.  I want to be able to replace
     // every of this names with something else.
-    let attributeHandle = "@attributes";
-    let textHandle = "#text";
+    const attributeHandle = '@attributes';
+    const textHandle = '#text';
 
     if (xml.nodeType === XMLDocument.ELEMENT_NODE) {
       if (xml.attributes.length > 0) {
@@ -392,7 +389,7 @@ const util = (function () {
       obj = xml.nodeValue;
     }
 
-    if (xml.nodeType === XMLDocument.DOCUMENT_NODE) {}
+    if (xml.nodeType === XMLDocument.DOCUMENT_NODE) { /* ... */ }
 
 
     if (typeof xml.hasChildNodes !== 'undefined' && xml.hasChildNodes()) {
@@ -401,10 +398,9 @@ const util = (function () {
         const nodeName = item.nodeName;
 
         if (typeof obj[nodeName] === 'undefined') {
-
           const subtree = xml2json(item);
 
-          if (typeof subtree === "string") {
+          if (typeof subtree === 'string') {
             const str = ignoreEmptyStrings ? subtree.trim() : subtree;
             if (str.length !== 0) {
               obj[nodeName] = str;
@@ -414,7 +410,7 @@ const util = (function () {
           }
         } else {
           // Multi line text?
-          if (typeof obj[nodeName].push === "undefined") {
+          if (typeof obj[nodeName].push === 'undefined') {
             const oldObject = obj[nodeName];
             obj[nodeName] = [];
             obj[nodeName].push(oldObject);
@@ -422,7 +418,7 @@ const util = (function () {
 
           const subtree = xml2json(item);
 
-          if (typeof subtree === "string") {
+          if (typeof subtree === 'string') {
             const str = ignoreEmptyStrings ? subtree.trim() : subtree;
             if (str.length !== 0) {
               obj[nodeName] = str;
@@ -435,7 +431,7 @@ const util = (function () {
     }
 
     return obj;
-  };
+  }
 
   util.xml2json = xml2json;
 

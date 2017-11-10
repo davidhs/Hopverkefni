@@ -34,19 +34,12 @@ const g_shadows = document.createElement('canvas'); // Shadows
 const g_pre = document.createElement('canvas');
 
 
-
-//Alexander
-const g_radar = document.createElement('canvas'); //radar
+// Alexander
+const g_radar = document.createElement('canvas'); // radar
 const g_hudbar = document.createElement('canvas');
 
-document.getElementById('canvi').appendChild(g_occlusion);
-document.getElementById('canvi').appendChild(g_shadows);
-
-//document.getElementById('canvi').appendChild(g_occlusion);
-//document.getElementById('canvi').appendChild(g_shadows);
-
-
-
+// document.getElementById('canvi').appendChild(g_occlusion);
+// document.getElementById('canvi').appendChild(g_shadows);
 
 
 // TEMPORARY GLOBALS
@@ -79,10 +72,15 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+  const tx = spatialManager.toX(g_mouse.x);
+  const ty = spatialManager.toY(g_mouse.y);
+
+  spatialManager.carveShortestPath(tx, ty);
+
   // Update entities.
   entityManager.update(du);
 
-  //Alexander
+  // Alexander
   Minimap.update(du);
 
   HUD.update(du);
@@ -117,9 +115,9 @@ function renderSimulation(ctx) {
   const ctxp = g_pre.getContext('2d');
   const ctxt = g_top.getContext('2d');
 
-  //Alexander
-  const ctxr = g_radar.getContext('2d'); //radar
-  const ctxhb = g_hudbar.getContext('2d'); //HUDBAR
+  // Alexander
+  const ctxr = g_radar.getContext('2d'); // radar
+  const ctxhb = g_hudbar.getContext('2d'); // HUDBAR
 
 
   ctxb.imageSmoothingEnabled = false;
@@ -132,8 +130,6 @@ function renderSimulation(ctx) {
   ctxt.imageSmoothingEnabled = false;
   ctxr.imageSmoothingEnabled = false;
   ctxhb.imageSmoothingEnabled = false;
-
-
 
 
   // Width and height of rendering canvases.
@@ -153,9 +149,9 @@ function renderSimulation(ctx) {
   ctxp.clearRect(0, 0, w, h);
   ctxt.clearRect(0, 0, w, h);
 
-  //Alexander
-  ctxr.clearRect(0,0,w,h);
-  ctxhb.clearRect(0,0,w,h);
+  // Alexander
+  ctxr.clearRect(0, 0, w, h);
+  ctxhb.clearRect(0, 0, w, h);
 
 
   // === DRAWING TO VARIOUS CANVASES ===
@@ -185,10 +181,10 @@ function renderSimulation(ctx) {
 
   // Add entities to occlusion map.
   if (false) {
-  entityManager.render(ctxo, {
-    occlusion: true,
-  });
-}
+    entityManager.render(ctxo, {
+      occlusion: true,
+    });
+  }
 
   g_tm.renderMiddle(ctxo, {
     occlusion: true,
@@ -197,7 +193,7 @@ function renderSimulation(ctx) {
   // Add "walls" to occlusion map.  TODO: remove later.
   // ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
-  //Alexander
+  // Alexander
 
   // === RADAR ===
   Minimap.render(ctxr);
@@ -205,9 +201,6 @@ function renderSimulation(ctx) {
   // === HUDBAR ===
 
   HUD.render(ctxh);
-
-
-
 
 
   // === SHADOWS ===
@@ -224,24 +217,24 @@ function renderSimulation(ctx) {
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }, {
     x: 78,
     y: 317,
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }, {
     x: 570,
     y: 636,
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }];
 
   if (false) {
@@ -251,22 +244,21 @@ function renderSimulation(ctx) {
       color: {
         r: 100,
         g: 27,
-        b: 250
-      }
+        b: 250,
+      },
     });
   }
 
   for (let i = 0; i < lights.length; i += 1) {
     const light = lights[i];
     const x = g_viewport.mapO2IX(light.x);
-    const y =  g_viewport.mapO2IY(light.y);
+    const y = g_viewport.mapO2IY(light.y);
     const color = light.color;
     if (g_viewport.inInnerBoundsPoint(x, y, g_viewport.getIW() / 2, g_viewport.getIH() / 2)) {
-
       lighting.radialLight(ctxs, color, {
         occluder: g_occlusion,
-        x: x,
-        y: y
+        x,
+        y,
       });
     }
   }
@@ -311,9 +303,6 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_shadows, 0, 0, w, h);
 
 
-
-
-
   ctxp.globalCompositeOperation = 'source-over';
   ctxp.drawImage(g_top, 0, 0);
   ctxp.globalAlpha = 1.0;
@@ -325,29 +314,24 @@ function renderSimulation(ctx) {
   ctxp.globalAlpha = 1.0;
 
 
-
-
-
   // === DRAW TO RENDERING CANVAS ===
 
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(g_pre, 0, 0);
 
   /*
   ctx.fillstyle = "#000";
   ctx.fillRect(0,0,100,100);
-  ctx.drawImage(g_radar);*/
+  ctx.drawImage(g_radar); */
 
-  //HUD
+  // HUD
 /*  ctx.fillstyle = "#ffffff";
   ctx.fillRect(0, g_viewport.getIH() -100, g_viewport.getIW(), 200);
-  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100);*/
+  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100); */
 
 
-
-
-  //util.fillCircle(ctx, pcx, pcy, 10);
+  // util.fillCircle(ctx, pcx, pcy, 10);
 }
 
 
@@ -470,14 +454,13 @@ function setup(response) {
 }
 
 
-
 // ==========
 // START GAME
 // ==========
 
 function startGame() {
 
-
+  // Adding asset loader processors.
   assetLoader.addProcessor('texture', Texture);
   assetLoader.addProcessor('textureAtlas', TextureAtlas);
   assetLoader.addProcessor('sequence', Sequence);
@@ -486,15 +469,108 @@ function startGame() {
   assetLoader.addProcessor('tiledMap', TiledMap);
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
-  loader.load({ json: { init: 'json/init.json'} }, (response) => {
-    chosenMap = response.json.init.variables.chosenMap;
-    mapHandler.openMap(chosenMap, setup);
+  const canvases = document.getElementById('canvases');
+
+  const canvas = g_canvas;
+  
+      const screenManager = new UIFrame(canvas);
+
+      const mel = evt => {
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = evt.clientX - rect.left;
+        const y = evt.clientY - rect.top;
+
+        screenManager.press(x, y);
+    };
+  
+  
+      canvas.addEventListener('mousedown', mel);
+  
+      const ctx = canvas.getContext('2d');
+  
+      const startScreen = new UIContainer();
+  
+  
+      const list1 = new UIList();
+  
+      const button1 = new UIButton('Select Map');
+      const button2 = new UIButton('About');
+      const button3 = new UIButton('Exit');
+
+      button1.addEventListener('press', evt => {
+        screenManager.selectCard(1);
+        screenManager.render(ctx);
+      });
+  
+      list1.addChild(button1);
+      list1.addChild(button2);
+      list1.addChild(button3);
+  
+      startScreen.addChild(list1);
+  
+      const mapSelectionScreen = new UIContainer();
+      const list2 = new UIList();
+
+      const button7 = new UIButton('Back');
+
+      button7.addEventListener('press', evt => {
+        screenManager.selectCard(0);
+        screenManager.render(ctx);
+      });
+
+      list2.addChild(button7);
+  
+      mapSelectionScreen.addChild(list2);
+      
+      screenManager.setLayout('card');
+      screenManager.addChild(startScreen, 0);
+      screenManager.addChild(mapSelectionScreen, 1);
+      
+      screenManager.setBackgroundColor('#f0f0f0');
+      screenManager.selectCard(0);
+  
+      // Event handling
+  
+
+
+  
+      screenManager.render(ctx);
+
+
+  mapHandler.getManifest(response => {
+
+    const maps = response.maps;
+
+    console.log(maps);
+
+    for (let i = 0, keys = Object.keys(maps); i < keys.length; i += 1) {
+      
+      const mapKey = keys[i];
+
+      const mapThing = maps[mapKey];
+      console.log(mapThing);
+
+      const mapName = mapThing.name;
+      const path = mapThing.path;
+
+      console.log(path);
+      
+      const btn = new UIButton(mapName ? mapName : mapKey);
+
+      btn.addEventListener('press', evt => {
+        console.log(path + " selected!");
+        canvas.removeEventListener('mousedown', mel);
+        mapHandler.openMap(mapKey, setup);
+      });
+      list2.addChild(btn);
+    }
+
+    screenManager.render(ctx);
   });
 }
 
 startGame();
-
-
 
 
 // =========================
@@ -526,7 +602,6 @@ const fOcclusionMap = function (canvas) {
 
   return util.forAllPixels(canvas, occluder);
 };
-
 
 
 g_debug.DEBUG_MODE = {

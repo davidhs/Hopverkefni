@@ -10,8 +10,8 @@
 */
 
 //
-// Register 
-// 
+// Register
+//
 
 
 /**
@@ -48,16 +48,15 @@ const spatialManager = (function () {
   // Tiles (grid)
   // Grid should also contain path
   // finding info.
-  //const tiles = [];
+  // const tiles = [];
   const tiles = new Grid();
 
   // TODO: tile size should match
-  const tileSize = 32;  
+  const tileSize = 32;
 
   let nextSpatialID = MIN_ENTITY; // make all valid IDs non-falsey (i.e. don't start at 0)
 
   // PRIVATE METHODS
-
 
 
   // Gets column (x-coordinate) of grid.
@@ -87,12 +86,14 @@ const spatialManager = (function () {
 
     const obj = tiles.get(x, y);
 
-    if (!obj.ids[id]) {
-        obj.ids[id] = true;
-        obj.count += 1;
-        if (id === WALL_ID) obj.obstruction = true;
+
+    const result = obj.ids.add(id);
+
+    if (result) {
+      obj.count += 1;
+      if (id === WALL_ID) obj.obstruction = true;
     }
-    
+
     return obj.count > 1 ? POTENTIAL_CONFLICT : NO_CONFLICT;
   }
 
@@ -108,41 +109,33 @@ const spatialManager = (function () {
   function _unregisterTile(id, x, y) {
     if (x < 0 || x >= tiles.width) return;
     if (y < 0 || y >= tiles.height) return;
-    
+
     const obj = tiles.get(x, y);
 
-    const ids = obj.ids;
-    
-    for (let i = 0, keys = Object.keys(ids); i < keys.length; i += 1) {
-        const targetID = parseInt(keys[i], 10);
-        if (id === targetID) {
-            delete ids[id]
-            obj.count -= 1;
-        }
+    const result = obj.ids.remove(id);
+
+    if (result) {
+      obj.count -= 1;
     }
   }
 
   function _resolveConflict(id, x, y) {
-
     const obj = tiles.get(x, y);
 
-    const keys = Object.keys(obj.ids);
+    // const a = entities[id];
 
-    const a = entities[id];
+    const l = obj.ids.getList();
 
-    for (let i = 0; i < keys.length; i += 1) {
+    for (let i = 0; i < obj.ids.getSize(); i += 1) {
+      const bid = parseInt(l[i], 10);
 
-        const bid = keys[i];
-        
-        // NOTE THE DOUBLE == IS DELIBERATE
-        // AND CONTINUE TOO.
-        if (bid == id) continue;
+      if (bid === id) continue;
 
-        if (bid == WALL_ID) {
-            return WALL_ID;
-        }
+      if (bid === WALL_ID) {
+        return WALL_ID;
+      }
 
-        const be = entities[bid];
+      const be = entities[bid];
     }
 
     return NO_CONFLICT;
@@ -161,19 +154,18 @@ const spatialManager = (function () {
    * @param {Number} y2
    */
   function _registerRect(id, x1, y1, x2, y2) {
-
     for (let y = y1; y <= y2; y += 1) {
-        for (let x = x1; x <= x2; x += 1) {
-            const result = _registerTile(id, x, y);
+      for (let x = x1; x <= x2; x += 1) {
+        const result = _registerTile(id, x, y);
 
-            if (result === POTENTIAL_CONFLICT) {
-                const resStat = _resolveConflict(id, x, y);
+        if (result === POTENTIAL_CONFLICT) {
+          const resStat = _resolveConflict(id, x, y);
 
-                if (resStat !== NO_CONFLICT) {
-                    return resStat;
-                }
-            }
+          if (resStat !== NO_CONFLICT) {
+            return resStat;
+          }
         }
+      }
     }
 
     return NO_CONFLICT;
@@ -210,7 +202,7 @@ const spatialManager = (function () {
     nextSpatialID += 1;
     return id;
   }
-  
+
 
   /**
    * If it fails to register this function will do proper cleanup.
@@ -227,15 +219,15 @@ const spatialManager = (function () {
 
     // CRAPPY PATH FINDING
     if (true) {
-    const player = entityManager.getPlayer();
-    const sx = _getX(player.cx);
-    const sy = _getY(player.cy);
-    if (prevX !== sx || prevY !== sy) {
-      prevX = sx;
-      prevY = sy;
-      tiles.updateStamp();
+      const player = entityManager.getPlayer();
+      const sx = _getX(player.cx);
+      const sy = _getY(player.cy);
+      if (prevX !== sx || prevY !== sy) {
+        prevX = sx;
+        prevY = sy;
+        tiles.updateStamp();
+      }
     }
-  }
 
     const cx = pos.posX;
     const cy = pos.posY;
@@ -250,7 +242,7 @@ const spatialManager = (function () {
     const result = _registerRect(spatialID, x1, y1, x2, y2);
 
     if (result !== NO_CONFLICT) {
-        _unregisterRect(spatialID, x1, y1, x2, y2);
+      _unregisterRect(spatialID, x1, y1, x2, y2);
     } else {
       entities[spatialID] = {
         posX: pos.posX,
@@ -265,8 +257,8 @@ const spatialManager = (function () {
 
 
   /**
-   * 
-   * @param {Entity} entity 
+   *
+   * @param {Entity} entity
    * @param {boolean} force if true don't unregiser on failure
    */
   function unregister(entity, force) {
@@ -316,14 +308,10 @@ const spatialManager = (function () {
     return entities[best_spatialID].entity;
   }
 
-  let firstTime = true;
+  const firstTime = true;
 
 
   function render(ctx) {
-
-
-
-    
     const oldStyle = ctx.strokeStyle;
 
     const dx = g_viewport.getOX();
@@ -336,7 +324,6 @@ const spatialManager = (function () {
       for (let tx = 0; tx < tiles.width; tx += 1) {
         const obj = tiles.get(tx, ty);
         const count = obj.count;
-        const ids = obj.ids;
 
         const x = tx * tileSize;
         const y = ty * tileSize;
@@ -349,37 +336,46 @@ const spatialManager = (function () {
             const y1 = y + tileSize / 2;
             const x2 = x1 + tileSize * mahx / 2;
             const y2 = y1 + tileSize * mahy / 2;
-            ctx.strokeStyle = 'pink';
+            if (obj.stamp === tiles._stamp) {
+              ctx.strokeStyle = 'orange';
+            } else {
+              ctx.strokeStyle = 'blue';
+            }
+
+            if (prevX === tx && prevY === ty) {
+              ctx.strokeStyle = 'lime';
+            }
             util.strokeCircle(ctx, x1 - dx, y1 - dy, 5);
             ctx.beginPath();
             ctx.moveTo(x1 - dx, y1 - dy);
-            ctx.lineTo(x2 - dx , y2 - dy);
+            ctx.lineTo(x2 - dx, y2 - dy);
             ctx.stroke();
           }
         }
-
 
 
         // Draw direction
 
         if (count <= 0) continue;
 
-        for (let k = 0, keys3 = Object.keys(ids); k < keys3.length; k += 1) {
-            const id = parseInt(keys3[k], 10);
-            
+        const idsList = obj.ids.getList();
 
-            if (id >= MIN_ENTITY) {
-                ctx.strokeStyle = 'violet';
-              } else {
-                ctx.strokeStyle = 'green';
-              }
-      
-      
-              //  if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
-      
-              if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
-                util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
-              }
+        for (let k = 0; k < obj.ids.getSize(); k += 1) {
+          const id = idsList[k];
+
+
+          if (id >= MIN_ENTITY) {
+            ctx.strokeStyle = 'violet';
+          } else {
+            ctx.strokeStyle = 'green';
+          }
+
+
+          //  if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
+
+          if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
+            util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
+          }
         }
       }
     }
@@ -400,7 +396,7 @@ const spatialManager = (function () {
 
 
   function init(width, height) {
-    tiles.init(width / tileSize, height / tileSize, {ids: {}, count: 0});
+    tiles.init(width / tileSize, height / tileSize);
     console.log(tiles);
   }
 
@@ -413,7 +409,7 @@ const spatialManager = (function () {
     unregister,
     findEntityInRange,
     render,
-    //getWallOcclusionMap,
+    // getWallOcclusionMap,
     init,
     MIN_ENTITY,
     getTileSize: () => tileSize,
@@ -422,15 +418,16 @@ const spatialManager = (function () {
     toY: _getY,
 
     carveShortestPath: (x, y) => {
+      // tiles.carveShortestPath(prevX, prevY, x, y);
       tiles.carveShortestPath(prevX, prevY, x, y);
     },
 
     debug: {
-        _registerTile,
-        WALL_ID,
-        tiles,
-        _unregisterTile
+      _registerTile,
+      WALL_ID,
+      tiles,
+      _unregisterTile,
     },
-    NO_CONFLICT: NO_CONFLICT
+    NO_CONFLICT,
   };
 })();

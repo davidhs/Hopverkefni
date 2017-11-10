@@ -18,7 +18,6 @@
  * image, subimageHeight, nrOfSubimages
  */
 function TextureAtlas(cfg) {
-
   // If cfg.image is Image, convert to canvas
 
   const img = cfg.image;
@@ -97,7 +96,7 @@ TextureAtlas.prototype.getSequence = function (cfg) {
 
   return {
     reference: this,
-    sequence: sequence,
+    sequence,
   };
 };
 
@@ -147,7 +146,6 @@ TextureAtlas.prototype.getIndex = function (tx, ty) {
 };
 
 TextureAtlas.prototype.sample = function (tx, ty, x, y) {
-
   const ctx = this.image.getContext('2d');
 
   const sx = tx * this.tileWidth;
@@ -157,7 +155,6 @@ TextureAtlas.prototype.sample = function (tx, ty, x, y) {
 
   x = Math.floor(x);
   y = Math.floor(y);
-
 
 
   const index = 4 * (x + y * this.tileWidth);
@@ -173,7 +170,9 @@ TextureAtlas.prototype.sample = function (tx, ty, x, y) {
   const b = data[index + 2];
   const a = data[index + 3];
 
-  return {r, g, b, a};
+  return {
+    r, g, b, a,
+  };
 };
 
 TextureAtlas.prototype.renderIndexTile = function (ctx, index, x, y, w, h) {

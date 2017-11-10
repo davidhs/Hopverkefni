@@ -19,9 +19,9 @@
 // Usage: loader.load(x, y);
 // Before: x is an object of the form
 //  {
-//    image: [...paths], 
-//    audio: [...paths], 
-//    text: [...paths], 
+//    image: [...paths],
+//    audio: [...paths],
+//    text: [...paths],
 //    json: [...paths],
 //    xml: [...paths]
 //  }
@@ -55,15 +55,15 @@ const loader = (function () {
   processor.image = function (handle, url, callback) {
     const img = new Image();
 
-    if (DEBUG) console.log(`${FILENAME}: Processing image: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing image: ${url}`);
 
     img.onload = function (evt) {
-      if (DEBUG) console.log(`${FILENAME}: Done processing image: ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing image: ${url}`);
       callback(img, 'image', handle, url);
     };
 
     img.onerror = function (evt) {
-      if (DEBUG) console.log(`${FILENAME}: Done processing image (error): ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing image (error): ${url}`);
       callback(null, 'image', handle, url);
     };
 
@@ -72,24 +72,24 @@ const loader = (function () {
 
   // Process audio, most likely not needed.
   processor.audio = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing audio: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing audio: ${url}`);
     const audio = new Audio(url, 'audio');
-    if (DEBUG) console.log(`${FILENAME}: Done processing audio: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Done processing audio: ${url}`);
     callback(audio, 'audio', handle, url);
   };
 
   // Processes text
   processor.text = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing text: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing text: ${url}`);
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'text';
     xhr.onload = function () {
       if (xhr.status === 200) {
-        if (DEBUG) console.log(`${FILENAME}: Done processing text: ${url}`)
+        if (DEBUG) console.log(`${FILENAME}: Done processing text: ${url}`);
         callback(xhr.responseText, 'text', handle, url);
       } else {
-        if (DEBUG) console.log(`${FILENAME}: Done processing text (error): ${url}`)
+        if (DEBUG) console.log(`${FILENAME}: Done processing text (error): ${url}`);
         callback(null, 'text', handle, url);
       }
     };
@@ -97,34 +97,34 @@ const loader = (function () {
   };
 
   processor.xml = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing XML: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing XML: ${url}`);
     processor.text(handle, url, (response) => {
-      if (DEBUG) console.log(`${FILENAME}: Done processing XML: ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing XML: ${url}`);
       if (response === null) callback(null, 'xml', handle, url);
       const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(response, "text/xml");
+      const xmlDoc = parser.parseFromString(response, 'text/xml');
       callback(xmlDoc, 'xml', handle, url);
     });
   };
 
 
   processor.json = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing JSON: ${url}`)
+    if (DEBUG) console.log(`${FILENAME}: Processing JSON: ${url}`);
     processor.text(handle, url, (response) => {
-      if (DEBUG) console.log(`${FILENAME}: Done processing JSON: ${url}`)
+      if (DEBUG) console.log(`${FILENAME}: Done processing JSON: ${url}`);
       if (response === null) callback(null, 'json', handle, url);
       const json = JSON.parse(response);
       callback(json, 'json', handle, url);
     });
-  }
+  };
 
-  
   /**
    * Each time an asset has been (successfully/unsuccessfully) loaded
    * then this function is invoked.
-   * 
-   * @param {*} asset 
-   * @param {string} url 
+   * ajksdfaæds fkjasæjkf læasdflækjas lædfkjasl kædfjasældkfj ælasdjflæ ajsdflækj aslædfj
+   *
+   * @param {*} asset
+   * @param {string} url
    */
   function assetTick(asset, type, handle, url) {
     if (DEBUG) console.log(`${FILENAME}: Remaining bundles before: ${bundles.length}`);
@@ -147,8 +147,6 @@ const loader = (function () {
       // bundle, call callback with
       // assets.
       if (bundle.count === bundle.size) {
-
-        
         if (DEBUG) console.log(`${FILENAME}: Before release: ${JSON.stringify(bundle)}`);
 
         delete bundles[i];
@@ -158,7 +156,6 @@ const loader = (function () {
         bundles.splice(i, 1);
         i -= 1;
 
-        
         bundle.callback(bundle.asset);
       }
     }
@@ -169,13 +166,12 @@ const loader = (function () {
 
   /**
    * Loads assets off of your computer as specified in `categories'.
-   * Doesn't even have to be an array.  
-   * 
-   * @param {{image: string[], audio: string[], text: string[], json: string[], xml: string[]}} categories 
-   * @param {function} callback 
-   */  
+   * Doesn't even have to be an array.
+   *
+   * @param {{image:string[],audio:string[],text:string[],json:string[],xml:string[]}} categories
+   * @param {function} callback
+   */
   function load(categories, callback) {
-
     if (DEBUG) console.log(`${FILENAME}: Input: ${JSON.stringify(categories)}`);
 
     // TODO: probably doesn't work
@@ -185,7 +181,7 @@ const loader = (function () {
       }
       return;
     }
-    
+
     for (let i = 0, keys = Object.keys(categories); i < keys.length; i += 1) {
       const key = keys[i];
       if (!_catlu[key]) {
@@ -226,7 +222,7 @@ const loader = (function () {
 
     // Check if bundle is empty
     if (bundle.size === 0) {
-      if (DEBUG) console.log(`${FILENAME}: Bundle is empty.`)
+      if (DEBUG) console.log(`${FILENAME}: Bundle is empty.`);
       if (callback) callback(null);
       return;
     }
@@ -246,11 +242,11 @@ const loader = (function () {
 
       const urls = bundle.category[categoryName];
       const urlKeys = Object.keys(urls);
-      
+
       for (let i = 0; i < urlKeys.length; i += 1) {
         const handle = urlKeys[i];
         const url = urls[handle];
-        if (!processor[categoryName]) throw Error("CATEGORY NOT SUPPORTED: ", categoryName);
+        if (!processor[categoryName]) throw Error('CATEGORY NOT SUPPORTED: ', categoryName);
         processor[categoryName](handle, url, assetTick);
       }
     }
@@ -262,9 +258,11 @@ const loader = (function () {
 
   returnObject.load = load;
 
-  if (DEBUG) returnObject.debug = {
-    bundles
-  };
+  if (DEBUG) {
+    returnObject.debug = {
+      bundles,
+    };
+  }
 
   return returnObject;
 }());

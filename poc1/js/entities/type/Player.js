@@ -15,18 +15,23 @@ function Player(descriptor) {
 
   this._soundRunning = new Audio(g_url.running1);
   this._soundRunning.loop = true;
+
+
+  this.PIS = [1, 10, 2, 1, 12, 12, 96];
+  this.SHO = [2, 15, 1.5, 6, 8, 8, 40];
+  this.AK = [3, 20, 5, 2, 30, 30, 90];
 }
 
 // Inherit from Entity
 Player.prototype = new Entity();
 
-// Movements
 Player.prototype.KEY_UP = keyCode('W');
 Player.prototype.KEY_DOWN = keyCode('S');
 Player.prototype.KEY_LEFT = keyCode('A');
 Player.prototype.KEY_RIGHT = keyCode('D');
 
-// Weapon Keys
+Player.prototype.RELOAD = keyCode('R');
+
 Player.prototype.KNIFE = keyCode('0');
 Player.prototype.PISTOL = keyCode('1');
 Player.prototype.SHOTGUN = keyCode('2');
@@ -35,78 +40,25 @@ Player.prototype.MAGNUM = keyCode('4');
 Player.prototype.HEAVYMG = keyCode('5');
 Player.prototype.RAYGUN = keyCode('6');
 
-// Rendering properties
+
 Player.prototype.rotation = 0;
 Player.prototype.cx = 200;
 Player.prototype.cy = 200;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
-
-// Misc
-Player.prototype.RELOAD = keyCode('R');
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
-Player.prototype.health = 100;
+// Pistol (1) is default
 Player.prototype.useWeapon = 1;
+// Knife, Pistol, Shotgun, Rifle,
+// Sniper, HeavyMG, Raygun
+Player.prototype.weaponsSelection =
+  [true, true, true, false,
+    false, false, false];
 
-const armory = [];
+// Slot, Speed, FireRate (per. sec), Reload (in sec), Magazine Size, Ammo in Magazine, Total Ammo
 
-const knife = {
-  name: 'knife',
-  has: true,
-  weapon: 0,
-  damage: 150,
-  bulletSpeed: Infinity,
-  fireRate: 5,
-  reloadTime: 0,
-  ammo: Infinity,
-  magazineSize: Infinity,
-  magazineAmmo: Infinity,
-};
-
-const pistol = {
-  name: 'pistol',
-  has: true,
-  weapon: 1,
-  damage: 24,
-  bulletSpeed: 5,
-  fireRate: 60,
-  reloadTime: 1,
-  ammo: 96,
-  magazineSize: 12,
-  magazineAmmo: 12,
-};
-
-const shotgun = {
-  name: 'shotgun',
-  has: true,
-  weapon: 2,
-  damage: 9,
-  bulletSpeed: 5,
-  fireRate: 100,
-  reloadTime: 4,
-  ammo: 40,
-  magazineSize: 8,
-  magazineAmmo: 8,
-};
-
-const rifle = {
-  name: 'rifle',
-  has: true,
-  weapon: 3,
-  damage: 86,
-  bulletSpeed: 5,
-  fireRate: 20,
-  reloadTime: 2,
-  ammo: 90,
-  magazineSize: 30,
-  magazineAmmo: 30,
-};
-
-armory.push(knife);
-armory.push(pistol);
-armory.push(shotgun);
-armory.push(rifle);
+//  console.log(pistol);
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -167,37 +119,47 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
-  // NOTE: Svona (sirka) mun thetta vera i stad fullt af IF fyrir oll vopnin
-  // if (eatKey( i in weaponKeys )) {
-  //   if (armory[this.key].has) {
-  //      this.useWeapon = armory[this.key].weapon
-  //      this.bulletCooldown = armory[this.key].fireRate
-  //      }
-  //   }
 
-  if (eatKey(this.KNIFE) && armory[0].has) {
-    console.log('Knife selected!');
-    this.useWeapon = 0;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-  }
-
-  if (eatKey(this.PISTOL) && armory[1].has) {
+  if (eatKey(this.PISTOL) && this.weaponsBar[0]) {
     console.log('PISTOL selected!');
-    this.useWeapon = 1;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
+    console.log(entityManager.generateWeapon);
+    this.weaponSelected = entityManager.generateWeapon;
+
+
+    HUD.witchWeapon('handgun');
   }
 
-  if (eatKey(this.SHOTGUN) && armory[2].has) {
-    console.log('Shotgun selected!');
-    this.useWeapon = 2;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-  }
-
-  if (eatKey(this.RIFLE) && armory[3].has) {
+  if (eatKey(this.RIFLE) && this.weaponsSelection[2]) {
     console.log('AK selected!');
-    this.useWeapon = 3;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
+    this.weaponSelected = this.AK;
+
+    HUD.witchWeapon('rifle');
   }
+
+  if (eatKey(this.SHOTGUN) && this.weaponsSelection[3]) {
+    console.log('Shotgun selected!');
+
+    this.weaponSelected = 2;
+
+
+    HUD.witchWeapon('shotgun');
+  }
+
+  // if (g_keys[this.RIFLE]) {
+  //   this.weaponSelected = 3;
+  // }
+
+  // if (g_keys[this.MAGNUM]) {
+  //   this.weaponSelected = 4;
+  // }
+  //
+  // if (g_keys[this.HEAVYMG]) {
+  //   this.weaponSelected = 5;
+  // }
+  //
+  // if (g_keys[this.RAYGUN]) {
+  //   this.weaponSelected = 6;
+  // }
 
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
@@ -232,23 +194,22 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
-    if (armory[this.useWeapon].magazineAmmo > 0) {
-      console.log('Firing ' + armory[this.useWeapon].name);
-      this.fireBullet();
-    } else {
-      console.log('Reload ' + armory[this.useWeapon].name);
-    }
+    this.fireBullet();
   }
 
   if (eatKey(this.RELOAD)) {
     this.reloadWeapon();
   }
+  // COLLISION CHECKING
+
+  //
+
 
   const oldX = this.cx;
   const oldY = this.cy;
 
-  let newX = this.cx + du * this.velX;
-  let newY = this.cy + du * this.velY;
+  const newX = this.cx + du * this.velX;
+  const newY = this.cy + du * this.velY;
 
   this.cx = newX;
   this.cy = newY;
@@ -261,6 +222,7 @@ Player.prototype.update = function (du) {
     }
 
     let flags = spatialManager.register(this);
+    // console.log(flags);
 
 
     // Wall crap
@@ -314,24 +276,23 @@ Player.prototype.getRadius = function () {
 };
 
 Player.prototype.reloadWeapon = function () {
-  if (armory[this.useWeapon].ammo >= armory[this.useWeapon].magazineSize) {
-    armory[this.useWeapon].magazineAmmo = armory[this.useWeapon].magazineSize;
-    armory[this.useWeapon].ammo -= armory[this.useWeapon].magazineSize;
-  } else {
-    armory[this.useWeapon].magazineAmmo = armory[this.useWeapon].ammo;
-    armory[this.useWeapon].ammo -= armory[this.useWeapon].ammo;
-  }
+  this.PIS[5] = this.PIS[4];
+  this.PIS[6] -= this.PIS[4];
 };
 
 // TODO: maybe we wan't different bullets?
 Player.prototype.fireBullet = function () {
   if (!g_mouse.isDown) return;
+  if (this.PIS[5] === 0) {
+    console.log('RELOAD');
+    return;
+  }
+  this.PIS[5] -= 1;
   if (this.bulletCooldown > 0) return;
 
   // TODO: bind in JSON how long each bullet lives
   // until it fades away.
   this.bulletCooldown += 0.1 * SECS_TO_NOMINALS;
-  console.log(this.bulletCooldown);
 
   const angle = Math.PI / 2 + this.rotation;
 
@@ -342,7 +303,7 @@ Player.prototype.fireBullet = function () {
 
   const relVel = Math.max(this.velX, this.velY);
 
-  const speed = armory[this.useWeapon].bulletSpeed;
+  const speed = 15;
 
   const red = 0.01;
 
