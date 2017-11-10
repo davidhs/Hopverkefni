@@ -14,10 +14,12 @@ const mapHandler = (function () {
   // ================
 
   function getManifest(callback) {
-    loader.load({json: {manifest: 'json/manifest.json'}}, 
-    (response) => {
-      callback(response.json.manifest);
-    });
+    loader.load(
+      { json: { manifest: 'json/manifest.json' } },
+      (response) => {
+        callback(response.json.manifest);
+      },
+    );
   }
 
   function getItem(master, path) {
@@ -32,12 +34,11 @@ const mapHandler = (function () {
 
   function getMap(mapName, callback) {
     getManifest((manifest) => {
-      
       const prefix = '' || manifest.prefix;
       const path = prefix + manifest.maps[mapName].path;
 
       if (!(path && prefix)) callback(null);
-      
+
       loader.load({json: {map: path}}, (response) => {
         callback(response.json.map);
       });
