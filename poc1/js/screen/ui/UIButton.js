@@ -1,87 +1,85 @@
 
 function UIButton(text) {
-    this.setup(this);
+  this.setup(this);
 
-    this.name = name;
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
 
-    this._canvas = canvas;
-    this._ctx = ctx;
-    
-    this._text = text ? text : '';
-    this._fontSize = 40;
-    this._fontType = 'Arial';
-};
+  this._canvas = canvas;
+  this._ctx = ctx;
 
-//UIButton.prototype = new UIElement();
+  this._text = text || '';
+  this._fontSize = 40;
+  this._fontType = 'Arial';
+}
+
+// UIButton.prototype = new UIElement();
 
 UIButton.prototype = Object.create(UIElement.prototype);
 
-UIButton.prototype.borderColor = "#666";
-UIButton.prototype.foregroundColor = "#111";
-UIButton.prototype.backgroundColor = "#ddd";
+UIButton.prototype.borderColor = '#666';
+UIButton.prototype.foregroundColor = '#111';
+UIButton.prototype.backgroundColor = '#ddd';
 
 
-UIButton.prototype.verticalAlignment = "center";
-UIButton.prototype.horizontalAlignment = "center";
+UIButton.prototype.verticalAlignment = 'center';
+UIButton.prototype.horizontalAlignment = 'center';
 
 UIButton.prototype.update = function () {
+  const w = this.getWidth();
+  const h = this.getHeight();
 
-    const w = this.getWidth();
-    const h = this.getHeight();
+  const canvas = this._canvas;
 
-    const canvas = this._canvas;
+  canvas.width = w;
+  canvas.height = h;
 
-    canvas.width = w;
-    canvas.height = h;
+  const ctx = this._ctx;
 
-    const ctx = this._ctx;
-
-    // Alias
-    const text = this._text;
-
-
-    // Measure text
-    const fontStyle = this._fontSize + "px " + this._fontType;
-
-    const tw = this.getTextWidth(fontStyle, text);
-    const res = this.getFontHeight(fontStyle);
-
-    const th = this._fontSize;
-    
-    const topPadding = res.top;
-    const bottomPadding = res.bottom - th;
-
-    const rectW = tw;
-    const rectH = th + bottomPadding;
-
-    const padX = (w - rectW) / 2;
-    const padY = (h - rectH) / 2;
+  // Alias
+  const text = this._text;
 
 
-    const aX = padX;
-    const aY = padY;
-    const aW = rectW;
-    const aH = rectH;
+  // Measure text
+  const fontStyle = `${this._fontSize}px ${this._fontType}`;
 
-    //ctx.textBaseline = 'top';
-    ctx.fillStyle = this.backgroundColor;
-    ctx.strokeStyle = this.borderColor;
-    ctx.fillRect(aX, aY, aW, aH);
-    ctx.rect(aX, aY, aW, aH);
-    ctx.stroke();
-    
-    ctx.fillStyle = this.foregroundColor;
-    ctx.fillText(text, aX, aY + th - topPadding);
-}
+  const tw = this.getTextWidth(fontStyle, text);
+  const res = this.getFontHeight(fontStyle);
+
+  const th = this._fontSize;
+
+  const topPadding = res.top;
+  const bottomPadding = res.bottom - th;
+
+  const rectW = tw;
+  const rectH = th + bottomPadding;
+
+  const padX = (w - rectW) / 2;
+  const padY = (h - rectH) / 2;
+
+
+  const aX = padX;
+  const aY = padY;
+  const aW = rectW;
+  const aH = rectH;
+
+  // ctx.textBaseline = 'top';
+  ctx.fillStyle = this.backgroundColor;
+  ctx.strokeStyle = this.borderColor;
+  ctx.fillRect(aX, aY, aW, aH);
+  ctx.rect(aX, aY, aW, aH);
+  ctx.stroke();
+
+  ctx.fillStyle = this.foregroundColor;
+  ctx.fillText(text, aX, aY + th - topPadding);
+};
 
 UIButton.prototype.render = function (ctx) {
-    const x = this.getOuterX();
-    const y = this.getOuterY();
-    const w = this.getWidth();
-    const h = this.getHeight();
+  const x = this.getOuterX();
+  const y = this.getOuterY();
+  const w = this.getWidth();
+  const h = this.getHeight();
 
-    ctx.drawImage(this._canvas, x, y, w, h);
+  ctx.drawImage(this._canvas, x, y, w, h);
 };

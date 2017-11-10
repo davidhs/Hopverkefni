@@ -9,7 +9,7 @@
 
 function Weapon(
   name, damage, ammo, magazine, magazineAmmos,
-  reloadTime, bulletSpeed, fireRate, through, accuracy
+  reloadTime, bulletSpeed, fireRate, through, accuracy,
 ) {
   this.name = this.name;
   this.damage = this.damage;

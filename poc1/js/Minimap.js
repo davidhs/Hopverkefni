@@ -1,57 +1,34 @@
 const Minimap = (function () {
+  const cx = 0;
+  const cy = 0;
+
+  let width = 0;
+  let height = 0;
+
+  // position of player
+  const p_cx = 0;
+  const p_cy = 0;
 
 
-
-
-  var cx = 0;
-  var cy = 0;
-
-  var width = 0;
-  var height = 0;
-
-  //position of player
-  var p_cx = 0;
-  var p_cy = 0;
-
-
-
-
-  function drawMinimap(ctxr){
-  ctxr.beginPath();
-  ctxr.rect(cx,cy,width,height);
-  ctxr.fill();
-
-}
-
-
-
-
-
-
-
-
-
-
-  function update(du){
-    width = g_viewport.getIW()/4;
-    height = g_viewport.getIH()/4;
-
-
+  function drawMinimap(ctxr) {
+    ctxr.beginPath();
+    ctxr.rect(cx, cy, width, height);
+    ctxr.fill();
   }
 
-  function render(ctxr){
+
+  function update(du) {
+    width = g_viewport.getIW() / 4;
+    height = g_viewport.getIH() / 4;
+  }
+
+  function render(ctxr) {
     drawMinimap(ctxr);
-
-
   }
 
 
-
-
-  return{
+  return {
     update,
-    render
-  }
-
-
+    render,
+  };
 }());

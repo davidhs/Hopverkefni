@@ -2,15 +2,21 @@
 
 /* global  document :true */
 
-  const g_infobar = (function () {
+const g_infobar = (function () {
   const infobar = {};
 
-  var sx, sy, dx, dy;
-  var sWidth, sHeight, dWidth, dHeight;
+  let sx;
+  let sy;
+  let dx;
+  let dy;
+  let sWidth;
+  let sHeight;
+  let dWidth;
+  let dHeight;
 
-  infobar.sx = g_viewport.getX + g_viewport.getWidth/4;
+  infobar.sx = g_viewport.getX + g_viewport.getWidth / 4;
   infobar.sy = g_viewport.getY;
-  infobar.sWidth = g_viewport.getwidth/2;
+  infobar.sWidth = g_viewport.getwidth / 2;
   infobar.sHeight = 100;
 
 
@@ -19,13 +25,11 @@
   infobar.canvas.height = infobar.sHeight;
   infobar.ctx = infobar.canvas.getContext('2d');
   infobar.ctx.beginPath();
-  infobar.ctx.lineWidth="6";
-  infobar.ctx.strokeStyle="red";
-  infobar.ctx.rect(infobar.sx,infobar.sy,infobar.sWidth,infobar.sHeight);
+  infobar.ctx.lineWidth = '6';
+  infobar.ctx.strokeStyle = 'red';
+  infobar.ctx.rect(infobar.sx, infobar.sy, infobar.sWidth, infobar.sHeight);
   infobar.ctx.fill();
-  console.log("pepp");
-
-
+  console.log('pepp');
 
 
   infobar.getWidth = function () {
