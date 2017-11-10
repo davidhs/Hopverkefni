@@ -15,6 +15,11 @@ function Player(descriptor) {
 
   this._soundRunning = new Audio(g_url.running1);
   this._soundRunning.loop = true;
+
+
+  this.PIS = [1, 10, 2, 1, 12, 12, 96];
+  this.SHO = [2, 15, 1.5, 6, 8, 8, 40];
+  this.AK = [3, 20, 5, 2, 30, 30, 90];
 }
 
 // Inherit from Entity
@@ -52,9 +57,6 @@ Player.prototype.weaponsSelection =
     false, false, false];
 
 // Slot, Speed, FireRate (per. sec), Reload (in sec), Magazine Size, Ammo in Magazine, Total Ammo
-const PIS = [1, 10, 2, 1, 12, 12, 96];
-const SHO = [2, 15, 1.5, 6, 8, 8, 40];
-const AK = [3, 20, 5, 2, 30, 30, 90];
 
 //  console.log(pistol);
 
@@ -100,7 +102,6 @@ Player.prototype.update = function (du) {
   if (g_keys[this.KEY_UP]) {
     this.velY = Math.max(this.velY - this.acceleration * du, -this.maxSpeed);
     noVerAcc = false;
-
   }
 
   if (g_keys[this.KEY_DOWN]) {
@@ -126,7 +127,6 @@ Player.prototype.update = function (du) {
 
 
     HUD.witchWeapon('handgun');
-
   }
 
   if (eatKey(this.RIFLE) && this.weaponsSelection[2]) {
@@ -134,7 +134,6 @@ Player.prototype.update = function (du) {
     this.weaponSelected = this.AK;
 
     HUD.witchWeapon('rifle');
-
   }
 
   if (eatKey(this.SHOTGUN) && this.weaponsSelection[3]) {
@@ -143,9 +142,7 @@ Player.prototype.update = function (du) {
     this.weaponSelected = 2;
 
 
-
     HUD.witchWeapon('shotgun');
-
   }
 
   // if (g_keys[this.RIFLE]) {
