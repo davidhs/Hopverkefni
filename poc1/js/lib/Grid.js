@@ -206,7 +206,7 @@ Grid.prototype.carveShortestPath = function (sx, sy, dx, dy) {
     return false;
   }
 
-  console.log(sx, sy, dx, dy);
+  // console.log(sx, sy, dx, dy);
 
   if (sNode.stamp !== this._stamp) {
     this._openPQ._size = 0;

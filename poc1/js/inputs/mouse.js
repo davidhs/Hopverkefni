@@ -68,7 +68,7 @@ const g_mouse = (function () {
           mouse.cursorLock = false;
         }
       } else if (type === 'click') {
-        //console.log('Mouse Clicked!');
+        // console.log('Mouse Clicked!');
       } else {
         console.log(type, evt, obj);
       }

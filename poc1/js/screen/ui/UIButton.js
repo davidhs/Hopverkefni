@@ -1,6 +1,7 @@
+'use strict';
 
 function UIButton(text) {
-  this.setup(this);
+  this._setup(this);
 
 
   const canvas = document.createElement('canvas');
@@ -22,11 +23,10 @@ UIButton.prototype.borderColor = '#666';
 UIButton.prototype.foregroundColor = '#111';
 UIButton.prototype.backgroundColor = '#ddd';
 
-
 UIButton.prototype.verticalAlignment = 'center';
 UIButton.prototype.horizontalAlignment = 'center';
 
-UIButton.prototype.update = function () {
+UIButton.prototype._updateUI = function () {
   const w = this.getWidth();
   const h = this.getHeight();
 
@@ -44,8 +44,8 @@ UIButton.prototype.update = function () {
   // Measure text
   const fontStyle = `${this._fontSize}px ${this._fontType}`;
 
-  const tw = this.getTextWidth(fontStyle, text);
-  const res = this.getFontHeight(fontStyle);
+  const tw = this._getTextWidth(fontStyle, text);
+  const res = this._getFontHeight(fontStyle);
 
   const th = this._fontSize;
 
@@ -72,6 +72,7 @@ UIButton.prototype.update = function () {
   ctx.stroke();
 
   ctx.fillStyle = this.foregroundColor;
+  ctx.font = fontStyle;
   ctx.fillText(text, aX, aY + th - topPadding);
 };
 

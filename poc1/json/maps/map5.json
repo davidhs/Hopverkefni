@@ -12,10 +12,6 @@
             "height": 32
         },
         "shadowSize": 256,
-        "viewport": {
-            "width": 800,
-            "height": 600
-        },
         "muted": true
     },
 
