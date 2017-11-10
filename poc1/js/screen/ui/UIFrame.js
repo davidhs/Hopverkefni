@@ -1,9 +1,21 @@
+'use strict';
 
-
-function UIFrame(canvas) {
-  this.setup(this);
+function UIFrame(obj) {
+  this._setup(this);
   this.setPosition(0, 0);
-  this.setDimensions(canvas.width, canvas.height);
+
+  let w = 0;
+  let h = 0;
+
+
+
+  if (obj && obj.width && obj.height) {
+    w = obj.width;
+    h = obj.height;
+  }
+  
+  this._setRequestedDimensions(w, h);
+  this._setProvidedDimensions(w, h);
 
   this._cards = [];
 }
@@ -46,7 +58,7 @@ UIFrame.prototype.addChild = function (child, cardID) {
     this._cards[cardID] = child;
   }
 
-  this.update();
+  this._updateUI();
 };
 
 

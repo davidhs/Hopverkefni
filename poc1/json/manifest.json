@@ -1,6 +1,12 @@
 {
     "type": "manifest",
     "prefix": "json/maps/",
+    "cfg": {
+        "screen": {
+            "width": 640,
+            "height": 480
+        }
+    },
     "maps": {
         "map1": {
             "name": "Debug map 1",
