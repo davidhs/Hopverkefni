@@ -2,7 +2,7 @@
 
 
 /**
- * 
+ *
  */
 function UIElement() {}
 
@@ -37,11 +37,10 @@ UIElement.prototype.layout = 'default';
 
 
 /**
- * 
- * @param {UIElement} obj 
+ *
+ * @param {UIElement} obj
  */
 UIElement.prototype._setup = function (obj) {
-  
   obj.name = '';
 
   obj._children = [];
@@ -71,13 +70,12 @@ UIElement.prototype._setup = function (obj) {
 
 
 /**
- * 
- * @param {string} fontStyle 
- * 
+ *
+ * @param {string} fontStyle
+ *
  * @returns {top: number, bottom: number}
  */
 UIElement.prototype._getFontHeight = function (fontStyle) {
-
   if (this._fontHeightCache[fontStyle]) {
     return this._fontHeightCache[fontStyle];
   }
@@ -113,7 +111,7 @@ UIElement.prototype._getFontHeight = function (fontStyle) {
     }
   }
 
-  const result = {top, bottom};
+  const result = { top, bottom };
 
   this._fontHeightCache[fontStyle] = result;
 
@@ -122,9 +120,9 @@ UIElement.prototype._getFontHeight = function (fontStyle) {
 
 
 /**
- * 
- * @param {string} fontStyle 
- * @param {string} text 
+ *
+ * @param {string} fontStyle
+ * @param {string} text
  */
 UIElement.prototype._getTextWidth = function (fontStyle, text) {
   const canvas = document.createElement('canvas');
@@ -136,7 +134,7 @@ UIElement.prototype._getTextWidth = function (fontStyle, text) {
 
 
 /**
- * 
+ *
  */
 UIElement.prototype._updateUI = function () {
   const children = this._children;
@@ -158,8 +156,8 @@ UIElement.prototype._updateUI = function () {
 
 
 /**
- * 
- * @param {string} name 
+ *
+ * @param {string} name
  */
 UIElement.prototype.setName = function (name) {
   this.name = name;
@@ -167,9 +165,9 @@ UIElement.prototype.setName = function (name) {
 
 
 /**
- * 
- * @param {string} type 
- * @param {function} callback 
+ *
+ * @param {string} type
+ * @param {function} callback
  */
 UIElement.prototype.addEventListener = function (type, callback) {
   const typeCallbacks = this.typeCallbacks;
@@ -183,8 +181,8 @@ UIElement.prototype.addEventListener = function (type, callback) {
 
 
 /**
- * 
- * @param {*} layout 
+ *
+ * @param {*} layout
  */
 UIElement.prototype.setLayout = function (layout) {
   this.layout = layout;
@@ -192,9 +190,9 @@ UIElement.prototype.setLayout = function (layout) {
 
 
 /**
- * 
- * @param {number} x 
- * @param {number} y 
+ *
+ * @param {number} x
+ * @param {number} y
  */
 UIElement.prototype.press = function (x, y) {
   const el = this.getElement(x, y);
@@ -214,8 +212,8 @@ UIElement.prototype.press = function (x, y) {
 
 
 /**
- * 
- * @param {UIElement} parent 
+ *
+ * @param {UIElement} parent
  */
 UIElement.prototype.setParent = function (parent) {
   // One can not be one's own parent
@@ -225,13 +223,10 @@ UIElement.prototype.setParent = function (parent) {
 };
 
 
-
-
-
 /**
- * 
- * @param {number} x 
- * @param {number} y 
+ *
+ * @param {number} x
+ * @param {number} y
  */
 UIElement.prototype.getElement = function (x, y) {
   if (this.inBounds(x, y)) {
@@ -263,9 +258,9 @@ UIElement.prototype.getElement = function (x, y) {
 
 
 /**
- * 
- * @param {*} x 
- * @param {*} y 
+ *
+ * @param {*} x
+ * @param {*} y
  */
 UIElement.prototype.inBounds = function (x, y) {
   const x1 = this.getOuterX();
@@ -295,8 +290,8 @@ UIElement.prototype.getRoot = function () {
 
 
 /**
- * 
- * @param {string} color 
+ *
+ * @param {string} color
  */
 UIElement.prototype.setBackgroundColor = function (color) {
   this.backgroundColor = color;
@@ -304,8 +299,8 @@ UIElement.prototype.setBackgroundColor = function (color) {
 
 
 /**
- * 
- * @param {string} color 
+ *
+ * @param {string} color
  */
 UIElement.prototype.setBackground = function (background) {
   this.background = background;
@@ -313,8 +308,8 @@ UIElement.prototype.setBackground = function (background) {
 
 
 /**
- * 
- * @param {UIElement} child 
+ *
+ * @param {UIElement} child
  */
 UIElement.prototype.addChild = function (child) {
   if (child === this) throw Error();
@@ -332,16 +327,15 @@ UIElement.prototype.addChild = function (child) {
 // ==========================
 
 /**
- * 
- * @param {number} width 
- * @param {number} height 
+ *
+ * @param {number} width
+ * @param {number} height
  */
 UIElement.prototype._setRequestedDimensions = function (width, height) {
   this._requestedWidth = width;
   this._requestedHeight = height;
 
   if (this.parent) {
-
     // Ask parent for space.
     this.parent._updateUI();
 
@@ -349,8 +343,6 @@ UIElement.prototype._setRequestedDimensions = function (width, height) {
     const ih = Math.min(this._requestedHeight, this._providedHeight);
 
     this._setIntersectedDimensions(iw, ih);
-
-
   } else {
     this._setProvidedDimensions(width, height);
     this._setIntersectedDimensions(width, height);
@@ -361,33 +353,33 @@ UIElement.prototype._setRequestedDimensions = function (width, height) {
 
 
 /**
- * 
- * @param {number} width 
- * @param {number} height 
+ *
+ * @param {number} width
+ * @param {number} height
  */
 UIElement.prototype._setProvidedDimensions = function (width, height) {
   this._providedWidth = width;
   this._providedHeight = height;
 
   const bad1 = this._requestedWidth === -1 || this._requestedHeight === -1;
-  const bad2 = isNaN(this._requestedWidth) || isNaN(this._requestedHeight);
+  const bad2 = Number.isNaN(this._requestedWidth) || Number.isNaN(this._requestedHeight);
   const bad3 = typeof this._requestedWidth === 'undefined' || typeof this._requestedHeight === 'undefined';
 
-  if (bad1 || bad2 || bad3) {
+  if (bad1 || bad2 || bad3) {
     this._requestedWidth = width;
     this._requestedHeight = height;
   }
-    
+
   const iw = Math.min(this._requestedWidth, this._providedWidth);
   const ih = Math.min(this._requestedHeight, this._providedHeight);
-  
+
   this._setIntersectedDimensions(iw, ih);
 };
 
 /**
- * 
- * @param {number} width 
- * @param {number} height 
+ *
+ * @param {number} width
+ * @param {number} height
  */
 UIElement.prototype._setIntersectedDimensions = function (width, height) {
   this._intersectedWidth = width;
@@ -405,8 +397,8 @@ UIElement.prototype.setDimensions = function (width, height) {
 };
 
 /**
- * 
- * @param {number} width 
+ *
+ * @param {number} width
  */
 UIElement.prototype.setWidth = function (width) {
   this._setRequestedDimensions(width, this.height);
@@ -415,8 +407,8 @@ UIElement.prototype.setWidth = function (width) {
 
 
 /**
- * 
- * @param {number} height 
+ *
+ * @param {number} height
  */
 UIElement.prototype.setHeight = function (height) {
   this._setRequestedDimensions(this.width, height);
@@ -424,9 +416,8 @@ UIElement.prototype.setHeight = function (height) {
 };
 
 
-
 /**
- * 
+ *
  */
 UIElement.prototype.getWidth = function () {
   return this._intersectedWidth;
@@ -445,9 +436,9 @@ UIElement.prototype.getHeight = function () {
 // ========
 
 /**
- * 
- * @param {*} x 
- * @param {*} y 
+ *
+ * @param {*} x
+ * @param {*} y
  */
 UIElement.prototype.setPosition = function (x, y) {
   this._x = x;
@@ -455,7 +446,7 @@ UIElement.prototype.setPosition = function (x, y) {
 };
 
 /**
- * 
+ *
  */
 UIElement.prototype.getInnerX = function () {
   return this._x;
@@ -463,7 +454,7 @@ UIElement.prototype.getInnerX = function () {
 
 
 /**
- * 
+ *
  */
 UIElement.prototype.getInnerY = function () {
   return this._y;
@@ -471,7 +462,7 @@ UIElement.prototype.getInnerY = function () {
 
 
 /**
- * 
+ *
  */
 UIElement.prototype.getOuterX = function () {
   let padX = this.parent ? this.parent.getOuterX() : 0;
@@ -481,7 +472,7 @@ UIElement.prototype.getOuterX = function () {
 
 
 /**
- * 
+ *
  */
 UIElement.prototype.getOuterY = function () {
   let padY = this.parent ? this.parent.getOuterY() : 0;
@@ -494,8 +485,8 @@ UIElement.prototype.getOuterY = function () {
 // =====================
 
 /**
- * 
- * @param {number} du 
+ *
+ * @param {number} du
  */
 UIElement.prototype.update = function (du) {
   this._updateChildren(du);
@@ -503,8 +494,8 @@ UIElement.prototype.update = function (du) {
 
 
 /**
- * 
- * @param {number} du 
+ *
+ * @param {number} du
  */
 UIElement.prototype._updateChildren = function (du) {
   for (let i = 0; i < this._children.length; i += 1) {
@@ -514,8 +505,8 @@ UIElement.prototype._updateChildren = function (du) {
 
 
 /**
- * 
- * @param {number} ctx 
+ *
+ * @param {number} ctx
  */
 UIElement.prototype.render = function (ctx) {
   this._renderChildren(ctx);
@@ -523,8 +514,8 @@ UIElement.prototype.render = function (ctx) {
 
 
 /**
- * 
- * @param {number} ctx 
+ *
+ * @param {number} ctx
  */
 UIElement.prototype._renderChildren = function (ctx) {
   for (let i = 0; i < this._children.length; i += 1) {

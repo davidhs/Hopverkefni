@@ -297,10 +297,10 @@ Player.prototype.update = function (du) {
 
   if (g_mouse.isDown) {
     if (armory[this.useWeapon].magazineAmmo > 0) {
-      console.log('Firing ' + armory[this.useWeapon].name);
+      console.log(`Firing ${armory[this.useWeapon].name}`);
       this.fireBullet();
     } else {
-      console.log('Reload ' + armory[this.useWeapon].name);
+      console.log(`Reload ${armory[this.useWeapon].name}`);
     }
   }
 
@@ -311,8 +311,8 @@ Player.prototype.update = function (du) {
   const oldX = this.cx;
   const oldY = this.cy;
 
-  let newX = this.cx + du * this.velX;
-  let newY = this.cy + du * this.velY;
+  const newX = this.cx + du * this.velX;
+  const newY = this.cy + du * this.velY;
 
   this.cx = newX;
   this.cy = newY;

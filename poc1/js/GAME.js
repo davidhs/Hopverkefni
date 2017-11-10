@@ -72,7 +72,6 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-
   const tx = spatialManager.toX(g_mouse.x);
   const ty = spatialManager.toY(g_mouse.y);
 
@@ -568,13 +567,12 @@ function startGame() {
       image: {
         background1: 'img/scifi_main_menu.jpg',
         background2: 'img/background2.jpg',
-      }
-    }, assets => {
+      },
+    }, (assets) => {
       startScreen.setBackground(assets.image.background1);
       mapSelectionScreen.setBackground(assets.image.background2);
       screenManager.render(ctx);
     });
-
   });
 }
 

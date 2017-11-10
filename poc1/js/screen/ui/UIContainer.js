@@ -10,7 +10,6 @@ UIContainer.prototype = Object.create(UIElement.prototype);
 
 
 UIContainer.prototype.render = function (ctx) {
-
   const oldfillStyle = ctx.fillStyle;
 
   const x = this.getOuterX();
@@ -25,7 +24,6 @@ UIContainer.prototype.render = function (ctx) {
   ctx.fillStyle = oldfillStyle;
 
   if (this.background) {
-
     // Stretch to fill screen
     ctx.drawImage(this.background, 0, 0, this.background.width, this.background.height, 0, 0, w, h);
   }

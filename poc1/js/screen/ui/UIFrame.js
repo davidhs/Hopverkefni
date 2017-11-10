@@ -8,12 +8,11 @@ function UIFrame(obj) {
   let h = 0;
 
 
-
   if (obj && obj.width && obj.height) {
     w = obj.width;
     h = obj.height;
   }
-  
+
   this._setRequestedDimensions(w, h);
   this._setProvidedDimensions(w, h);
 
