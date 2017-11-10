@@ -459,6 +459,8 @@ function setup(response) {
 // ==========
 
 function startGame() {
+
+  // Adding asset loader processors.
   assetLoader.addProcessor('texture', Texture);
   assetLoader.addProcessor('textureAtlas', TextureAtlas);
   assetLoader.addProcessor('sequence', Sequence);
@@ -467,9 +469,104 @@ function startGame() {
   assetLoader.addProcessor('tiledMap', TiledMap);
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
-  loader.load({ json: { init: 'json/init.json' } }, (response) => {
-    chosenMap = response.json.init.variables.chosenMap;
-    mapHandler.openMap(chosenMap, setup);
+  const canvases = document.getElementById('canvases');
+
+  const canvas = g_canvas;
+  
+      const screenManager = new UIFrame(canvas);
+
+      const mel = evt => {
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = evt.clientX - rect.left;
+        const y = evt.clientY - rect.top;
+
+        screenManager.press(x, y);
+    };
+  
+  
+      canvas.addEventListener('mousedown', mel);
+  
+      const ctx = canvas.getContext('2d');
+  
+      const startScreen = new UIContainer();
+  
+  
+      const list1 = new UIList();
+  
+      const button1 = new UIButton('Select Map');
+      const button2 = new UIButton('About');
+      const button3 = new UIButton('Exit');
+
+      button1.addEventListener('press', evt => {
+        screenManager.selectCard(1);
+        screenManager.render(ctx);
+      });
+  
+      list1.addChild(button1);
+      list1.addChild(button2);
+      list1.addChild(button3);
+  
+      startScreen.addChild(list1);
+  
+      const mapSelectionScreen = new UIContainer();
+      const list2 = new UIList();
+
+      const button7 = new UIButton('Back');
+
+      button7.addEventListener('press', evt => {
+        screenManager.selectCard(0);
+        screenManager.render(ctx);
+      });
+
+      list2.addChild(button7);
+  
+      mapSelectionScreen.addChild(list2);
+      
+      screenManager.setLayout('card');
+      screenManager.addChild(startScreen, 0);
+      screenManager.addChild(mapSelectionScreen, 1);
+      
+      screenManager.setBackgroundColor('#f0f0f0');
+      screenManager.selectCard(0);
+  
+      // Event handling
+  
+
+
+  
+      screenManager.render(ctx);
+
+
+  mapHandler.getManifest(response => {
+
+    const maps = response.maps;
+
+    console.log(maps);
+
+    for (let i = 0, keys = Object.keys(maps); i < keys.length; i += 1) {
+      
+      const mapKey = keys[i];
+
+      const mapThing = maps[mapKey];
+      console.log(mapThing);
+
+      const mapName = mapThing.name;
+      const path = mapThing.path;
+
+      console.log(path);
+      
+      const btn = new UIButton(mapName ? mapName : mapKey);
+
+      btn.addEventListener('press', evt => {
+        console.log(path + " selected!");
+        canvas.removeEventListener('mousedown', mel);
+        mapHandler.openMap(mapKey, setup);
+      });
+      list2.addChild(btn);
+    }
+
+    screenManager.render(ctx);
   });
 }
 
