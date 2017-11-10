@@ -97,7 +97,7 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
   }
 
   // TODO: this -1 is bound to Tiled app
-  let sidx = -1;
+  let sidx = 0;
   let sgid = -1;
 
   const map = this.map;
@@ -424,7 +424,8 @@ TiledMap.prototype.addObstructions = function () {
         const index = data2D[ty][tx];
 
         if (index !== 0) {
-          let sidx = -1;
+          let sidx = 0;
+          // let sidx = -1;
           let sgid = -1;
 
           for (let z = 0; z < map.tileset.length; z += 1) {
@@ -442,6 +443,8 @@ TiledMap.prototype.addObstructions = function () {
           }
 
           const tidx = index - sgid;
+
+          // console.log(this.tilesets, sidx);
 
           const tlut = this.tilesets[sidx].tlut;
 

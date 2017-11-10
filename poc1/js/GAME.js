@@ -336,6 +336,7 @@ function renderSimulation(ctx) {
 
 
 function setup(response) {
+  console.log('Setting up...');
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
@@ -434,8 +435,10 @@ function setup(response) {
     map.cfg.shadowSize ? map.cfg.shadowSize : 64,
   );
 
+
   // Experimental
   g_tm = g_asset.tiledMap.tm1;
+  console.log(g_asset);
 
   // --- Spatial Manager ---
 
@@ -537,18 +540,13 @@ function startGame() {
   mapHandler.getManifest((response) => {
     const maps = response.maps;
 
-    console.log(maps);
-
     for (let i = 0, keys = Object.keys(maps); i < keys.length; i += 1) {
       const mapKey = keys[i];
 
       const mapThing = maps[mapKey];
-      console.log(mapThing);
 
       const mapName = mapThing.name;
       const path = mapThing.path;
-
-      console.log(path);
 
       const btn = new UIButton(mapName || mapKey);
 
