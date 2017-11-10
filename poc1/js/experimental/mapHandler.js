@@ -38,7 +38,7 @@ const mapHandler = (function () {
 
       if (!(path && prefix)) callback(null);
 
-      loader.load({ json: { map: path } }, (response) => {
+      loader.load({json: {map: path}}, (response) => {
         callback(response.json.map);
       });
     });
