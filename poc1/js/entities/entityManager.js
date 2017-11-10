@@ -22,6 +22,7 @@ const entityManager = (function () {
   const _explosions = [];
   const _genericEnemiesOne = [];
   const _weapon = [];
+  const _items = [];
 
   const _categories = [
     _rocks,
@@ -30,6 +31,7 @@ const entityManager = (function () {
     _genericEnemiesOne,
     _explosions,
     _weapon,
+    _items,
   ];
 
   const _bShowRocks = true;
@@ -61,16 +63,19 @@ const entityManager = (function () {
     _players.push(new Player(descr));
   }
 
-  function generateWeapon(descr) {
-    _weapon.push(new Weapon(descr));
-    console.log(_weapon);
+  function generateItems(descr) {
+    _items.push(new Items(descr));
   }
+
+  // function generateWeapon(descr) {
+  //   _weapon.push(new Weapon(descr));
+  //   console.log(_weapon);
+  // }
 
   // TODO: bind in JSON which type explosion,
   // and explosion rate.
   function generateExplosion(descr) {
     descr.sequence = g_asset.sequence.explosion;
-
     _explosions.push(new AnimatedImage(descr));
   }
 
@@ -153,7 +158,7 @@ const entityManager = (function () {
     generateExplosion,
     generatePlayer,
     generateGenericEnemyOne,
-    generateWeapon,
+    generateItems,
     OK,
     KILL_ME_NOW,
 

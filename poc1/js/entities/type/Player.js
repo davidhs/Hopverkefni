@@ -50,6 +50,7 @@ Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
 // Pistol (1) is default
 Player.prototype.useWeapon = 1;
+<<<<<<< HEAD
 // Knife, Pistol, Shotgun, Rifle,
 // Sniper, HeavyMG, Raygun
 Player.prototype.weaponsSelection =
@@ -59,6 +60,131 @@ Player.prototype.weaponsSelection =
 // Slot, Speed, FireRate (per. sec), Reload (in sec), Magazine Size, Ammo in Magazine, Total Ammo
 
 //  console.log(pistol);
+=======
+Player.prototype.autoFire = false;
+
+const armory = [];
+
+const knife = {
+  name: 'knife',
+  auto: true,
+  has: true,
+  weapon: 0,
+  damage: 150,
+  accuracy: 1,
+  bulletSpeed: Infinity,
+  fireRate: 5,
+  reloadTime: 0,
+  through: 0,
+  ammo: Infinity,
+  magazineSize: Infinity,
+  magazineAmmo: Infinity,
+};
+
+const pistol = {
+  name: 'pistol',
+  auto: false,
+  has: true,
+  weapon: 1,
+  damage: 24,
+  accuracy: 0.8,
+  bulletSpeed: 5,
+  fireRate: 60,
+  reloadTime: 1,
+  through: 0,
+  ammo: 96,
+  magazineSize: 12,
+  magazineAmmo: 12,
+};
+
+const shotgun = {
+  name: 'shotgun',
+  auto: false,
+  has: true,
+  weapon: 2,
+  damage: 9,
+  accuracy: 0.1,
+  bulletSpeed: 5,
+  fireRate: 100,
+  reloadTime: 4,
+  through: 0,
+  ammo: 40,
+  magazineSize: 8,
+  magazineAmmo: 8,
+};
+
+const rifle = {
+  name: 'rifle',
+  auto: true,
+  has: true,
+  weapon: 3,
+  damage: 86,
+  accuracy: 0.9,
+  bulletSpeed: 5,
+  fireRate: 20,
+  reloadTime: 2,
+  through: 2,
+  ammo: 90,
+  magazineSize: 30,
+  magazineAmmo: 30,
+};
+
+const sniper = {
+  name: 'sniper',
+  auto: false,
+  has: false,
+  weapon: 4,
+  damage: 160,
+  accuracy: 1,
+  bulletSpeed: 100,
+  fireRate: 1,
+  reloadTime: 3,
+  through: 3,
+  ammo: 30,
+  magazineSize: 10,
+  magazineAmmo: 10,
+};
+
+const mg = {
+  name: 'mg',
+  auto: true,
+  has: false,
+  weapon: 5,
+  damage: 70,
+  accuracy: 0.8,
+  bulletSpeed: 50,
+  fireRate: 8,
+  reloadTime: 8,
+  through: 1,
+  ammo: 300,
+  magazineSize: 100,
+  magazineAmmo: 100,
+};
+
+const ray = {
+  name: 'ray',
+  auto: false,
+  has: false,
+  weapon: 6,
+  damage: 300,
+  accuracy: 1,
+  bulletSpeed: 100,
+  fireRate: 1,
+  reloadTime: 2,
+  through: 0,
+  ammo: 30,
+  magazineSize: 10,
+  magazineAmmo: 10,
+};
+
+armory.push(knife);
+armory.push(pistol);
+armory.push(shotgun);
+armory.push(rifle);
+armory.push(sniper);
+armory.push(mg);
+armory.push(ray);
+>>>>>>> daniel
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -269,6 +395,10 @@ Player.prototype.update = function (du) {
     }
     spatialManager.register(this);
   }
+};
+
+Player.prototype.getAmmoStatus = function () {
+  return armory[this.useWeapon].ammo;
 };
 
 Player.prototype.getRadius = function () {
