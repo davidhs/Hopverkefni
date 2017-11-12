@@ -250,14 +250,6 @@ const g_viewport = (function () {
     return c1 && c2;
   }
 
-  function inOuterSquareCircle(wcx, wcy, wr) {
-    return inOuterRectangleBounds(wcx - wr, wcy - wr, 2 * wr, 2 * wr);
-  }
-
-  function inOuterCircleBounds(wcx, wcy, wr) {
-    return inOuterSquareCircle(wcx, wcy, wr);
-  }
-
   function inOuterRectangleBounds(wx, wy, ww, wh) {
     const ax1 = getOX();
     const ax2 = getOX() + getOW();
@@ -277,11 +269,18 @@ const g_viewport = (function () {
     return c1 && c2;
   }
 
+  function inOuterSquareCircle(wcx, wcy, wr) {
+    return inOuterRectangleBounds(wcx - wr, wcy - wr, 2 * wr, 2 * wr);
+  }
+
+  function inOuterCircleBounds(wcx, wcy, wr) {
+    return inOuterSquareCircle(wcx, wcy, wr);
+  }
+
   function inInnerBoundsPoint(x, y, padX, padY) {
     const c1 = x >= innerX - padX && x <= innerX + innerWidth + padY;
     const c2 = y >= innerY - padX && y <= innerY + innerHeight + padY;
     return c1 && c2;
-
   }
 
   function stickToWorld(flag) {
@@ -326,7 +325,7 @@ const g_viewport = (function () {
     inOuterCircleBounds,
     inOuterRectangleBounds,
 
-    stickToWorld
+    stickToWorld,
   });
 
   return obj;

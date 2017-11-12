@@ -8,16 +8,17 @@
 
 // This code is rushed...
 const mapHandler = (function () {
-
   // ================
   // PUBLIC FUNCTIONS
   // ================
 
   function getManifest(callback) {
-    loader.load({json: {manifest: 'json/manifest.json'}}, 
-    (response) => {
-      callback(response.json.manifest);
-    });
+    loader.load(
+      { json: { manifest: 'json/manifest.json' } },
+      (response) => {
+        callback(response.json.manifest);
+      },
+    );
   }
 
   function getItem(master, path) {
@@ -32,25 +33,24 @@ const mapHandler = (function () {
 
   function getMap(mapName, callback) {
     getManifest((manifest) => {
-      
       const prefix = '' || manifest.prefix;
       const path = prefix + manifest.maps[mapName].path;
 
       if (!(path && prefix)) callback(null);
-      
-      loader.load({json: {map: path}}, (response) => {
+
+      loader.load({ json: { map: path } }, (response) => {
         callback(response.json.map);
       });
     });
   }
 
   function openMap(mapName, callback) {
-    getMap(mapName, map => {
+    getMap(mapName, (map) => {
       assetLoader.load(map.assets, (response) => {
         callback({
-          map: map,
+          map,
           assets: response.assets,
-          urls: response.urls
+          urls: response.urls,
         });
       });
     });

@@ -15,10 +15,13 @@ let g_url = {}; // URLs are eventually placed here.
 let g_asset = {}; // Assets are loaded here.
 
 // Which map to open.
-let chosenMap; // Defined in init.json
+let activeMap; // Defined in init.json
+let activeManifest;
 
 // Map information
 let g_master;
+
+const screenManager = new UIFrame();
 
 
 // Canvases (except g_canvas).
@@ -34,30 +37,20 @@ const g_shadows = document.createElement('canvas'); // Shadows
 const g_pre = document.createElement('canvas');
 
 
-
-//Alexander
-const g_radar = document.createElement('canvas'); //radar
+// Alexander
+const g_radar = document.createElement('canvas'); // radar
 const g_hudbar = document.createElement('canvas');
 
-document.getElementById('canvi').appendChild(g_occlusion);
-document.getElementById('canvi').appendChild(g_shadows);
-
-//document.getElementById('canvi').appendChild(g_occlusion);
-//document.getElementById('canvi').appendChild(g_shadows);
-
-
-
+// document.getElementById('canvi').appendChild(g_occlusion);
+// document.getElementById('canvi').appendChild(g_shadows);
 
 
 // TEMPORARY GLOBALS
 
 // Temporary stuff occlude walls.  TODO: remove me later
-let g_testWOM;
-const g_debugGAME = {};
+
+
 let g_tm;
-const g_debug = {};
-const g_debugCanvas = document.createElement('canvas');
-const DEBUG = false;
 
 // =============
 // GATHER INPUTS
@@ -79,10 +72,15 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+  const tx = spatialManager.toX(g_mouse.x);
+  const ty = spatialManager.toY(g_mouse.y);
+
+  spatialManager.carveShortestPath(tx, ty);
+
   // Update entities.
   entityManager.update(du);
 
-  //Alexander
+  // Alexander
   Minimap.update(du);
 
   HUD.update(du);
@@ -117,9 +115,9 @@ function renderSimulation(ctx) {
   const ctxp = g_pre.getContext('2d');
   const ctxt = g_top.getContext('2d');
 
-  //Alexander
-  const ctxr = g_radar.getContext('2d'); //radar
-  const ctxhb = g_hudbar.getContext('2d'); //HUDBAR
+  // Alexander
+  const ctxr = g_radar.getContext('2d'); // radar
+  const ctxhb = g_hudbar.getContext('2d'); // HUDBAR
 
 
   ctxb.imageSmoothingEnabled = false;
@@ -132,8 +130,6 @@ function renderSimulation(ctx) {
   ctxt.imageSmoothingEnabled = false;
   ctxr.imageSmoothingEnabled = false;
   ctxhb.imageSmoothingEnabled = false;
-
-
 
 
   // Width and height of rendering canvases.
@@ -153,9 +149,9 @@ function renderSimulation(ctx) {
   ctxp.clearRect(0, 0, w, h);
   ctxt.clearRect(0, 0, w, h);
 
-  //Alexander
-  ctxr.clearRect(0,0,w,h);
-  ctxhb.clearRect(0,0,w,h);
+  // Alexander
+  ctxr.clearRect(0, 0, w, h);
+  ctxhb.clearRect(0, 0, w, h);
 
 
   // === DRAWING TO VARIOUS CANVASES ===
@@ -185,10 +181,10 @@ function renderSimulation(ctx) {
 
   // Add entities to occlusion map.
   if (false) {
-  entityManager.render(ctxo, {
-    occlusion: true,
-  });
-}
+    entityManager.render(ctxo, {
+      occlusion: true,
+    });
+  }
 
   g_tm.renderMiddle(ctxo, {
     occlusion: true,
@@ -197,7 +193,7 @@ function renderSimulation(ctx) {
   // Add "walls" to occlusion map.  TODO: remove later.
   // ctxo.drawImage(g_testWOM, -g_viewport.getOX(), -g_viewport.getOY());
 
-  //Alexander
+  // Alexander
 
   // === RADAR ===
   Minimap.render(ctxr);
@@ -205,9 +201,6 @@ function renderSimulation(ctx) {
   // === HUDBAR ===
 
   HUD.render(ctxh);
-
-
-
 
 
   // === SHADOWS ===
@@ -224,24 +217,24 @@ function renderSimulation(ctx) {
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }, {
     x: 78,
     y: 317,
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }, {
     x: 570,
     y: 636,
     color: {
       r: 255,
       g: 255,
-      b: 255
-    }
+      b: 255,
+    },
   }];
 
   if (false) {
@@ -251,22 +244,21 @@ function renderSimulation(ctx) {
       color: {
         r: 100,
         g: 27,
-        b: 250
-      }
+        b: 250,
+      },
     });
   }
 
   for (let i = 0; i < lights.length; i += 1) {
     const light = lights[i];
     const x = g_viewport.mapO2IX(light.x);
-    const y =  g_viewport.mapO2IY(light.y);
+    const y = g_viewport.mapO2IY(light.y);
     const color = light.color;
     if (g_viewport.inInnerBoundsPoint(x, y, g_viewport.getIW() / 2, g_viewport.getIH() / 2)) {
-
       lighting.radialLight(ctxs, color, {
         occluder: g_occlusion,
-        x: x,
-        y: y
+        x,
+        y,
       });
     }
   }
@@ -281,11 +273,6 @@ function renderSimulation(ctx) {
   if (g_mouse.getImage()) {
     g_mouse.render(ctxh);
   }
-
-  // === DEBUG ===
-
-  // Draw debug stuff.
-  g_debugGAME.render(ctx);
 
   // === DRAW TO BACK-RENDERING CANVAS ===
 
@@ -311,9 +298,6 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_shadows, 0, 0, w, h);
 
 
-
-
-
   ctxp.globalCompositeOperation = 'source-over';
   ctxp.drawImage(g_top, 0, 0);
   ctxp.globalAlpha = 1.0;
@@ -325,33 +309,29 @@ function renderSimulation(ctx) {
   ctxp.globalAlpha = 1.0;
 
 
-
-
-
   // === DRAW TO RENDERING CANVAS ===
 
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(g_pre, 0, 0);
 
   /*
   ctx.fillstyle = "#000";
   ctx.fillRect(0,0,100,100);
-  ctx.drawImage(g_radar);*/
+  ctx.drawImage(g_radar); */
 
-  //HUD
+  // HUD
 /*  ctx.fillstyle = "#ffffff";
   ctx.fillRect(0, g_viewport.getIH() -100, g_viewport.getIW(), 200);
-  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100);*/
+  ctx.drawImage(g_hud, 0, g_viewport.getIH()-100); */
 
 
-
-
-  //util.fillCircle(ctx, pcx, pcy, 10);
+  // util.fillCircle(ctx, pcx, pcy, 10);
 }
 
 
 function setup(response) {
+  console.log('Setting up...');
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
@@ -368,16 +348,21 @@ function setup(response) {
   g_world.setTileWidth(map.cfg.tile.width);
   g_world.setTileHeight(map.cfg.tile.height);
 
+
+  const viewportWidth = activeManifest.cfg.screen.width;
+  const viewportHeight = activeManifest.cfg.screen.height;
+
   // Set "rendering" canvas.
-  g_canvas.width = map.cfg.viewport.width;
-  g_canvas.height = map.cfg.viewport.height;
+  g_canvas.width = viewportWidth;
+  g_canvas.height = viewportHeight;
+
 
   // Setting viewport
-  g_viewport.setIW(map.cfg.viewport.width);
-  g_viewport.setIH(map.cfg.viewport.height);
+  g_viewport.setIW(viewportWidth);
+  g_viewport.setIH(viewportHeight);
 
-  g_viewport.setOW(map.cfg.viewport.width);
-  g_viewport.setOH(map.cfg.viewport.height);
+  g_viewport.setOW(viewportWidth);
+  g_viewport.setOH(viewportHeight);
 
 
   // Store response in g_master.
@@ -407,9 +392,6 @@ function setup(response) {
 
   g_top.width = g_canvas.width;
   g_top.height = g_canvas.height;
-
-  // Init debug
-  g_debugGAME.init();
 
   // Init g_url.
   g_url = response.urls;
@@ -450,8 +432,10 @@ function setup(response) {
     map.cfg.shadowSize ? map.cfg.shadowSize : 64,
   );
 
+
   // Experimental
   g_tm = g_asset.tiledMap.tm1;
+  console.log(g_asset);
 
   // --- Spatial Manager ---
 
@@ -470,14 +454,12 @@ function setup(response) {
 }
 
 
-
 // ==========
 // START GAME
 // ==========
 
 function startGame() {
-
-
+  // Adding asset loader processors.
   assetLoader.addProcessor('texture', Texture);
   assetLoader.addProcessor('textureAtlas', TextureAtlas);
   assetLoader.addProcessor('sequence', Sequence);
@@ -486,15 +468,115 @@ function startGame() {
   assetLoader.addProcessor('tiledMap', TiledMap);
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
-  loader.load({ json: { init: 'json/init.json'} }, (response) => {
-    chosenMap = response.json.init.variables.chosenMap;
-    mapHandler.openMap(chosenMap, setup);
+  const canvas = g_canvas;
+
+  screenManager.setDimensions(640, 480);
+
+  g_canvas.width = screenManager.getWidth();
+  g_canvas.height = screenManager.getHeight();
+
+  const mel = (evt) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
+    const y = evt.clientY - rect.top;
+
+    screenManager.press(x, y);
+  };
+
+
+  canvas.addEventListener('mousedown', mel);
+
+  const ctx = canvas.getContext('2d');
+
+  const startScreen = new UIContainer();
+
+  const list1 = new UIList();
+
+  const button1 = new UIButton('Select Map');
+  const button2 = new UIButton('About');
+  const button3 = new UIButton('Exit');
+
+  button1.setWidth(300);
+
+  button1.addEventListener('press', (evt) => {
+    screenManager.selectCard(1);
+    screenManager.render(ctx);
+  });
+
+  list1.addChild(button1);
+  list1.addChild(button2);
+  list1.addChild(new UIBlank());
+  list1.addChild(button3);
+
+  startScreen.addChild(list1);
+
+  const mapSelectionScreen = new UIContainer();
+  const list2 = new UIList();
+
+  mapSelectionScreen.addChild(list2);
+
+  screenManager.setLayout('card');
+  screenManager.addChild(startScreen, 0);
+  screenManager.addChild(mapSelectionScreen, 1);
+
+  screenManager.setBackgroundColor('#f0f0f0');
+  screenManager.selectCard(0);
+
+  // Event handling
+
+  mapHandler.getManifest((manifest) => {
+    const maps = manifest.maps;
+
+    activeManifest = manifest;
+
+    const w = manifest.cfg.screen.width;
+    const h = manifest.cfg.screen.height;
+
+    g_canvas.width = w;
+    g_canvas.height = h;
+
+    screenManager.setDimensions(w, h);
+
+    for (let i = 0, keys = Object.keys(maps); i < keys.length; i += 1) {
+      const mapKey = keys[i];
+
+      const mapThing = maps[mapKey];
+
+      const mapName = mapThing.name;
+
+      const btn = new UIButton(mapName || mapKey);
+
+      // Except that I do want to create a bunch of functions!
+      btn.addEventListener('press', (evt) => {
+        canvas.removeEventListener('mousedown', mel);
+        mapHandler.openMap(mapKey, setup);
+      });
+      list2.addChild(btn);
+    }
+
+    const button7 = new UIButton('Back');
+    list2.addChild(new UIBlank());
+    list2.addChild(button7);
+    button7.addEventListener('press', (evt) => {
+      screenManager.selectCard(0);
+      screenManager.render(ctx);
+    });
+
+
+    loader.load({
+      image: {
+        background1: 'img/scifi_main_menu.jpg',
+        background2: 'img/background2.jpg',
+      },
+    }, (assets) => {
+      startScreen.setBackground(assets.image.background1);
+      mapSelectionScreen.setBackground(assets.image.background2);
+      screenManager.render(ctx);
+    });
   });
 }
 
 startGame();
-
-
 
 
 // =========================
@@ -525,129 +607,4 @@ const fOcclusionMap = function (canvas) {
   }
 
   return util.forAllPixels(canvas, occluder);
-};
-
-
-
-g_debug.DEBUG_MODE = {
-  UNKNOWN1: 0,
-  UNKNOWN2: 1,
-  UNKNOWN3: 3,
-  ORIGINAL_OCCLUSION_MAP: 10,
-  PROJECTED_OCCLUSION_MAP: 11,
-  SHADOW_MAP: 12,
-  SHADOW_MASK: 13,
-};
-
-g_debug.selection = g_debug.PROJECTED_OCCLUSION_MAP;
-
-
-g_debugGAME.init = () => {};
-
-g_debugGAME.render = (ctx) => {
-  if (!DEBUG) return;
-
-  if (DEBUG) {
-    const _w = g_debugCanvas.width;
-    const _h = g_debugCanvas.height;
-
-    const dctx = g_debugCanvas.getContext('2d');
-    g_debugCanvas.width = g_canvas.width;
-    g_debugCanvas.height = g_canvas.height;
-    dctx.fillStyle = '#f00';
-    dctx.fillRect(0, 0, _w, _h);
-
-    if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN1) {
-      dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(g_background, 0, 0);
-
-
-      dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(g_shadows, 0, 0);
-
-      dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(g_midground, 0, 0);
-      dctx.drawImage(g_foreground, 0, 0);
-    }
-
-    if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN2) {
-      // Only look at shadow mask
-      const shadowMask = shadows.getShadowMask(cfg);
-      dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(shadowMask, 0, 0, g_debugCanvas.width, g_debugCanvas.height);
-    }
-
-
-    if (g_debug.selection === g_debug.DEBUG_MODE.UNKNOWN3) {
-      dctx.globalAlpha = 1.0;
-      dctx.globalCompositeOperation = 'source-over';
-      dctx.drawImage(g_shadows, 0, 0);
-    }
-
-    // Look at original occlusion map.
-    if (g_debug.selection === g_debug.DEBUG_MODE.ORIGINAL_OCCLUSION_MAP) {
-      dctx.globalAlpha = 1.0;
-
-      g_debugCanvas.width = shadows.debug.original.canvas.width;
-      g_debugCanvas.height = shadows.debug.original.canvas.height;
-
-      dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
-
-      dctx.drawImage(shadows.debug.original.canvas, 0, 0);
-    }
-
-    // Look at projected occlusion map.
-    if (g_debug.selection === g_debug.DEBUG_MODE.PROJECTED_OCCLUSION_MAP) {
-      dctx.globalAlpha = 1.0;
-
-      g_debugCanvas.width = shadows.debug.projected.canvas.width;
-      g_debugCanvas.height = shadows.debug.projected.canvas.height;
-
-
-      dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
-
-      dctx.drawImage(shadows.debug.projected.canvas, 0, 0);
-    }
-
-    // Look at shadow map
-    if (g_debug.selection === g_debug.DEBUG_MODE.SHADOW_MAP) {
-      dctx.globalAlpha = 1.0;
-
-      g_debugCanvas.width = shadows.debug.shadowMap.canvas.width;
-      g_debugCanvas.height = shadows.debug.shadowMap.canvas.height;
-
-
-      dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
-
-      dctx.drawImage(shadows.debug.shadowMap.canvas, 0, 0);
-    }
-
-    // Look at shadow mask
-    if (g_debug.selection === g_debug.DEBUG_MODE.SHADOW_MASK) {
-      dctx.globalAlpha = 1.0;
-
-      g_debugCanvas.width = shadows.debug.shadowMask.canvas.width;
-      g_debugCanvas.height = shadows.debug.shadowMask.canvas.height;
-
-      dctx.fillStyle = '#00f';
-      dctx.fillRect(0, 0, g_debugCanvas.width, g_debugCanvas.height);
-
-      dctx.drawImage(shadows.debug.shadowMask.canvas, 0, 0);
-    }
-
-    if (g_debug.selection === 15) {
-      const sx = 0;
-      const sy = 0;
-      const sw = g_testWOM.width;
-      const sh = g_testWOM.height;
-      const dx = 0;
-      const dy = 0;
-      const dw = dctx.canvas.width;
-      const dh = dctx.canvas.height;
-      dctx.drawImage(g_testWOM, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-  }
 };

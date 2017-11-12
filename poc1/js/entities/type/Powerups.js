@@ -15,7 +15,6 @@ function Powerups(descr) {
 Powerups.prototype = new Entity();
 
 
-
 Powerups.prototype.update = function (du) {
   spatialManager.unregister(this);
 

@@ -9,6 +9,10 @@
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+//
+// Register
+//
+
 
 /**
  * Spatial manager
@@ -25,64 +29,72 @@
  * for spatial lookup.  It only indicates potential collisions.  It's
  * up to the entities themselves to resolve the collisions themselves.
  */
-const spatialManagerOld = (function () {
+const spatialManager = (function () {
   // PRIVATE DATA
 
   // SPATIAL ID TYPES
   const NO_CONFLICT = 0;
-  const OUT_OF_BOUNDS = 1;
-  const WALL_ID = 2;
+  const POTENTIAL_CONFLICT = 1;
+  const OUT_OF_BOUNDS = 2;
+  const WALL_ID = 3;
 
   // Lorem ipsum.
-  const MIN_ENTITY = 10;
+  const MIN_ENTITY = 30;
   const entities = [];
 
+  let prevX = -1;
+  let prevY = -1;
+
   // Tiles (grid)
-  const tiles = [];
+  // Grid should also contain path
+  // finding info.
+  // const tiles = [];
+  const tiles = new Grid();
+
+  // TODO: tile size should match
   const tileSize = 32;
 
   let nextSpatialID = MIN_ENTITY; // make all valid IDs non-falsey (i.e. don't start at 0)
 
   // PRIVATE METHODS
 
-  function _registerCheck(id, x, y) {
-    if (x < 0 || y < 0) return OUT_OF_BOUNDS;
 
-    if (!tiles[y]) return NO_CONFLICT;
+  // Gets column (x-coordinate) of grid.
+  function _getX(x) {
+    return Math.max(Math.floor(x / tileSize), 0);
+  }
 
-    const targetID = tiles[y][x];
 
-    if (targetID && id !== targetID) return targetID;
-
-    return NO_CONFLICT;
+  // Gets row (y-coordinate) of grid.
+  function _getY(y) {
+    return Math.max(Math.floor(y / tileSize), 0);
   }
 
 
   /**
    * Returns `true' if tile is occupied with another ID,
-   * otherwiser returns `false'.
+   * otherwiser returns `false'.  Potential collision.
    *
    * @param {Number} id
    * @param {Number} x
    * @param {Number} y
    */
   function _registerTile(id, x, y) {
-    if (x < 0 || y < 0) return OUT_OF_BOUNDS;
+    if (x < 0 || x >= tiles.width) return OUT_OF_BOUNDS;
+    if (y < 0 || y >= tiles.height) return OUT_OF_BOUNDS;
 
-    if (!tiles[y]) tiles[y] = [];
 
-    const targetID = tiles[y][x];
+    const obj = tiles.get(x, y);
 
-    if (targetID) {
-      if (id !== targetID) {
-        return targetID;
-      }
-      tiles[y][x] = id;
-      return NO_CONFLICT;
+
+    const result = obj.ids.add(id);
+
+    if (result) {
+      obj.count += 1;
+      if (id === WALL_ID) obj.obstruction = true;
     }
 
-    tiles[y][x] = id;
-    return NO_CONFLICT;
+    return obj.count > 1 ? POTENTIAL_CONFLICT : NO_CONFLICT;
   }
 
 
@@ -95,70 +107,39 @@ const spatialManagerOld = (function () {
    * @param {Number} y
    */
   function _unregisterTile(id, x, y) {
-    if (!tiles[y]) return NO_CONFLICT;
+    if (x < 0 || x >= tiles.width) return;
+    if (y < 0 || y >= tiles.height) return;
 
-    const targetID = tiles[y][x];
+    const obj = tiles.get(x, y);
 
-    if (id === targetID) {
-      delete tiles[y][x];
-      return NO_CONFLICT;
+    const result = obj.ids.remove(id);
+
+    if (result) {
+      obj.count -= 1;
+    }
+  }
+
+  function _resolveConflict(id, x, y) {
+    const obj = tiles.get(x, y);
+
+    // const a = entities[id];
+
+    const l = obj.ids.getList();
+
+    for (let i = 0; i < obj.ids.getSize(); i += 1) {
+      const bid = parseInt(l[i], 10);
+
+      if (bid === id) continue;
+
+      if (bid === WALL_ID) {
+        return WALL_ID;
+      }
+
+      const be = entities[bid];
     }
 
-    return targetID;
+    return NO_CONFLICT;
   }
-
-  function _registerRectCheck(id, x1, y1, x2, y2) {
-    // Do precheck.
-
-    let tid;
-    const mx = Math.floor((x1 + x2) / 2);
-    const my = Math.floor((y1 + y2) / 2);
-
-    // Interior check
-    tid = _registerCheck(id, mx, my);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Corner check
-
-
-    // Check upper left corner.
-    tid = _registerCheck(id, x1, y1);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Check bottom right corner
-    tid = _registerCheck(id, x2, y2);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Check bottm left corner
-    tid = _registerCheck(id, x2, y2);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Check upper right corner
-    tid = _registerCheck(id, x2, y2);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-
-    // Side check
-
-    // Left side
-    tid = _registerCheck(id, x1, my);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Right side
-    tid = _registerCheck(id, x2, my);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Upper side
-    tid = _registerCheck(id, mx, y1);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    // Bottom side
-    tid = _registerCheck(id, mx, y2);
-    if (tid > MIN_ENTITY && tid !== id) return tid;
-
-    return id;
-  }
-
 
   /**
    * Returns `true' if tile is occupied with another ID,
@@ -173,35 +154,17 @@ const spatialManagerOld = (function () {
    * @param {Number} y2
    */
   function _registerRect(id, x1, y1, x2, y2) {
-    let minConflictID = Number.MAX_VALUE;
+    for (let y = y1; y <= y2; y += 1) {
+      for (let x = x1; x <= x2; x += 1) {
+        const result = _registerTile(id, x, y);
 
-    const precheckID = _registerRectCheck(id, x1, y1, x2, y2);
+        if (result === POTENTIAL_CONFLICT) {
+          const resStat = _resolveConflict(id, x, y);
 
-    if (id !== precheckID) return -precheckID;
-
-    // Horizontal "exterior" boundaries.
-    for (let x = x1; x <= x2; x += 1) {
-      // Upper boundary
-      minConflictID = Math.min(minConflictID, _registerTile(id, x, y1));
-      // Lower boundary
-      minConflictID = Math.min(minConflictID, _registerTile(id, x, y2));
-    }
-
-    // Vertical "exterious boundaries"
-    for (let y = y1 + 1; y <= (y2 - 1); y += 1) {
-      // Left boundary
-      minConflictID = Math.min(minConflictID, _registerTile(id, x1, y));
-      // Right boundary
-      minConflictID = Math.min(minConflictID, _registerTile(id, x2, y));
-    }
-
-    if (minConflictID) return minConflictID;
-
-    // Interior
-    for (let x = x1 + 1; x <= (x2 - 1); x += 1) {
-      for (let y = y1 + 1; y <= (y2 - 1); y += 1) {
-        const b = _registerTile(id, x, y);
-        if (b) return b;
+          if (resStat !== NO_CONFLICT) {
+            return resStat;
+          }
+        }
       }
     }
 
@@ -222,28 +185,11 @@ const spatialManagerOld = (function () {
    * @param {Number} y2
    */
   function _unregisterRect(id, x1, y1, x2, y2) {
-    let targetID = NO_CONFLICT;
     for (let x = x1; x <= x2; x += 1) {
       for (let y = y1; y <= y2; y += 1) {
-        const b = _unregisterTile(id, x, y);
-        if (b) {
-          targetID = b;
-        }
+        _unregisterTile(id, x, y);
       }
     }
-    return targetID;
-  }
-
-
-  // Gets column (x-coordinate) of grid.
-  function _getX(x) {
-    return Math.max(Math.floor(x / tileSize), 0);
-  }
-
-
-  // Gets row (y-coordinate) of grid.
-  function _getY(y) {
-    return Math.max(Math.floor(y / tileSize), 0);
   }
 
 
@@ -257,12 +203,31 @@ const spatialManagerOld = (function () {
     return id;
   }
 
+
   /**
    * If it fails to register this function will do proper cleanup.
    */
-  function register(entity) {
+
+  /**
+   * @param {Entity} entity
+   * @param {boolean} force if true don't unregister
+   */
+  function register(entity, force) {
     const pos = entity.getPos();
     const spatialID = entity.getSpatialID();
+
+
+    // CRAPPY PATH FINDING
+    if (true) {
+      const player = entityManager.getPlayer();
+      const sx = _getX(player.cx);
+      const sy = _getY(player.cy);
+      if (prevX !== sx || prevY !== sy) {
+        prevX = sx;
+        prevY = sy;
+        tiles.updateStamp();
+      }
+    }
 
     const cx = pos.posX;
     const cy = pos.posY;
@@ -274,10 +239,9 @@ const spatialManagerOld = (function () {
     const x2 = _getX(cx + radius);
     const y2 = _getY(cy + radius);
 
-    const flag = _registerRect(spatialID, x1, y1, x2, y2);
+    const result = _registerRect(spatialID, x1, y1, x2, y2);
 
-    // Cleanup
-    if (flag > 0 && flag) {
+    if (result !== NO_CONFLICT) {
       _unregisterRect(spatialID, x1, y1, x2, y2);
     } else {
       entities[spatialID] = {
@@ -288,11 +252,16 @@ const spatialManagerOld = (function () {
       };
     }
 
-    return flag;
+    return result;
   }
 
 
-  function unregister(entity) {
+  /**
+   *
+   * @param {Entity} entity
+   * @param {boolean} force if true don't unregiser on failure
+   */
+  function unregister(entity, force) {
     const pos = entity.getPos();
     const spatialID = entity.getSpatialID();
 
@@ -309,8 +278,6 @@ const spatialManagerOld = (function () {
     const flag = _unregisterRect(spatialID, x1, y1, x2, y2);
 
     delete entities[spatialID];
-
-    return flag;
   }
 
 
@@ -341,6 +308,8 @@ const spatialManagerOld = (function () {
     return entities[best_spatialID].entity;
   }
 
+  const firstTime = true;
+
 
   function render(ctx) {
     const oldStyle = ctx.strokeStyle;
@@ -348,26 +317,65 @@ const spatialManagerOld = (function () {
     const dx = g_viewport.getOX();
     const dy = g_viewport.getOY();
 
+    // NNEEDZ optimization
+
     // Render collision grid
-    for (let i = 0, keys = Object.keys(tiles); i < keys.length; i += 1) {
-      const rowNumber = keys[i];
-      for (let j = 0, keys2 = Object.keys(tiles[rowNumber]); j < keys2.length; j += 1) {
-        const colNumber = keys2[j];
-        const id = tiles[rowNumber][colNumber];
+    for (let ty = 0; ty < tiles.height; ty += 1) {
+      for (let tx = 0; tx < tiles.width; tx += 1) {
+        const obj = tiles.get(tx, ty);
+        const count = obj.count;
 
-        if (id >= 10) {
-          ctx.strokeStyle = 'violet';
-        } else {
-          ctx.strokeStyle = 'green';
-        }
-
-        const x = colNumber * tileSize;
-        const y = rowNumber * tileSize;
-
-        //  if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
+        const x = tx * tileSize;
+        const y = ty * tileSize;
 
         if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
-          util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
+          if (obj.parent) {
+            const mahx = obj.parent.x;
+            const mahy = obj.parent.y;
+            const x1 = x + tileSize / 2;
+            const y1 = y + tileSize / 2;
+            const x2 = x1 + tileSize * mahx / 2;
+            const y2 = y1 + tileSize * mahy / 2;
+            if (obj.stamp === tiles._stamp) {
+              ctx.strokeStyle = 'orange';
+            } else {
+              ctx.strokeStyle = 'blue';
+            }
+
+            if (prevX === tx && prevY === ty) {
+              ctx.strokeStyle = 'lime';
+            }
+            util.strokeCircle(ctx, x1 - dx, y1 - dy, 5);
+            ctx.beginPath();
+            ctx.moveTo(x1 - dx, y1 - dy);
+            ctx.lineTo(x2 - dx, y2 - dy);
+            ctx.stroke();
+          }
+        }
+
+
+        // Draw direction
+
+        if (count <= 0) continue;
+
+        const idsList = obj.ids.getList();
+
+        for (let k = 0; k < obj.ids.getSize(); k += 1) {
+          const id = idsList[k];
+
+
+          if (id >= MIN_ENTITY) {
+            ctx.strokeStyle = 'violet';
+          } else {
+            ctx.strokeStyle = 'green';
+          }
+
+
+          //  if (!g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) return;
+
+          if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
+            util.strokeRect(ctx, x - dx, y - dy, tileSize, tileSize);
+          }
         }
       }
     }
@@ -386,88 +394,10 @@ const spatialManagerOld = (function () {
     ctx.strokeStyle = oldStyle;
   }
 
-  function setBlockMap(bm) {
-    const canvas = document.createElement('canvas');
-    canvas.width = bm.width;
-    canvas.height = bm.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(bm, 0, 0);
-    const w = bm.width;
-    const h = bm.height;
 
-    const imageData = ctx.getImageData(0, 0, w, h);
-    const data = imageData.data;
-
-    let x = 0;
-    let y = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-
-      if (r !== 255 || g !== 255 || b !== 255) {
-        _registerTile(WALL_ID, _getX(x), _getY(y));
-      }
-
-      x += 1;
-
-      if (x >= w) {
-        x = 0;
-        y += 1;
-      }
-    }
-  }
-
-  function init() {
-    if (false) {
-      setBlockMap(g_asset.blockMap);
-    } else if (false) {
-      const canvas = document.createElement('canvas');
-      const w = g_world.getWidth();
-      const h = g_world.getHeight();
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgba(255, 255, 255, 255)';
-      util.fillBox(ctx, 0, 0, w, h);
-
-      ctx.fillStyle = 'rgba(0, 0, 0, 255)';
-      for (let i = 0; i < 100; i += 1) {
-        const bx = Math.random() * w;
-        const by = Math.random() * h;
-        const bw = Math.random() * 100;
-        const bh = Math.random() * 100;
-        util.fillBox(ctx, bx, by, bw, bh);
-      }
-      setBlockMap(canvas);
-    }
-  }
-
-  // FIXME: this is a hack!! Or, maybe...?
-  function getWallOcclusionMap() {
-    const canvas = document.createElement('canvas');
-    canvas.width = g_world.getWidth();
-    canvas.height = g_world.getHeight();
-    const ctx = canvas.getContext('2d');
-    util.clearCanvas(ctx);
-
-    for (let i = 0, keys = Object.keys(tiles); i < keys.length; i += 1) {
-      const rowNumber = keys[i];
-      for (let j = 0, keys2 = Object.keys(tiles[rowNumber]); j < keys2.length; j += 1) {
-        const colNumber = keys2[j];
-        const id = tiles[rowNumber][colNumber];
-
-        if (!(id > 0 && id < 10)) continue;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 255)';
-
-        const x = colNumber * tileSize;
-        const y = rowNumber * tileSize;
-
-        util.fillBox(ctx, x, y, tileSize, tileSize);
-      }
-    }
-
-    return canvas;
+  function init(width, height) {
+    tiles.init(width / tileSize, height / tileSize);
+    console.log(tiles);
   }
 
 
@@ -479,14 +409,25 @@ const spatialManagerOld = (function () {
     unregister,
     findEntityInRange,
     render,
-    getWallOcclusionMap,
-    debug() {
-      return {
-        tiles,
-        entities,
-      };
-    },
+    // getWallOcclusionMap,
     init,
     MIN_ENTITY,
+    getTileSize: () => tileSize,
+
+    toX: _getX,
+    toY: _getY,
+
+    carveShortestPath: (x, y) => {
+      // tiles.carveShortestPath(prevX, prevY, x, y);
+      tiles.carveShortestPath(prevX, prevY, x, y);
+    },
+
+    debug: {
+      _registerTile,
+      WALL_ID,
+      tiles,
+      _unregisterTile,
+    },
+    NO_CONFLICT,
   };
 })();

@@ -5,7 +5,6 @@
 
 // A MORE ADVANCE LOADER SPECIFIC TO THIS
 const assetLoader = (function () {
-
   const DEBUG = false;
   const VERBOSE = false;
   const FILENAME = 'assetLoader.js';
@@ -14,10 +13,13 @@ const assetLoader = (function () {
 
   const _types = [];
 
-  let groups = [];
+  const groups = [];
+
+  function getAsset(group, path) {
+    return group.assetCatalog[path];
+  }
 
   function generic(constructor) {
-
     function fg(group, bundleIndex) {
       // START OF PROLOGUE
       const bundles = group.bundles;
@@ -52,60 +54,7 @@ const assetLoader = (function () {
     return fg;
   }
 
-  function getAsset(group, path) {
-    return group.assetCatalog[path];
-  }
-
-
-  function doExit(group) {
-
-    const assets = group.returnAsset;
-    assets.raw = group.raw;
-    const callback = group.callback;
-    const urls = group.urls;
-
-    const retObject = {
-      assets, urls
-    };
-
-    // FINALIZE
-    callback(retObject);
-  }
-
-  let TICK_COUNT = 0;
-  const MAX_TICKS = 50;
-
-  function tick() {
-
-    for (let j = 0; j < groups.length; j += 1) {
-      processBundles(groups[j]);
-    }
-
-    let rerun = false;
-    for (let i = 0; i < groups.length; i += 1) {
-      const group = groups[i];
-      if (group.bundles.length > 0) {
-        rerun = true;
-      } else {
-        groups.splice(i, 1);
-        doExit(group);
-      }
-    }
-
-    if (rerun && TICK_COUNT++ < MAX_TICKS) {
-      tick();
-    }
-  }
-
-  function processBundles(group) {
-    const bundles = group.bundles;
-    for (let i = 0; i < bundles.length; i += 1) {
-      processBundle(group, i);
-    }
-  }
-
   function processBundle(group, bundleIndex) {
-
     const bundles = group.bundles;
     const completeDependencies = group.completeDependencies;
 
@@ -127,15 +76,62 @@ const assetLoader = (function () {
     const result = processor[bundle.type](group, bundleIndex);
   }
 
-  function processAssets(resp) {
+  function processBundles(group) {
+    const bundles = group.bundles;
+    for (let i = 0; i < bundles.length; i += 1) {
+      processBundle(group, i);
+    }
+  }
 
+  function doExit(group) {
+    const assets = group.returnAsset;
+    assets.raw = group.raw;
+    const callback = group.callback;
+    const urls = group.urls;
+
+    const retObject = {
+      assets, urls,
+    };
+
+    // FINALIZE
+    callback(retObject);
+  }
+
+  let TICK_COUNT = 0;
+  const MAX_TICKS = 50;
+
+  function tick() {
+    for (let j = 0; j < groups.length; j += 1) {
+      processBundles(groups[j]);
+    }
+
+    let rerun = false;
+    for (let i = 0; i < groups.length; i += 1) {
+      const group = groups[i];
+      if (group.bundles.length > 0) {
+        rerun = true;
+      } else {
+        groups.splice(i, 1);
+        doExit(group);
+      }
+    }
+
+    TICK_COUNT += 1;
+
+    if (rerun && TICK_COUNT < MAX_TICKS) {
+      tick();
+    }
+  }
+
+
+  function processAssets(resp) {
     const assets = resp.assetsRequest;
     const raw = resp.response;
 
     const bundles = [];
     const completeDependencies = {};
     const assetCatalog = {};
-    let count = 0;
+    const count = 0;
 
     const group = {
       bundles,
@@ -144,7 +140,7 @@ const assetLoader = (function () {
       returnAsset: {},
       urls: resp.urls,
       raw,
-      callback: resp.callback
+      callback: resp.callback,
     };
 
     // Categories
@@ -194,7 +190,6 @@ const assetLoader = (function () {
   // PUBLIC FUNCTIONS
 
   function load(assetsRequest, callback) {
-
     // PROCESSING RAW DATA
     const stuffToFetch = {};
     const urls = {};
@@ -209,7 +204,7 @@ const assetLoader = (function () {
       const typeList = raw[type];
       for (let j = 0; j < typeList.length; j += 1) {
         const prefix = typeList[j].prefix;
-        const paths = typeList[j].paths
+        const paths = typeList[j].paths;
         for (let k = 0, keys2 = Object.keys(paths); k < keys2.length; k += 1) {
           const handle = keys2[k];
           const path = paths[handle];
@@ -219,12 +214,11 @@ const assetLoader = (function () {
     }
 
     loader.load(stuffToFetch, (response) => {
-
       processAssets({
         response,
         urls: stuffToFetch,
         assetsRequest,
-        callback
+        callback,
       });
     });
   }
@@ -240,5 +234,4 @@ const assetLoader = (function () {
   returnObject.addProcessor = addProcessor;
 
   return returnObject;
-
 })();

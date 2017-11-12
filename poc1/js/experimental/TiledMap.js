@@ -1,7 +1,6 @@
-
+'use strict';
 
 function TiledMap(cfg) {
-
   const map = util.xml2json(cfg.map).map;
   const tilesets = cfg.tilesets;
 
@@ -35,10 +34,8 @@ function TiledMap(cfg) {
   this.isTopLayer = {};
 
   for (let i = 0; i < layers.length; i += 1) {
-
     const layer = layers[i];
     const name = this._getLayerName(layer);
-    
 
 
     // LAYER TYPE
@@ -94,22 +91,19 @@ TiledMap.prototype._render = function (ctx, data2D, textureAtlas) {
 };
 
 TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
-
-
-
   // BLANK?
   if (index === 0) {
     return;
   }
 
   // TODO: this -1 is bound to Tiled app
-  let sidx = -1;
-  let sgid = -1;
+  let sidx = 0;
+  let sgid = 1;
 
   const map = this.map;
 
-  for (let z = 0; z < map.tileset.length; z++) {
-    const gid = parseInt(map.tileset[z]["@attributes"].firstgid, 10);
+  for (let z = 0; z < map.tileset.length; z += 1) {
+    const gid = parseInt(map.tileset[z]['@attributes'].firstgid, 10);
     if (gid > index) {
       z = map.tileset.length;
     } else {
@@ -127,13 +121,11 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
   const textureAtlas = this.tilesets[sidx].textureAtlas;
   const tlut = this.tilesets[sidx].tlut;
 
-    if (cfg && cfg.occlusion) {
+  if (cfg && cfg.occlusion) {
+    const pkg = tlut[tidx];
 
-        const pkg = tlut[tidx];
-
-        if (pkg) {
-
-          /*
+    if (pkg) {
+      /*
             const oldFillStyle = ctx.fillStyle;
             ctx.fillStyle = "#000";
             ctx.fillRect(x, y, w, h);
@@ -141,12 +133,11 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
             ctx.fillStyle = oldFillStyle;
             */
 
-            textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
-        }
-
-    } else {
-        textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+      textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
     }
+  } else {
+    textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+  }
 };
 
 TiledMap.prototype._render = function (ctx, index, cfg) {
@@ -155,8 +146,6 @@ TiledMap.prototype._render = function (ctx, index, cfg) {
 
   const wx2 = g_viewport.getOX() + g_viewport.getOW();
   const wy2 = g_viewport.getOY() + g_viewport.getOH();
-
-
 
 
   const tileWidth = this.tileWidth;
@@ -178,21 +167,20 @@ TiledMap.prototype._render = function (ctx, index, cfg) {
   const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
   const data2D = this.data2Ds[index];
 
-      for (let ty = ty1, i = 0; ty <= ty2; ty += 1, i += 1) {
-        for (let tx = tx1, j = 0; tx <= tx2; tx += 1, j += 1) {
-          if (ty >= 0 && ty < this.heightInTiles && tx >= 0 && tx < this.widthInTiles) {
-            const x = -offx + j * tileWidth;
-            const y = -offy + i * tileHeight;
-            const w = tileWidth;
-            const h = tileHeight;
+  for (let ty = ty1, i = 0; ty <= ty2; ty += 1, i += 1) {
+    for (let tx = tx1, j = 0; tx <= tx2; tx += 1, j += 1) {
+      if (ty >= 0 && ty < this.heightInTiles && tx >= 0 && tx < this.widthInTiles) {
+        const x = -offx + j * tileWidth;
+        const y = -offy + i * tileHeight;
+        const w = tileWidth;
+        const h = tileHeight;
 
-            const index = data2D[ty][tx];
+        const index = data2D[ty][tx];
 
-            this._renderIndexTile(ctx, index, x, y, w, h, cfg);
-          }
-        }
+        this._renderIndexTile(ctx, index, x, y, w, h, cfg);
       }
-
+    }
+  }
 };
 
 TiledMap.prototype.renderBottom = function (ctx, cfg) {
@@ -215,7 +203,6 @@ TiledMap.prototype.renderMiddle = function (ctx, cfg) {
       this._render(ctx, i, cfg);
     }
   }
-
 };
 
 TiledMap.prototype.renderTop = function (ctx, cfg) {
@@ -227,7 +214,6 @@ TiledMap.prototype.renderTop = function (ctx, cfg) {
       this._render(ctx, i, cfg);
     }
   }
-
 };
 
 TiledMap.prototype.render = function (ctx, cfg) {
@@ -239,7 +225,6 @@ TiledMap.prototype.render = function (ctx, cfg) {
 // Ideally, only run this once.
 // Only run this once!
 TiledMap.prototype.addObstructions = function () {
-
   const map = this.map;
   const layers = Array.isArray(map.layer) ? map.layer : [map.layer];
 
@@ -324,7 +309,6 @@ TiledMap.prototype.addObstructions = function () {
           const percentage = count / total;
 
 
-
           if (tlut[tidx] && percentage > 0.25) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, sx, sy);
@@ -337,15 +321,15 @@ TiledMap.prototype.addObstructions = function () {
   }
   */
 
-  console.log("TRUE");
+  console.log('TRUE');
 
-  //if (true) return;
+  // if (true) return;
 
   // Spatial manager
   const spRows = Math.ceil(ww / tts); // rows
   const spCols = Math.ceil(wh / tts); // columns
 
-  let ITER = 0;
+  const ITER = 0;
 
   /*
   // Iterate through layers.
@@ -407,7 +391,6 @@ TiledMap.prototype.addObstructions = function () {
           const perY = paddingY + fy;
 
 
-
           const sample = ta.sample(tx, ty, perX, perY);
 
 
@@ -419,14 +402,13 @@ TiledMap.prototype.addObstructions = function () {
               // Sample texture atlas
 
 
-
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, smColIdx, smRowIdx);
             }
           }
         }
       }
     }
-  }*/
+  } */
 
 
   // Iterate through layers
@@ -436,18 +418,18 @@ TiledMap.prototype.addObstructions = function () {
     const data2D = this.data2Ds[i];
     for (let j = 0; j < this.heightInTiles; j += 1) {
       for (let k = 0; k < this.widthInTiles; k += 1) {
-
         const tx = k;
         const ty = j;
 
         const index = data2D[ty][tx];
 
         if (index !== 0) {
-          let sidx = -1;
-          let sgid = -1;
+          let sidx = 0;
+          // let sidx = -1;
+          let sgid = 1;
 
-          for (let z = 0; z < map.tileset.length; z++) {
-            const gid = parseInt(map.tileset[z]["@attributes"].firstgid, 10);
+          for (let z = 0; z < map.tileset.length; z += 1) {
+            const gid = parseInt(map.tileset[z]['@attributes'].firstgid, 10);
             if (gid > index) {
               z = map.tileset.length;
             } else {
@@ -462,6 +444,8 @@ TiledMap.prototype.addObstructions = function () {
 
           const tidx = index - sgid;
 
+          // console.log(this.tilesets, sidx);
+
           const tlut = this.tilesets[sidx].tlut;
 
 
@@ -470,12 +454,10 @@ TiledMap.prototype.addObstructions = function () {
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, tx, ty);
             }
           }
-
         }
       }
     }
   }
-
 };
 
 /*
