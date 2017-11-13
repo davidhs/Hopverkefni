@@ -231,7 +231,8 @@
                     "donkey": "notdonkey.png",
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
-                    "Hbackground": "HUD.png"
+                    "Hbackground": "HUD.png",
+                    "test": "Numbers/exists/one.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",
@@ -258,7 +259,14 @@
                 "handgun": "handgun.png",
                 "shotgun": "shotgun.png"
               }
-            }],
+            },{
+              "prefix": "img/spritesheets/numbers/",
+              "paths": {
+                "exists": "exists.png",
+                "notexists": "notexists.png",
+                "selected": "selected.png"
+              }
+              }],
             "audio": [{
                 "prefix": "audio/",
                 "paths": {
