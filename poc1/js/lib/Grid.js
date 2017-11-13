@@ -3,6 +3,7 @@
 function Grid(width, height) {
   this.init(width, height);
   this._counter = 0;
+  this._worker = new Worker('carver.js');
 }
 
 Grid.prototype.init = function (width, height) {
@@ -16,21 +17,16 @@ Grid.prototype.init = function (width, height) {
       const obj = {
         ids: new QuickList(),
         count: 0,
-        closed: false,
-        gScore: Number.POSITIVE_INFINITY,
-        fScore: Number.POSITIVE_INFINITY,
+        score: Number.POSITIVE_INFINITY,
         parent: { x: 0, y: 0 },
         stamp: 0,
+        x: j,
+        y: i
       };
       row.push(obj);
     }
     grid.push(row);
   }
-
-
-  const openPQ = new PriorityQueue();
-  this._openPQ = openPQ;
-
 
   this._grid = grid;
   this._stamp = 1;
@@ -170,6 +166,7 @@ Grid.prototype._hce = function (x1, y1, x2, y2) {
   return dist;
 };
 
+
 const TPL = [
   [-1, -1],
   [0, -1],
@@ -181,13 +178,24 @@ const TPL = [
   [-1, 0],
 ];
 
+/*
+const TPL = [
+  
+  [0, -1],
+  
+  [1, 0],
+  
+  [0, 1],
+  
+  [-1, 0],
+];*/
+
+
 // Source is player, d is monster
 // from source to destination
-Grid.prototype.carveShortestPath = function (sx, sy, dx, dy) {
+Grid.prototype.carveShortestPath = function (sx, sy) {
   if (sx < 0 || sx >= this.width) return false;
   if (sy < 0 || sy >= this.height) return false;
-  if (dx < 0 || dx >= this.width) return false;
-  if (dy < 0 || dy >= this.height) return false;
   // if (true) return;
 
   // n is the last node on the path.  g(n) is the cost
@@ -196,62 +204,61 @@ Grid.prototype.carveShortestPath = function (sx, sy, dx, dy) {
   // from n to the goal.
 
 
-  const dNode = this.get(dx, dy);
+  const currentStamp = this._stamp;
+
+
+  
   const sNode = this.get(sx, sy);
-  if (dNode.stamp === this._stamp) {
-    return true;
+
+  if (sNode.stamp === currentStamp) return;
+
+
+  const Q = new PriorityQueue({
+    check: false,
+    type: PriorityQueue.TYPE_MIN_PQ
+  });
+
+  // Add everyone to priority queue
+
+  let id = 0;
+
+  const w = this.width;
+  const h = this.height;
+
+  for (let y = 0; y < this.height; y += 1) {
+    for (let x = 0; x < this.width; x += 1) {
+      if (x === sx && y === sy) continue;
+      const node = this.get(x, y);
+      node.score = Number.POSITIVE_INFINITY;
+      Q.add(node.score, x + y * w);
+    }
   }
 
-  if (dNode.obstruction) {
-    return false;
-  }
+  sNode.score = 0;
+  sNode.parent.x = 0;
+  sNode.parent.y = 0;
+  sNode.stamp = this._stamp;
 
-  // console.log(sx, sy, dx, dy);
+  Q.add(sNode.score, sx + sy * w);
 
-  if (sNode.stamp !== this._stamp) {
-    this._openPQ._size = 0;
-
-    sNode.stamp = this._stamp;
-
-    sNode.gScore = 0;
-
-    sNode.parent.x = 0;
-    sNode.parent.y = 0;
-
-    this._counter += 1;
-
-    this._openPQ.enqueue(
-      this._counter,
-      { x: sx, y: sy },
-    );
-  }
-
-  const openPQ = this._openPQ;
-
-  while (!openPQ.isEmpty()) {
+  while (!Q.isEmpty()) {
     // key value, current
     // console.log(">> Before dequeueing: " + JSON.stringify(openPQ));
-    const current = openPQ.dequeue();
+    const idx = Q.remove();
 
-    const cx = current.x;
-    const cy = current.y;
+    const _x = idx % w;
+    const _y = (idx - _x) / w;
+
+    const cNode = this.get(_x, _y);
+
+    const cx = cNode.x;
+    const cy = cNode.y;
     // console.log(">> After dequeueing: " + JSON.stringify(openPQ));
     // console.log(">> Current node: ", JSON.stringify(c));
 
-    const cNode = this.get(cx, cy);
-
-
     cNode.closed = true;
-    cNode.stamp = this._stamp;
 
-    if (cx === dx && cy === dy) {
-      // console.log("-------------- DONE! --------------");
-      return true;
-    }
-
-    // if (this.get(dx, dy).stamp === this._stamp) return;
-
-
+    // Check neighbours
     for (let i = 0; i < TPL.length; i += 1) {
       const ox = TPL[i][0];
       const oy = TPL[i][1];
@@ -262,63 +269,30 @@ Grid.prototype.carveShortestPath = function (sx, sy, dx, dy) {
       if (nx < 0 || nx >= this.width) continue;
       if (ny < 0 || ny >= this.height) continue;
       if (nx === cx && ny === cy) continue;
+
       const nNode = this.get(nx, ny);
+
       if (nNode.obstruction) {
         nNode.closed = true;
         continue;
       }
 
 
-      if (nNode.stamp !== this._stamp) {
-        nNode.stamp = this._stamp;
-        nNode.closed = false;
-        nNode.gScore = Number.POSITIVE_INFINITY;
-        nNode.parent.x = 0;
-        nNode.parent.y = 0;
-      }
+      const dist = this._hce(cx, cy, nx, ny);
 
-      if (nNode.closed === true) continue;
+      const newScore = cNode.score + dist;
 
+      if (newScore >= nNode.score) continue;
 
-      const distanceCurrentNeighbour = this._hce(cx, cy, nx, ny);
-
-      const tentative_gScore = cNode.gScore + distanceCurrentNeighbour;
-
-      if (tentative_gScore >= nNode.gScore) continue;
-
-      nNode.gScore = tentative_gScore;
-
-
+      nNode.score = newScore;
+      
       nNode.parent.x = -ox;
       nNode.parent.y = -oy;
 
-      this._counter += 1;
-
-      openPQ.enqueue(
-        this._counter,
-        { x: nx, y: ny },
-      );
+      Q.changePriority(nx + ny * w, newScore);
     }
   }
 
 
   return false;
 };
-
-
-if (false) {
-  const grid = new Grid(100, 100);
-
-  const sx = Math.floor(Math.random() * grid.width);
-  const sy = Math.floor(Math.random() * grid.height);
-
-  const dx = Math.floor(Math.random() * grid.width);
-  const dy = Math.floor(Math.random() * grid.height);
-
-  grid.addNoise(0.25);
-
-  grid.carveShortestPath(sx, sy, dx, dy);
-
-
-  console.log(grid.shortestPathGridString(sx, sy, dx, dy));
-}

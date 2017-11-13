@@ -419,7 +419,7 @@ const spatialManager = (function () {
 
     carveShortestPath: (x, y) => {
       // tiles.carveShortestPath(prevX, prevY, x, y);
-      tiles.carveShortestPath(prevX, prevY, x, y);
+      tiles.carveShortestPath(prevX, prevY);
     },
 
     debug: {
