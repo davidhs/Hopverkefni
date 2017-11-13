@@ -86,6 +86,10 @@ PriorityQueue.prototype.enqueue = function (key, value) {
   }
 };
 
+PriorityQueue.prototype.push = function (key, value) {
+  this.enqueue(key, value);
+};
+
 /**
  * Returns the largest key
  */
@@ -111,6 +115,10 @@ PriorityQueue.prototype.dequeue = function (valueOnly) {
   }
   return valueOnly ? maxElement.value : valueOnly;
 };
+
+PriorityQueue.prototype.pop = function (valueOnly) {
+  return this.dequeue(valueOnly);
+}
 
 PriorityQueue.prototype.toString = function (k, p) {
   k = k || 1;
