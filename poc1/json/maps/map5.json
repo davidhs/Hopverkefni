@@ -259,7 +259,14 @@
                 "handgun": "handgun.png",
                 "shotgun": "shotgun.png"
               }
-            }],
+            },{
+              "prefix": "img/spritesheets/numbers/",
+              "paths": {
+                "exists": "exists.png",
+                "notexists": "notexists.png",
+                "selected": "selected.png"
+              }
+              }],
             "audio": [{
                 "prefix": "audio/",
                 "paths": {
