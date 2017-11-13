@@ -22,11 +22,17 @@ const HUD = (function () {
   let W_cy = 0;
 
 
-  // Keycodes
-  const KEY_KNIFE = keyCode('1');
-  const KEY_HANDGUN = keyCode('2');
-  const KEY_SHOTGUN = keyCode('3');
-  const KEY_RIFLE = keyCode('4');
+  // globals for Numbers
+  let n_sx = 0;
+  let n_sy = 0;
+  let n_sw = 0;
+  let n_sh = 0;
+  let n_dy = 0;
+  let n_dx = 0;
+  let n_dw = 0;
+  let n_dh = 0;
+
+
 
 
   // test key
@@ -38,6 +44,9 @@ const HUD = (function () {
   let isHandgun = true;
   let isShotgun = false;
   let isKnife = false;
+  let isSniper = false;
+  let isSmg = false;
+  let isRaygun = false;
 
 
   // create images
@@ -47,6 +56,12 @@ const HUD = (function () {
   let shotgun = new Image();
   let rifle = new Image();
   let handgun = new Image();
+  let sniper = new Image();
+  let smg = new Image();
+  let raygun = new Image();
+  let exists = new Image();
+  let notexists = new Image();
+  let selected = new Image();
 
 
   // =================
@@ -61,6 +76,9 @@ const HUD = (function () {
     isHandgun = false;
     isShotgun = false;
     isKnife = false;
+    isSniper = false;
+    isSmg = false;
+    isRaygun = false;
   }
 
   // witch weapon should appear on the screen, collected by
@@ -156,11 +174,80 @@ const HUD = (function () {
     }
   }
 
+
+  //messy but works, will probably change this to make it look better
+  function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh){
+    if(isHandgun){
+      ctx.drawImage(selected, sx, sy, sw, sh, dx,dy, dw, dh);
+    }
+    else{
+      ctx.drawImage(exists, sx, sy, sw, sh, dx,dy, dw, dh);
+    }
+    sx += sw;
+    dx += dw;
+
+
+
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
+
+    sx += sw;
+    dx += dw;
+
+    if(isRifle){
+      ctx.drawImage(selected, sx, sy, sw, sh, dx,dy, dw, dh);
+    }
+    else{
+      ctx.drawImage(exists, sx, sy, sw, sh, dx,dy, dw, dh);
+    }
+
+    sx += sw;
+    dx += dw;
+
+
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
+
+    sx += sw;
+    dx += dw;
+
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
+    sx += sw;
+    dx += dw;
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
+
+    sx += sw;
+    dx += dw;
+
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
+
+    sx += sw;
+    dx += dw;
+
+    if(isKnife){
+      ctx.drawImage(selected, sx, sy, sw, sh, dx,dy, dw, dh);
+    }
+    else{
+      ctx.drawImage(exists, sx, sy, sw, sh, dx,dy, dw, dh);
+    }
+
+
+
+
+
+  }
+
   // draw the hud bar
   function draw(ctx) {
     ctx.clearRect(H_cx, H_cy, H_width, H_height);
     ctx.beginPath();
     ctx.drawImage(background, H_cx, H_cy, H_width, H_height);
+
+
+
+
+
+
+
+
 
 
     // draw healthbar
@@ -171,7 +258,10 @@ const HUD = (function () {
 
 
     drawWeapon(ctx, W_cx, W_cy);
+
+    drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx,n_dy, n_dw, n_dh);
   }
+
 
 
   function update(du) {
@@ -194,9 +284,25 @@ const HUD = (function () {
     heightHP = 15;
 
     // update weapons
-    W_cx = (g_viewport.getIW() / 10) * 4;
+    W_cx = (g_viewport.getIW() / 2);
     W_cy = H_cy + 35;
+
+    // update Numbers
+    n_sx = 0;
+    n_sy = 0;
+    n_sw = exists.width/8;
+    n_sh = exists.height;
+    n_dx = H_cx + 220;
+    n_dy = H_cy;
+    n_dw = 30;
+    n_dh = 30;
+
+
+
+
   }
+
+
 
 
   function render(ctx) {
@@ -210,6 +316,10 @@ const HUD = (function () {
     shotgun = g_asset.raw.image.shotgun;
     rifle = g_asset.raw.image.rifle1;
     handgun = g_asset.raw.image.handgun;
+    exists = g_asset.raw.image.exists;
+    notexists = g_asset.raw.image.notexists;
+    selected = g_asset.raw.image.selected;
+
   }
 
 
