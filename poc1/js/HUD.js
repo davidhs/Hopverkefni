@@ -20,6 +20,7 @@ const HUD = (function () {
   // globals for weapons
   let W_cx = 0;
   let W_cy = 0;
+  let weapons = [];
 
 
   // globals for Numbers
@@ -170,7 +171,10 @@ const HUD = (function () {
 
     //
     if (isShotgun) {
-      console.log('shotgun');
+      const width = 120;
+      const height = 50;
+      ctx.beginPath();
+      ctx.drawImage(shotgun, x - 20, y, width, height);
     }
   }
 
@@ -186,10 +190,12 @@ const HUD = (function () {
     sx += sw;
     dx += dw;
 
-
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
-
+    if(isShotgun){
+      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+    else{
+      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
     sx += sw;
     dx += dw;
 
