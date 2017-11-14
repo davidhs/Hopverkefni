@@ -43,7 +43,6 @@ Player.prototype.autoFire = false;
 
 const armory = [];
 let selectedWeaponID = 1;
-let reloading = false;
 
 const knife = {
   name: 'knife',
@@ -69,7 +68,7 @@ const pistol = {
   damage: 24,
   accuracy: 0.8,
   bulletSpeed: 15,
-  fireRate: 60,
+  fireRate: 4,
   reloadTime: 60,
   through: 0,
   ammo: 96,
@@ -85,7 +84,7 @@ const shotgun = {
   damage: 9,
   accuracy: 0.1,
   bulletSpeed: 10,
-  fireRate: 100,
+  fireRate: 10,
   reloadTime: 180,
   through: 0,
   ammo: 40,
@@ -101,7 +100,7 @@ const rifle = {
   damage: 86,
   accuracy: 0.9,
   bulletSpeed: 20,
-  fireRate: 20,
+  fireRate: 3,
   reloadTime: 120,
   through: 2,
   ammo: 90,
@@ -278,10 +277,8 @@ Player.prototype.update = function (du) {
 
   if (g_mouse.isDown) {
     if (armory[selectedWeaponID].magazineAmmo > 0) {
-      if (armory[selectedWeaponID].auto) {
-        this.fireBullet();
-      } else {
-        this.fireBullet();
+      this.fireBullet();
+      if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
       }
     } else {
@@ -381,6 +378,7 @@ Player.prototype.reloadWeapon = function () {
 Player.prototype.fireBullet = function () {
   if (!g_mouse.isDown) return;
   if (this.bulletCooldown > 0) return;
+  this.bulletCooldown = armory[selectedWeaponID].fireRate;
 
   // TODO: bind in JSON how long each bullet lives
   // until it fades away.
