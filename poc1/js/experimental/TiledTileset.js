@@ -15,6 +15,8 @@ function TiledTileset(cfg) {
 
   const tiles = this.cfg.tile;
 
+  console.log(tiles);
+
 
   if (tiles) {
     for (let i = 0; i < tiles.length; i += 1) {
@@ -23,6 +25,9 @@ function TiledTileset(cfg) {
 
 
       if (tile.objectgroup) {
+
+        if (tile.objectgroup.property || tile.objectgroup.properties) {
+
         let properties;
         if (tile.objectgroup.property) {
           properties = tile.objectgroup.property;
@@ -57,6 +62,7 @@ function TiledTileset(cfg) {
         }
       }
     }
+  }
   }
 
   this.tlut = tlut;

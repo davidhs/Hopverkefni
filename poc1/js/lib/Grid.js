@@ -1,5 +1,10 @@
+'use strict';
 
-
+/**
+ * 
+ * @param {number} width 
+ * @param {number} height 
+ */
 function Grid(width, height) {
 
   
@@ -48,10 +53,11 @@ function Grid(width, height) {
   this._carver.postMessage(['init', width, height]);
 }
 
-Grid.prototype.init = function (width, height) {
-  
-};
 
+/**
+ * 
+ * @param {*} du 
+ */
 Grid.prototype.update = function (du) {
   this._elapsedTime += du;
   
@@ -69,10 +75,20 @@ Grid.prototype.update = function (du) {
   this._lastY = this._y;
 };
 
+
+/**
+ * 
+ * @param {*} callbacks 
+ */
 Grid.prototype.onready = function (callbacks) {
   this._callbacks.push(callbacks);
 };
 
+
+/**
+ * 
+ * @param {*} evt 
+ */
 Grid.prototype.mailbox = function (evt) {
 
   const data = evt.data;
@@ -90,12 +106,25 @@ Grid.prototype.mailbox = function (evt) {
   }
 };
 
+
+/**
+ * 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} value 
+ */
 Grid.prototype.set = function (x, y, value) {
   if (x < 0 || x >= this.width) throw Error();
   if (y < 0 || y >= this.height) throw Error();
   this._grid[y][x] = value;
 };
 
+
+/**
+ * 
+ * @param {*} x 
+ * @param {*} y 
+ */
 Grid.prototype.get = function (x, y) {
   if (x < 0 || x >= this.width) throw Error();
   if (y < 0 || y >= this.height) throw Error();
