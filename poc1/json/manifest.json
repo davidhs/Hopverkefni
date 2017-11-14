@@ -17,13 +17,10 @@
             "path": "map5.json"
         },
         "map3": {
-<<<<<<< HEAD
-          "name": "Debug map 3",
-          "path": "map6.json"
-=======
+
             "name": "TEST MAP",
             "path": "map6.json"
->>>>>>> master
+
         }
     },
     "keyBindings": {}
