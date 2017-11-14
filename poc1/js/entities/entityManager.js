@@ -11,29 +11,26 @@
 const entityManager = (function () {
   // "PRIVATE" DATA
 
+  const DEBUG = false;
+
   const OK = 1;
   // A special return value, used by other objects,
   // to request the blessed release of death!
   const KILL_ME_NOW = -1;
 
-  const _rocks = [];
   const _bullets = [];
   const _players = [];
   const _explosions = [];
   const _genericEnemiesOne = [];
 
   const _categories = [
-    _rocks,
     _bullets,
     _players,
     _genericEnemiesOne,
     _explosions,
   ];
 
-  const _bShowRocks = true;
-
   // "PRIVATE" METHODS
-
 
   function _forEachOf(aCategory, fn) {
     for (let i = 0; i < aCategory.length; i += 1) {
@@ -46,13 +43,15 @@ const entityManager = (function () {
   // TODO: maybe we want to fire different types of bullets.
   // figure out how to do that.
   function fireBullet(cx, cy, velX, velY, rotation) {
-    _bullets.push(new Bullet({
+    const bullet = new Bullet({
       cx,
       cy,
       velX,
       velY,
       rotation,
-    }));
+    });
+    if (DEBUG) console.log(bullet);
+    _bullets.push(bullet);
   }
 
   function generatePlayer(descr) {
@@ -73,11 +72,6 @@ const entityManager = (function () {
   function generateExplosion(descr) {
     descr.sequence = g_asset.sequence.explosion;
     _explosions.push(new AnimatedImage(descr));
-  }
-
-  // TODO: maybe we don't want rocks in the future?
-  function generateRock(descr) {
-    _rocks.push(new Rock(descr));
   }
 
   function generateGenericEnemyOne(cfg) {
@@ -118,7 +112,7 @@ const entityManager = (function () {
   }
 
   function init() {
-    for (let i = 0; i < 5; i += 1) {
+    for (let i = 0; i < 100; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({
@@ -139,7 +133,6 @@ const entityManager = (function () {
     update,
     render,
     fireBullet,
-    generateRock,
     generateExplosion,
     generatePlayer,
     generateGenericEnemyOne,

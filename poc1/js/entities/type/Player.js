@@ -28,8 +28,8 @@ Player.prototype.KEY_RIGHT = keyCode('D');
 
 // Rendering properties
 Player.prototype.rotation = 0;
-Player.prototype.cx = 200;
-Player.prototype.cy = 200;
+Player.prototype.cx = 180;
+Player.prototype.cy = 180;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -240,6 +240,55 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
+
+  // NOTE: Svona (sirka) mun thetta vera i stad fullt af IF fyrir oll vopnin
+  // if (eatKey( i in weaponKeys )) {
+  //   if (armory[this.key].has) {
+  //      this.useWeapon = armory[this.key].weapon
+  //      this.bulletCooldown = armory[this.key].fireRate
+  //      }
+  //   }
+
+  if (eatKey(this.KNIFE) && armory[0].has) {
+    console.log('Knife selected!');
+    this.useWeapon = 0;
+    this.bulletCooldown = armory[this.useWeapon].fireRate;
+
+    // Alexander
+
+    HUD.witchWeapon('knife');
+  }
+
+  if (eatKey(this.PISTOL) && armory[1].has) {
+    console.log('PISTOL selected!');
+    this.useWeapon = 1;
+    this.bulletCooldown = armory[this.useWeapon].fireRate;
+
+    // Alexander
+
+    HUD.witchWeapon('handgun');
+  }
+
+  if (eatKey(this.SHOTGUN) && armory[2].has) {
+    console.log('Shotgun selected!');
+    this.useWeapon = 2;
+    this.bulletCooldown = armory[this.useWeapon].fireRate;
+
+    // Alexander
+
+    HUD.witchWeapon('shotgun');
+  }
+
+  if (eatKey(this.RIFLE) && armory[3].has) {
+    console.log('AK selected!');
+    this.useWeapon = 3;
+    this.bulletCooldown = armory[this.useWeapon].fireRate;
+
+    // Alexander
+
+    HUD.witchWeapon('rifle');
+  }
+
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
   if (noHorAcc) this.velX *= slowDown;
@@ -273,13 +322,15 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
-    if (armory[selectedWeaponID].magazineAmmo > 0) {
+    //if (armory[this.useWeapon].magazineAmmo > 0) {
+      // console.log(`Firing ${armory[this.useWeapon].name}`);
+     if (armory[selectedWeaponID].magazineAmmo > 0) {
       this.fireBullet();
       if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
       }
     } else {
-      console.log(`Reload ${armory[selectedWeaponID].name}`);
+      // console.log(`Reload ${armory[this.useWeapon].name}`);
     }
   }
 
@@ -303,52 +354,37 @@ Player.prototype.update = function (du) {
       this.cy = oldY;
     }
 
-    let flags = spatialManager.register(this);
+    let spatialID = spatialManager.register(this);
 
 
     // Wall crap
-    if (flags !== spatialManager.NO_CONFLICT && flags < spatialManager.MIN_ENTITY) {
-      if (flags !== spatialManager.NO_CONFLICT) {
+    if (spatialID !== spatialManager.NO_CONFLICT) {
+
+      if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = newX;
         this.cy = oldY;
-        flags = spatialManager.register(this);
+        spatialID = spatialManager.register(this);
       }
 
-      if (flags !== spatialManager.NO_CONFLICT) {
+      if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = newY;
-        flags = spatialManager.register(this);
+        spatialID = spatialManager.register(this);
       }
 
-      if (flags !== spatialManager.NO_CONFLICT) {
+      if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = oldY;
-        flags = spatialManager.register(this);
-      }
-    } else if (flags) {
-      // Entity stuff
-      const hitEntity = this.findHitEntity();
-      if (hitEntity) {
-        const cx1 = this.cx;
-        const cy1 = this.cy;
-        const r1 = this.getRadius();
-
-        const cx2 = hitEntity.cx;
-        const cy2 = hitEntity.cy;
-        const r2 = hitEntity.getRadius();
-
-        const dr = r2 + r1;
-        const r = Math.sqrt(util.distSq(cx1, cy1, cx2, cy2));
-
-        const p = r / dr;
-
-        this.cx = oldX + p * (du * this.velX);
-        this.cy = oldY + p * (du * this.velY);
-
-        flags = 0;
+        spatialID = spatialManager.register(this);
       }
     }
-    spatialManager.register(this);
+
+    if (!spatialManager.isRegistered(this)) {
+      spatialManager.register(this);
+      if (!spatialManager.isRegistered(this)) {
+        throw Error();
+      }
+    }
   }
 };
 
@@ -433,6 +469,12 @@ Player.prototype.render = function (ctx, cfg) {
   this.sprite.scale = this._scale;
   this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
   this.sprite.scale = origScale;
+};
+
+
+
+Player.prototype.getWitchWeapon = function () {
+  return this.useWeapon;
 };
 
 document.onkeyup = selectWeapons;

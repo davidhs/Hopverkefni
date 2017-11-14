@@ -3,6 +3,7 @@
 function QuickList() {
   this._list = [];
   this._size = 0;
+  this._DEBUG = false;
 }
 
 
@@ -13,7 +14,25 @@ QuickList.prototype.add = function (x) {
     return true;
   }
 
+
+  if (this._DEBUG) this._verify();
+
   return false;
+};
+
+QuickList.prototype._verify = function () {
+  const dedup = {};
+  if (this._size !== this._list.length) throw Error();
+
+  for (let i = 0; i < this._list.length; i += 1) {
+    const li = this._list[i];
+
+    if (!dedup[li]) {
+      dedup[li] = true;
+    } else {
+      throw Error();
+    }
+  }
 };
 
 QuickList.prototype._exch = function (idx1, idx2) {
@@ -24,21 +43,24 @@ QuickList.prototype._exch = function (idx1, idx2) {
 
 // true if removed, false if not
 QuickList.prototype.remove = function (x) {
+  let removed = false;
+
   // Search for value
   for (let i = 0; i < this._size; i += 1) {
     const y = this._list[i];
     if (x === y) {
       this._exch(i, this._size - 1);
-      if (true) {
-        // delete this._list[this._size - 1];
-        this._list.splice(this._size - 1, 1);
-      }
+      this._list.splice(this._size - 1, 1);
       this._size -= 1;
-      return true;
+      i -= 1;
+
+      removed = true;
     }
   }
 
-  return false;
+  if (this._DEBUG) this._verify();
+
+  return removed;
 };
 
 
@@ -47,8 +69,6 @@ QuickList.prototype.has = function (x) {
   for (let i = 0; i < this._size; i += 1) {
     const y = this._list[i];
     if (x === y) {
-      // MAYBE BAD IDEA
-      this._exch(0, i);
       return true;
     }
   }

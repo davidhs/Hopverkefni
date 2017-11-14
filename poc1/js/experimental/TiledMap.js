@@ -101,7 +101,6 @@ function TiledMap(cfg) {
   this.map = map;
   this.tilesets = tilesets;
   this.data2Ds = data2Ds;
-  this._spatialID = spatialManager.getNewSpatialID();
 }
 
 TiledMap.prototype._getLayerName = function (layer) {
@@ -315,7 +314,8 @@ TiledMap.prototype.addObstructions = function () {
 
           if (tlut[tidx]) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
-              spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, tx, ty);
+              //spatialManager.debug.registerTile(spatialManager.WALL_ID, tx, ty);
+              spatialManager.registerTile(spatialManager.WALL_ID, tx, ty);
             }
           }
         }

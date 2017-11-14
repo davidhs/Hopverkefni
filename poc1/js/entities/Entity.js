@@ -62,6 +62,7 @@ Entity.prototype.kill = function () {
   this._isDeadNow = true;
 };
 
+/*
 // TODO: maybe not applicable anymore.
 Entity.prototype.findHitEntity = function () {
   const pos = this.getPos();
@@ -76,9 +77,14 @@ Entity.prototype.findHitEntity = function () {
 Entity.prototype.isColliding = function () {
   return this.findHitEntity();
 };
+*/
+
+/*
 
 // TODO: remove
 Entity.prototype.wrapPosition = function () {
   this.cx = util.wrapRange(this.cx, 0, g_world.getWidth());
   this.cy = util.wrapRange(this.cy, 0, g_world.getHeight());
 };
+
+*/
