@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="14">
  <tileset firstgid="1" source="tiles3.tsx"/>
  <tileset firstgid="193" source="tiles2.tsx"/>
  <tileset firstgid="1217" source="tiles4.tsx"/>
@@ -120,4 +120,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup name="Object Layer 1">
+  <object id="6" name="Enemy_spawningpoint1" x="321" y="129" width="31" height="62"/>
+  <object id="9" name="Enemy_spawningpoint2" x="452" y="127" width="32" height="63"/>
+  <object id="11" name="Enemy_spawningpoint3" x="579" y="127" width="31" height="60"/>
+  <object id="12" name="Enemy_spawningpoint4" x="707" y="130" width="32" height="59"/>
+  <object id="13" name="Enemy_spawningpoint5" x="834" y="129" width="31" height="63"/>
+ </objectgroup>
 </map>
