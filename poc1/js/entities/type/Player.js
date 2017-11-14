@@ -240,7 +240,7 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
-<<<<<<< HEAD
+
   // NOTE: Svona (sirka) mun thetta vera i stad fullt af IF fyrir oll vopnin
   // if (eatKey( i in weaponKeys )) {
   //   if (armory[this.key].has) {
@@ -289,8 +289,6 @@ Player.prototype.update = function (du) {
     HUD.witchWeapon('rifle');
   }
 
-=======
->>>>>>> 6eae0fee99ad2334fad61c2f01bd3f2585d79067
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
   if (noHorAcc) this.velX *= slowDown;
@@ -324,22 +322,15 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
-<<<<<<< HEAD
-    if (armory[this.useWeapon].magazineAmmo > 0) {
+    //if (armory[this.useWeapon].magazineAmmo > 0) {
       // console.log(`Firing ${armory[this.useWeapon].name}`);
-=======
-    if (armory[selectedWeaponID].magazineAmmo > 0) {
->>>>>>> 6eae0fee99ad2334fad61c2f01bd3f2585d79067
+     if (armory[selectedWeaponID].magazineAmmo > 0) {
       this.fireBullet();
       if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
       }
     } else {
-<<<<<<< HEAD
       // console.log(`Reload ${armory[this.useWeapon].name}`);
-=======
-      console.log(`Reload ${armory[selectedWeaponID].name}`);
->>>>>>> 6eae0fee99ad2334fad61c2f01bd3f2585d79067
     }
   }
 
@@ -480,11 +471,10 @@ Player.prototype.render = function (ctx, cfg) {
   this.sprite.scale = origScale;
 };
 
-<<<<<<< HEAD
+
 
 Player.prototype.getWitchWeapon = function () {
   return this.useWeapon;
 };
-=======
+
 document.onkeyup = selectWeapons;
->>>>>>> 6eae0fee99ad2334fad61c2f01bd3f2585d79067

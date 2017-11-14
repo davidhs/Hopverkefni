@@ -272,15 +272,6 @@ const HUD = (function () {
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
-<<<<<<< HEAD
-
-
-
-
-
-
-=======
->>>>>>> 6eae0fee99ad2334fad61c2f01bd3f2585d79067
   }
 
   function render(ctx) {
