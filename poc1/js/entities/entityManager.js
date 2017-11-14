@@ -21,8 +21,6 @@ const entityManager = (function () {
   const _players = [];
   const _explosions = [];
   const _genericEnemiesOne = [];
-  const _weapon = [];
-  const _items = [];
 
   const _categories = [
     _rocks,
@@ -30,8 +28,6 @@ const entityManager = (function () {
     _players,
     _genericEnemiesOne,
     _explosions,
-    _weapon,
-    _items,
   ];
 
   const _bShowRocks = true;
@@ -147,7 +143,6 @@ const entityManager = (function () {
     generateExplosion,
     generatePlayer,
     generateGenericEnemyOne,
-    generateItems,
     OK,
     KILL_ME_NOW,
 
