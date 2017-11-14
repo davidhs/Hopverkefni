@@ -22,16 +22,12 @@ const entityManager = (function () {
   const _players = [];
   const _explosions = [];
   const _genericEnemiesOne = [];
-  const _weapon = [];
-  const _items = [];
 
   const _categories = [
     _bullets,
     _players,
     _genericEnemiesOne,
     _explosions,
-    _weapon,
-    _items,
   ];
 
   // "PRIVATE" METHODS
@@ -140,7 +136,6 @@ const entityManager = (function () {
     generateExplosion,
     generatePlayer,
     generateGenericEnemyOne,
-    generateItems,
     OK,
     KILL_ME_NOW,
 
