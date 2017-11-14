@@ -191,9 +191,6 @@ function selectWeapons(evt) {
 // value will cause it to halt quicker.
 Player.prototype.decay = 0.5;
 
-// This here is (currently) the firing rate.  Maybe different
-// types of weapons should have different firing rates.
-// NOTE: Works actually like a reload time
 Player.prototype.bulletCooldown = 0;
 
 Player.prototype.update = function (du) {
@@ -359,11 +356,20 @@ Player.prototype.getAmmoStatus = function () {
   return armory[selectedWeaponID].ammo;
 };
 
+Player.prototype.getMagazineStatus = function () {
+  return armory[selectedWeaponID].magazineAmmo;
+};
+
+Player.prototype.getMagazineSize = function () {
+  return armory[selectedWeaponID].magazineSize;
+};
+
 Player.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
 Player.prototype.reloadWeapon = function () {
+  console.log(armory[selectedWeaponID].ammo);
   this.bulletCooldown = armory[selectedWeaponID].reloadTime;
   if (armory[selectedWeaponID].ammo >= armory[selectedWeaponID].magazineSize) {
     armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].magazineSize;
