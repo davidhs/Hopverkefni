@@ -48,18 +48,26 @@ Bullet.prototype.update = function (du) {
 
   // TODO: this is just a total mess.
 
-  const potentialCollision = spatialManager.register(this);
+  // Conflicting spatial ID.  0 is ok.
+  const spatialID = spatialManager.register(this);
 
-  if (potentialCollision) {
+  if (spatialID) {
+    if (spatialID < spatialManager.MIN_ENTITY) {
+      if (spatialID === spatialManager.WALL_ID) {
+        audioManager.play(g_url.audio.explosion1);
+        spatialManager.unregister(this);
+        entityManager.generateExplosion({
+          cx: this.cx,
+          cy: this.cy,
+        });
+        return entityManager.KILL_ME_NOW;
+      }
+    } else {
+      const entity = spatialManager.getEntity(spatialID);
 
-    console.log("POTENTIAL EXPL");
-    
-    const hitEntity = this.findHitEntity();
 
-    if (hitEntity) {
-      spatialManager.unregister(this);
-      const canTakeHit = hitEntity.takeBulletHit;
-      if (canTakeHit) canTakeHit.call(hitEntity);
+      const canTakeHit = entity.takeBulletHit;
+      if (canTakeHit) canTakeHit.call(entity);
 
       audioManager.play(g_url.audio.explosion1);
 
@@ -68,18 +76,10 @@ Bullet.prototype.update = function (du) {
         cy: this.cy,
       });
 
-      return entityManager.KILL_ME_NOW;
-    } else if (potentialCollision < spatialManager.MIN_ENTITY) {
-      audioManager.play(g_url.audio.explosion1);
-      spatialManager.unregister(this);
-      entityManager.generateExplosion({
-        cx: this.cx,
-        cy: this.cy,
-      });
       return entityManager.KILL_ME_NOW;
     }
 
-    spatialManager.register(this);
+    spatialManager.register(this, true);
   }
 
 

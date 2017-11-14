@@ -244,10 +244,9 @@ Player.prototype.update = function (du) {
     this.useWeapon = 0;
     this.bulletCooldown = armory[this.useWeapon].fireRate;
 
-    //Alexander
+    // Alexander
 
     HUD.witchWeapon('knife');
-
   }
 
   if (eatKey(this.PISTOL) && armory[1].has) {
@@ -255,7 +254,7 @@ Player.prototype.update = function (du) {
     this.useWeapon = 1;
     this.bulletCooldown = armory[this.useWeapon].fireRate;
 
-    //Alexander
+    // Alexander
 
     HUD.witchWeapon('handgun');
   }
@@ -265,7 +264,7 @@ Player.prototype.update = function (du) {
     this.useWeapon = 2;
     this.bulletCooldown = armory[this.useWeapon].fireRate;
 
-    //Alexander
+    // Alexander
 
     HUD.witchWeapon('shotgun');
   }
@@ -275,7 +274,7 @@ Player.prototype.update = function (du) {
     this.useWeapon = 3;
     this.bulletCooldown = armory[this.useWeapon].fireRate;
 
-    //Alexander
+    // Alexander
 
     HUD.witchWeapon('rifle');
   }
@@ -314,10 +313,10 @@ Player.prototype.update = function (du) {
 
   if (g_mouse.isDown) {
     if (armory[this.useWeapon].magazineAmmo > 0) {
-      console.log(`Firing ${armory[this.useWeapon].name}`);
+      // console.log(`Firing ${armory[this.useWeapon].name}`);
       this.fireBullet();
     } else {
-      console.log(`Reload ${armory[this.useWeapon].name}`);
+      // console.log(`Reload ${armory[this.useWeapon].name}`);
     }
   }
 
@@ -341,52 +340,37 @@ Player.prototype.update = function (du) {
       this.cy = oldY;
     }
 
-    let flags = spatialManager.register(this);
+    let spatialID = spatialManager.register(this);
 
 
     // Wall crap
-    if (flags !== spatialManager.NO_CONFLICT && flags < spatialManager.MIN_ENTITY) {
-      if (flags !== spatialManager.NO_CONFLICT) {
+    if (spatialID !== spatialManager.NO_CONFLICT) {
+
+      if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = newX;
         this.cy = oldY;
-        flags = spatialManager.register(this);
+        spatialID = spatialManager.register(this);
       }
 
-      if (flags !== spatialManager.NO_CONFLICT) {
+      if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = newY;
-        flags = spatialManager.register(this);
+        spatialID = spatialManager.register(this);
       }
 
-      if (flags !== spatialManager.NO_CONFLICT) {
+      if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = oldY;
-        flags = spatialManager.register(this);
-      }
-    } else if (flags) {
-      // Entity stuff
-      const hitEntity = this.findHitEntity();
-      if (hitEntity) {
-        const cx1 = this.cx;
-        const cy1 = this.cy;
-        const r1 = this.getRadius();
-
-        const cx2 = hitEntity.cx;
-        const cy2 = hitEntity.cy;
-        const r2 = hitEntity.getRadius();
-
-        const dr = r2 + r1;
-        const r = Math.sqrt(util.distSq(cx1, cy1, cx2, cy2));
-
-        const p = r / dr;
-
-        this.cx = oldX + p * (du * this.velX);
-        this.cy = oldY + p * (du * this.velY);
-
-        flags = 0;
+        spatialID = spatialManager.register(this);
       }
     }
-    spatialManager.register(this);
+
+    if (!spatialManager.isRegistered(this)) {
+      spatialManager.register(this);
+      if (!spatialManager.isRegistered(this)) {
+        throw Error();
+      }
+    }
   }
 };
 
@@ -462,7 +446,6 @@ Player.prototype.render = function (ctx, cfg) {
 };
 
 
-Player.prototype.getWitchWeapon = function(){;
+Player.prototype.getWitchWeapon = function () {
   return this.useWeapon;
-
-}
+};

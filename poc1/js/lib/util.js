@@ -17,6 +17,10 @@ const util = (function () {
     }
   };
 
+  util.snapshot = (obj) => {
+    return JSON.parse(JSON.stringify(obj));
+  };
+
 
   util.createPicker = comparator => function (...args) {
     if (args.length === 0) {
