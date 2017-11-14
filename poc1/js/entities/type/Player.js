@@ -43,6 +43,7 @@ Player.prototype.autoFire = false;
 
 const armory = [];
 let selectedWeaponID = 1;
+let reloading = false;
 
 const knife = {
   name: 'knife',
@@ -69,7 +70,7 @@ const pistol = {
   accuracy: 0.8,
   bulletSpeed: 15,
   fireRate: 60,
-  reloadTime: 1,
+  reloadTime: 60,
   through: 0,
   ammo: 96,
   magazineSize: 12,
@@ -85,7 +86,7 @@ const shotgun = {
   accuracy: 0.1,
   bulletSpeed: 10,
   fireRate: 100,
-  reloadTime: 4,
+  reloadTime: 180,
   through: 0,
   ammo: 40,
   magazineSize: 8,
@@ -101,7 +102,7 @@ const rifle = {
   accuracy: 0.9,
   bulletSpeed: 20,
   fireRate: 20,
-  reloadTime: 2,
+  reloadTime: 120,
   through: 2,
   ammo: 90,
   magazineSize: 30,
@@ -243,14 +244,6 @@ Player.prototype.update = function (du) {
     noHorAcc = false;
   }
 
-  // NOTE: Svona (sirka) mun thetta vera i stad fullt af IF fyrir oll vopnin
-  // if (eatKey( i in weaponKeys )) {
-  //   if (armory[this.key].has) {
-  //      selectedWeaponID = armory[this.key].weapon
-  //      this.bulletCooldown = armory[this.key].fireRate
-  //      }
-  //   }
-
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
   if (noHorAcc) this.velX *= slowDown;
@@ -285,11 +278,12 @@ Player.prototype.update = function (du) {
 
   if (g_mouse.isDown) {
     if (armory[selectedWeaponID].magazineAmmo > 0) {
-      console.log('Mouse is down!');
-      console.log(selectedWeaponID);
-      console.log(`Firing ${armory[selectedWeaponID].name}`);
-      console.log('');
-      this.fireBullet();
+      if (armory[selectedWeaponID].auto) {
+        this.fireBullet();
+      } else {
+        this.fireBullet();
+        g_mouse.isDown = false;
+      }
     } else {
       console.log(`Reload ${armory[selectedWeaponID].name}`);
     }
@@ -373,6 +367,7 @@ Player.prototype.getRadius = function () {
 };
 
 Player.prototype.reloadWeapon = function () {
+  this.bulletCooldown = armory[selectedWeaponID].reloadTime;
   if (armory[selectedWeaponID].ammo >= armory[selectedWeaponID].magazineSize) {
     armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].magazineSize;
     armory[selectedWeaponID].ammo -= armory[selectedWeaponID].magazineSize;
@@ -420,6 +415,7 @@ Player.prototype.fireBullet = function () {
     velY,
     rotation,
   );
+  armory[selectedWeaponID].magazineAmmo -= 1;
 };
 
 
