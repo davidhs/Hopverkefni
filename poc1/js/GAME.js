@@ -72,10 +72,13 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+
   const tx = spatialManager.toX(g_mouse.x);
   const ty = spatialManager.toY(g_mouse.y);
 
   spatialManager.carveShortestPath(tx, ty);
+
+  spatialManager.update(du);
 
   // Update entities.
   entityManager.update(du);
@@ -442,7 +445,11 @@ function setup(response) {
   // Initialize spatial manager.
   spatialManager.init(g_world.getWidth(), g_world.getHeight());
 
-  g_tm.addObstructions();
+
+  spatialManager.onready(() => {
+    g_tm.addObstructions();
+  });
+
 
   // Temporary occlusion map from spatial manager.  TODO: remove later.
   // g_testWOM = spatialManager.getWallOcclusionMap();

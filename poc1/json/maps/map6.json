@@ -339,11 +339,19 @@
                 "paths": {
                     "pmap2": "map3.tmx",
                     "pmap2tileset1": "tiles1.tsx",
+<<<<<<< HEAD
                     "pmap2tileset2": "../map2/map2-tileset1.tsx",
+=======
+                    "pmap2tileset2": "tiles2.tsx",
+>>>>>>> master
                     "pmap2tileset3": "tiles3.tsx",
                     "pmap2tileset4": "tiles4.tsx"
                 }
             }]
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> master

@@ -44,12 +44,25 @@ GenericEnemyOne.prototype.update = function (du) {
   // Find target
   const player = entityManager.getPlayer();
 
+  const directions = spatialManager.getDirection(this.cx - this.getRadius(), this.cy - this.getRadius());
+
+
   const cx = player.cx;
   const cy = player.cy;
 
+  let dx = 0;
+  let dy = 0;
 
-  const dx = player.cx - this.cx;
-  const dy = player.cy - this.cy;
+  if (directions) {
+    dx = directions.x;
+    dy = directions.y;
+  }
+
+
+
+
+  // const dx = player.cx - this.cx;
+  // const dy = player.cy - this.cy;
 
   const len = Math.sqrt(dx * dx + dy * dy);
 
@@ -97,8 +110,9 @@ GenericEnemyOne.prototype.update = function (du) {
   const oldX = this.cx;
   const oldY = this.cy;
 
-  const newX = this.cx + du * this.velX;
-  const newY = this.cy + du * this.velY;
+
+  let newX = this.cx + du * this.velX;
+  let newY = this.cy + du * this.velY;
 
   this.cx = newX;
   this.cy = newY;
@@ -109,10 +123,22 @@ GenericEnemyOne.prototype.update = function (du) {
     this.cy = oldY;
   }
 
+
+  const pdx = Math.sign(player.cx - this.cx);
+  const pdy = Math.sign(player.cy - this.cy);
+
   let flags = spatialManager.register(this);
+
+
 
   // Wall crap
   if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
+    
+    newX = this.cx + pdx * Math.random();
+    newY = this.cy + pdy * Math.random();
+  
+
+
     if (flags < spatialManager.MIN_ENTITY) {
       this.cx = newX;
       this.cy = oldY;
@@ -121,7 +147,7 @@ GenericEnemyOne.prototype.update = function (du) {
 
     if (flags < spatialManager.MIN_ENTITY) {
       this.cx = oldX;
-      this.cy = oldY;
+      this.cy = newY;
       flags = spatialManager.register(this);
     }
 

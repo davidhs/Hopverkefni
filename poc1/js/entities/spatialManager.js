@@ -49,7 +49,8 @@ const spatialManager = (function () {
   // Grid should also contain path
   // finding info.
   // const tiles = [];
-  const tiles = new Grid();
+  // const tiles = new Grid();
+  let tiles = null;
 
   // TODO: tile size should match
   const tileSize = 32;
@@ -91,7 +92,10 @@ const spatialManager = (function () {
 
     if (result) {
       obj.count += 1;
-      if (id === WALL_ID) obj.obstruction = true;
+      if (id === WALL_ID) {
+        obj.obstruction = true;
+        tiles.addObstruction(x, y);
+      }
     }
 
     return obj.count > 1 ? POTENTIAL_CONFLICT : NO_CONFLICT;
@@ -171,6 +175,10 @@ const spatialManager = (function () {
     return NO_CONFLICT;
   }
 
+  function update(du) {
+    tiles.update(du);
+  }
+
 
   /**
    * Returns `true' if tile is occupied with another ID,
@@ -225,7 +233,6 @@ const spatialManager = (function () {
       if (prevX !== sx || prevY !== sy) {
         prevX = sx;
         prevY = sy;
-        tiles.updateStamp();
       }
     }
 
@@ -253,6 +260,15 @@ const spatialManager = (function () {
     }
 
     return result;
+  }
+
+
+  function getDirection(x, y) {
+    const tx = _getX(x);
+    const ty = _getY(y);
+
+    
+    return tiles.getCI(tx, ty);
   }
 
 
@@ -310,6 +326,8 @@ const spatialManager = (function () {
 
   const firstTime = true;
 
+  let ITER10 = 0;
+
 
   function render(ctx) {
     const oldStyle = ctx.strokeStyle;
@@ -323,15 +341,21 @@ const spatialManager = (function () {
     for (let ty = 0; ty < tiles.height; ty += 1) {
       for (let tx = 0; tx < tiles.width; tx += 1) {
         const obj = tiles.get(tx, ty);
+        const ci = tiles.getCI(tx, ty);
+
+
+        if (typeof ci === 'undefined') throw Error();
+
         const count = obj.count;
 
         const x = tx * tileSize;
         const y = ty * tileSize;
 
         if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
-          if (obj.parent) {
-            const mahx = obj.parent.x;
-            const mahy = obj.parent.y;
+          
+            const mahx = ci.x;
+            const mahy = ci.y;
+
             const x1 = x + tileSize / 2;
             const y1 = y + tileSize / 2;
             const x2 = x1 + tileSize * mahx / 2;
@@ -350,7 +374,7 @@ const spatialManager = (function () {
             ctx.moveTo(x1 - dx, y1 - dy);
             ctx.lineTo(x2 - dx, y2 - dy);
             ctx.stroke();
-          }
+          
         }
 
 
@@ -396,8 +420,13 @@ const spatialManager = (function () {
 
 
   function init(width, height) {
-    tiles.init(width / tileSize, height / tileSize);
+    tiles = new Grid(width / tileSize, height / tileSize);
+    //tiles.init(width / tileSize, height / tileSize);
     console.log(tiles);
+  }
+
+  function onready(callback) {
+    tiles.onready(callback);
   }
 
 
@@ -408,6 +437,7 @@ const spatialManager = (function () {
     register,
     unregister,
     findEntityInRange,
+    onready,
     render,
     // getWallOcclusionMap,
     init,
@@ -417,9 +447,12 @@ const spatialManager = (function () {
     toX: _getX,
     toY: _getY,
 
+    update,
+
+    getDirection,
+
     carveShortestPath: (x, y) => {
-      // tiles.carveShortestPath(prevX, prevY, x, y);
-      tiles.carveShortestPath(prevX, prevY, x, y);
+      tiles.carveShortestPath(prevX, prevY);
     },
 
     debug: {
@@ -427,6 +460,9 @@ const spatialManager = (function () {
       WALL_ID,
       tiles,
       _unregisterTile,
+    },
+    getTiles: () => {
+      return tiles
     },
     NO_CONFLICT,
   };

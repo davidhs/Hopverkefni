@@ -17,7 +17,7 @@ function PriorityQueue(cfg) {
   this._check = false;
 
   this._lut = {};
-  this._vilut = {};
+  this._vilut = new Map();
 
   if (cfg) {
     if (cfg.check) this._check = cfg.check;
@@ -188,7 +188,7 @@ PriorityQueue.prototype.add = function (key, value) {
   const idx = this._size + 1;
   const id = this._getNextID();
 
-  this._vilut[value] = id;
+  this._vilut.set(value, id);
 
   this._lut[id] = { key, value, idx };
 
@@ -213,7 +213,7 @@ PriorityQueue.prototype.peek = function () {
 PriorityQueue.prototype.changePriority = function (value, newPriority) {
 
   // Index of the value in this._pq.
-  const id = this._vilut[value];
+  const id = this._vilut.get(value);
 
   const item = this._lut[id];
   const idx = item.idx;
@@ -252,7 +252,8 @@ PriorityQueue.prototype.remove = function () {
   this._sink(1);
   
 
-  delete this._vilut[hiPriItem];
+  
+  this._vilut.delete(hiPriItem);
   delete this._lut[hiPriID];
 
   delete this._pq[this._size + 1];
@@ -265,7 +266,6 @@ PriorityQueue.prototype.remove = function () {
   return hiPriItem.value;
 }
 
-/*
 PriorityQueue.prototype.toString = function (k, p) {
 
   k = (typeof k === 'undefined') ? 1 : k;
@@ -282,7 +282,6 @@ PriorityQueue.prototype.toString = function (k, p) {
 
   return str;
 };
-*/
 
 PriorityQueue.prototype.isEmpty = function () {
   return this._size === 0;

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="1">
+<<<<<<< HEAD
+=======
+ <properties>
+  <property name="level" type="int" value="0"/>
+ </properties>
+>>>>>>> master
  <tileset firstgid="1" source="tiles3.tsx"/>
  <tileset firstgid="193" source="../map2/map2-tileset1.tsx"/>
  <tileset firstgid="1217" source="tiles4.tsx"/>

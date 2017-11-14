@@ -176,7 +176,7 @@
             "tm1": {
                 "dep": [
                     "raw.xml.pmap",
-                    "tiledTileset.mapTileset1"
+                    "fastImage.mapTileset1"
                 ],
                 "cfg": {
                     "type": 1,
