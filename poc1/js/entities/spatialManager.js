@@ -338,7 +338,7 @@ const spatialManager = (function () {
     */
   function unregister(entity) {
     if (!isRegistered(entity)) {
-      //throw Error();
+      // throw Error();
       return;
     }
 

@@ -37,8 +37,8 @@ Player.prototype.RAYGUN = keyCode('6');
 
 // Rendering properties
 Player.prototype.rotation = 0;
-Player.prototype.cx = 200;
-Player.prototype.cy = 200;
+Player.prototype.cx = 180;
+Player.prototype.cy = 180;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
