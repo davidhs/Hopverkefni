@@ -1,10 +1,10 @@
 {
     "type": "map",
-    "name": "Yet another test! (3)",
+    "name": "Yet another test! (2)",
     "cfg": {
         "world": {
-            "width": 32,
-            "height": 32,
+            "width": 100,
+            "height": 100,
             "unit": "t"
         },
         "tile": {
@@ -144,6 +144,12 @@
             }
         },
         "sprite": {
+            "rock": {
+                "dep": ["raw.image.rock"],
+                "cfg": {
+                    "image": "raw.image.rock"
+                }
+            },
             "bullet": {
                 "dep": ["raw.image.bullet"],
                 "cfg": {
@@ -175,28 +181,63 @@
         "tiledMap": {
             "tm1": {
                 "dep": [
-                    "raw.xml.pmap",
-                    "fastImage.mapTileset1"
+                    "raw.xml.pmap2",
+                    "tiledTileset.map2tileset1",
+                    "tiledTileset.map2tileset2",
+                    "tiledTileset.map2tileset3",
+                    "tiledTileset.map2tileset4"
                 ],
                 "cfg": {
                     "type": 1,
-                    "map": "raw.xml.pmap",
+                    "map": "raw.xml.pmap2",
                     "tilesets": [
-                        "tiledTileset.mapTileset1"
+                        "tiledTileset.map2tileset3",
+                        "tiledTileset.map2tileset2",
+                        "tiledTileset.map2tileset4"
                     ]
                 }
             }
         },
         "tiledTileset": {
-            "mapTileset1": {
+            "map2tileset1": {
                 "dep": [
-                    "raw.xml.pmaptileset1",
+                    "raw.xml.pmap2tileset1",
+                    "textureAtlas.dungeon"
+                ],
+                "cfg": {
+                    "textureAtlas": "textureAtlas.dungeon",
+                    "cfg": "raw.xml.pmap2tileset1"
+                }
+            },
+            "map2tileset2": {
+                "dep": [
+                    "raw.xml.pmap2tileset2",
                     "textureAtlas.terrain_atlas"
                 ],
                 "cfg": {
                     "textureAtlas": "textureAtlas.terrain_atlas",
-                    "cfg": "raw.xml.pmaptileset1"
+                    "cfg": "raw.xml.pmap2tileset2"
                 }
+            },
+            "map2tileset3": {
+                "dep": [
+                    "raw.xml.pmap2tileset3",
+                    "textureAtlas.tileset4"
+                ],
+                "cfg": {
+                    "textureAtlas": "textureAtlas.tileset4",
+                    "cfg": "raw.xml.pmap2tileset3"
+                }
+            },
+            "map2tileset4":{
+              "dep": [
+                "raw.xml.pmap2tileset4",
+                "textureAtlas.spritesheet1"
+              ],
+              "cfg": {
+                "textureAtlas": "textureAtlas.spritesheet1",
+                "cfg": "raw.xml.pmap2tileset4"
+              }
             }
         },
         "fastImage": {
@@ -231,8 +272,7 @@
                     "donkey": "notdonkey.png",
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
-                    "Hbackground": "HUD.png",
-                    "test": "Numbers/exists/one.png"
+                    "Hbackground": "HUD.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",
@@ -259,7 +299,7 @@
                 "handgun": "handgun.png",
                 "shotgun": "shotgun.png"
               }
-            },{
+            }, {
               "prefix": "img/spritesheets/numbers/",
               "paths": {
                 "exists": "exists.png",
@@ -295,10 +335,13 @@
                 "paths": {}
             }],
             "xml": [{
-                "prefix": "xml/map2/",
+                "prefix": "xml/map3/",
                 "paths": {
-                    "pmap": "map2.tmx",
-                    "pmaptileset1": "map2-tileset1.tsx"
+                    "pmap2": "map3.tmx",
+                    "pmap2tileset1": "tiles1.tsx",
+                    "pmap2tileset2": "tiles2.tsx",
+                    "pmap2tileset3": "tiles3.tsx",
+                    "pmap2tileset4": "tiles4.tsx"
                 }
             }]
         }
