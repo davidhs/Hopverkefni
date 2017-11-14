@@ -5,7 +5,7 @@
  <tileset firstgid="1217" source="tiles4.tsx"/>
  <layer name="bottomlayer2" width="32" height="32">
   <properties>
-   <property name="level" type="int" value="1"/>
+   <property name="level" type="int" value="0"/>
   </properties>
   <data encoding="csv">
 173,174,173,174,173,174,173,174,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,2180,
@@ -44,7 +44,7 @@
  </layer>
  <layer name="middlelayer2" width="32" height="32">
   <properties>
-   <property name="level" type="int" value="2"/>
+   <property name="level" type="int" value="1"/>
   </properties>
   <data encoding="csv">
 1045,1046,1049,1049,1049,1049,1049,1047,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,817,855,
@@ -83,7 +83,7 @@
  </layer>
  <layer name="toplayer2" width="32" height="32">
   <properties>
-   <property name="level" type="int" value="3"/>
+   <property name="level" type="int" value="2"/>
   </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

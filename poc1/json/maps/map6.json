@@ -191,9 +191,9 @@
                     "type": 1,
                     "map": "raw.xml.pmap2",
                     "tilesets": [
-                        "tiledTileset.map1tileset2",
-                        "tiledTileset.map1tileset3",
-                        "tiledTileset.map1tileset1"
+                        "tiledTileset.map2tileset3",
+                        "tiledTileset.map2tileset2",
+                        "tiledTileset.map2tileset4"
                     ]
                 }
             }
@@ -339,7 +339,7 @@
                 "paths": {
                     "pmap2": "map3.tmx",
                     "pmap2tileset1": "tiles1.tsx",
-                    "pmap2tileset2": "tiles2.tsx",
+                    "pmap2tileset2": "../map2/map2-tileset1.tsx",
                     "pmap2tileset3": "tiles3.tsx",
                     "pmap2tileset4": "tiles4.tsx"
                 }
