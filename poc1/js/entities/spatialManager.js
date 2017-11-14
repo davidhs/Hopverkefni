@@ -123,6 +123,7 @@ const spatialManager = (function () {
     }
   }
 
+
   function _resolveConflict(id, x, y) {
     const obj = tiles.get(x, y);
 
@@ -176,7 +177,6 @@ const spatialManager = (function () {
   }
 
   function update(du) {
-
     const player = entityManager.getPlayer();
     const sx = _getX(player.cx);
     const sy = _getY(player.cy);
@@ -230,12 +230,12 @@ const spatialManager = (function () {
 
   /**
    * Registers entity.
-   * 
+   *
    * If the registration fails this function will do a proper cleanup.
-   * 
+   *
    * If two entities might collider then the spatial manager will
    * decide on it.
-   * 
+   *
    * @param {Entity} entity
    * @param {boolean} force if true don't unregister
    */
@@ -257,7 +257,6 @@ const spatialManager = (function () {
 
     if (result !== NO_CONFLICT) {
       _unregisterRect(spatialID, x1, y1, x2, y2);
-      
     } else {
       entities[spatialID] = {
         posX: pos.posX,
@@ -274,16 +273,16 @@ const spatialManager = (function () {
   /**
    * Some entity with upper left position (x, y) requests
    * directions from where it stands to that of the player.
-   * 
-   * @param {number} x 
-   * @param {number} y 
+   *
+   * @param {number} x
+   * @param {number} y
    * @returns {x: number, y: number}
    */
   function getDirection(x, y) {
     const tx = _getX(x);
     const ty = _getY(y);
 
-    
+
     return tiles.getCI(tx, ty);
   }
 
@@ -314,10 +313,10 @@ const spatialManager = (function () {
 
 
   /**
-   * 
-   * @param {number} posX 
-   * @param {number} posY 
-   * @param {number} radius 
+   *
+   * @param {number} posX
+   * @param {number} posY
+   * @param {number} radius
    */
   function findEntityInRange(posX, posY, radius) {
     const result = null;
@@ -325,7 +324,7 @@ const spatialManager = (function () {
     let best_distanceSq = Number.POSITIVE_INFINITY;
     let best_spatialID = null;
 
-    console.log("SEARCHING...");
+    console.log('SEARCHING...');
 
     for (let i = 0, keys = Object.keys(entities); i < keys.length; i += 1) {
       const spatialID = keys[i];
@@ -353,8 +352,8 @@ const spatialManager = (function () {
 
 
   /**
-   * 
-   * @param {CanvasRenderingContext2D} ctx 
+   *
+   * @param {CanvasRenderingContext2D} ctx
    */
   function render(ctx) {
     const oldStyle = ctx.strokeStyle;
@@ -379,29 +378,27 @@ const spatialManager = (function () {
         const y = ty * tileSize;
 
         if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
-          
-            const mahx = ci.x;
-            const mahy = ci.y;
+          const mahx = ci.x;
+          const mahy = ci.y;
 
-            const x1 = x + tileSize / 2;
-            const y1 = y + tileSize / 2;
-            const x2 = x1 + tileSize * mahx / 2;
-            const y2 = y1 + tileSize * mahy / 2;
-            if (obj.stamp === tiles._stamp) {
-              ctx.strokeStyle = 'orange';
-            } else {
-              ctx.strokeStyle = 'blue';
-            }
+          const x1 = x + tileSize / 2;
+          const y1 = y + tileSize / 2;
+          const x2 = x1 + tileSize * mahx / 2;
+          const y2 = y1 + tileSize * mahy / 2;
+          if (obj.stamp === tiles._stamp) {
+            ctx.strokeStyle = 'orange';
+          } else {
+            ctx.strokeStyle = 'blue';
+          }
 
-            if (prevX === tx && prevY === ty) {
-              ctx.strokeStyle = 'lime';
-            }
-            util.strokeCircle(ctx, x1 - dx, y1 - dy, 5);
-            ctx.beginPath();
-            ctx.moveTo(x1 - dx, y1 - dy);
-            ctx.lineTo(x2 - dx, y2 - dy);
-            ctx.stroke();
-          
+          if (prevX === tx && prevY === ty) {
+            ctx.strokeStyle = 'lime';
+          }
+          util.strokeCircle(ctx, x1 - dx, y1 - dy, 5);
+          ctx.beginPath();
+          ctx.moveTo(x1 - dx, y1 - dy);
+          ctx.lineTo(x2 - dx, y2 - dy);
+          ctx.stroke();
         }
 
 
@@ -446,11 +443,10 @@ const spatialManager = (function () {
   }
 
 
-
   /**
-   * 
-   * @param {number} width 
-   * @param {number} height 
+   *
+   * @param {number} width
+   * @param {number} height
    */
   function init(width, height) {
     tiles = new Grid(width / tileSize, height / tileSize);
@@ -459,7 +455,7 @@ const spatialManager = (function () {
 
   /**
    * Once the Web Worker for the `tiles' has finished
-   * @param {function} callback 
+   * @param {function} callback
    */
   function onready(callback) {
     tiles.onready(callback);
@@ -497,9 +493,7 @@ const spatialManager = (function () {
       tiles,
       _unregisterTile,
     },
-    getTiles: () => {
-      return tiles
-    },
+    getTiles: () => tiles,
     NO_CONFLICT,
   };
 })();
