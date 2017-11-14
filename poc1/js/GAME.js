@@ -73,11 +73,6 @@ function gatherInputs() {}
 
 function updateSimulation(du) {
 
-  const tx = spatialManager.toX(g_mouse.x);
-  const ty = spatialManager.toY(g_mouse.y);
-
-  spatialManager.carveShortestPath(tx, ty);
-
   spatialManager.update(du);
 
   // Update entities.

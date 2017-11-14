@@ -8,7 +8,7 @@ function TiledMap(cfg) {
   // Safety
   for (let i = 0; i < tilesets.length; i += 1) {
     if (typeof tilesets[i] === 'string') {
-      console.error("Should be of type TiledTileset but got a string:", tilesets[i]);
+      console.error('Should be of type TiledTileset but got a string:', tilesets[i]);
       throw Error();
     }
   }
@@ -51,10 +51,10 @@ function TiledMap(cfg) {
 
 
     if (!layer.properties) {
-      console.error("Need level properties!");
-      console.error("Open Tiled, select a layer and add a custom attribute" + 
+      console.error('Need level properties!');
+      console.error('Open Tiled, select a layer and add a custom attribute' +
       " level.  Set it to 0 if it's a bottom layers, 1 if it's a middle layer and 2 if it's" +
-      " a top layer.");
+      ' a top layer.');
       throw Error();
     }
 
@@ -68,10 +68,10 @@ function TiledMap(cfg) {
       } else if (lvl === 2) {
         this.isTopLayer[name] = true;
       } else {
-        throw Error("Invalid number for level.");
+        throw Error('Invalid number for level.');
       }
     } else {
-      throw Error("Need level information!");
+      throw Error('Need level information!');
     }
 
     const data = layers[i].data;
@@ -315,8 +315,6 @@ TiledMap.prototype.addObstructions = function () {
 
           if (tlut[tidx]) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
-
-
               spatialManager.debug._registerTile(spatialManager.debug.WALL_ID, tx, ty);
             }
           }

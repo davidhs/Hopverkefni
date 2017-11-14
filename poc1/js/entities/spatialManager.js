@@ -20,7 +20,7 @@
  * A module which handles spatial lookup, used for general collision
  * detection.
  * ---------------
- * It's very important to conside the tile size `tileSize' beforehand --
+ * It's very important to consider the tile size `tileSize' beforehand --
  * enable to change tile size -- because it can drastically affect
  * performance.  If the scene is huge and there are a lot of objects
  * spread around, you should conside using a larget tile size.
@@ -123,6 +123,7 @@ const spatialManager = (function () {
     }
   }
 
+
   function _resolveConflict(id, x, y) {
     const obj = tiles.get(x, y);
 
@@ -176,6 +177,17 @@ const spatialManager = (function () {
   }
 
   function update(du) {
+    const player = entityManager.getPlayer();
+    const sx = _getX(player.cx);
+    const sy = _getY(player.cy);
+
+    if (prevX !== sx || prevY !== sy) {
+      prevX = sx;
+      prevY = sy;
+    }
+
+    tiles.carveShortestPath(sx, sy);
+
     tiles.update(du);
   }
 
@@ -217,24 +229,19 @@ const spatialManager = (function () {
    */
 
   /**
+   * Registers entity.
+   *
+   * If the registration fails this function will do a proper cleanup.
+   *
+   * If two entities might collider then the spatial manager will
+   * decide on it.
+   *
    * @param {Entity} entity
    * @param {boolean} force if true don't unregister
    */
   function register(entity, force) {
     const pos = entity.getPos();
     const spatialID = entity.getSpatialID();
-
-
-    // CRAPPY PATH FINDING
-    if (true) {
-      const player = entityManager.getPlayer();
-      const sx = _getX(player.cx);
-      const sy = _getY(player.cy);
-      if (prevX !== sx || prevY !== sy) {
-        prevX = sx;
-        prevY = sy;
-      }
-    }
 
     const cx = pos.posX;
     const cy = pos.posY;
@@ -263,11 +270,19 @@ const spatialManager = (function () {
   }
 
 
+  /**
+   * Some entity with upper left position (x, y) requests
+   * directions from where it stands to that of the player.
+   *
+   * @param {number} x
+   * @param {number} y
+   * @returns {x: number, y: number}
+   */
   function getDirection(x, y) {
     const tx = _getX(x);
     const ty = _getY(y);
 
-    
+
     return tiles.getCI(tx, ty);
   }
 
@@ -297,38 +312,49 @@ const spatialManager = (function () {
   }
 
 
+  /**
+   *
+   * @param {number} posX
+   * @param {number} posY
+   * @param {number} radius
+   */
   function findEntityInRange(posX, posY, radius) {
     const result = null;
 
     let best_distanceSq = Number.POSITIVE_INFINITY;
     let best_spatialID = null;
 
+    console.log('SEARCHING...');
+
     for (let i = 0, keys = Object.keys(entities); i < keys.length; i += 1) {
       const spatialID = keys[i];
       const entity = entities[spatialID];
 
-      const r2 = util.square(radius + entity.radius);
+
+      const r2 = Math.abs(radius + entity.radius);
 
       const d2 = util.distSq(posX, posY, entity.posX, entity.posY);
 
       const td = Math.max(0, d2 - r2);
 
-      if (d2 > 0 && d2 <= r2 && td < best_distanceSq) {
-        best_distanceSq = td;
+      if (d2 < best_distanceSq) {
+        best_distanceSq = d2;
         best_spatialID = spatialID;
       }
     }
+
+    console.log(best_spatialID);
 
     if (!best_spatialID) return null;
 
     return entities[best_spatialID].entity;
   }
 
-  const firstTime = true;
 
-  let ITER10 = 0;
-
-
+  /**
+   *
+   * @param {CanvasRenderingContext2D} ctx
+   */
   function render(ctx) {
     const oldStyle = ctx.strokeStyle;
 
@@ -352,29 +378,27 @@ const spatialManager = (function () {
         const y = ty * tileSize;
 
         if (g_viewport.inOuterRectangleBounds(x, y, tileSize, tileSize)) {
-          
-            const mahx = ci.x;
-            const mahy = ci.y;
+          const mahx = ci.x;
+          const mahy = ci.y;
 
-            const x1 = x + tileSize / 2;
-            const y1 = y + tileSize / 2;
-            const x2 = x1 + tileSize * mahx / 2;
-            const y2 = y1 + tileSize * mahy / 2;
-            if (obj.stamp === tiles._stamp) {
-              ctx.strokeStyle = 'orange';
-            } else {
-              ctx.strokeStyle = 'blue';
-            }
+          const x1 = x + tileSize / 2;
+          const y1 = y + tileSize / 2;
+          const x2 = x1 + tileSize * mahx / 2;
+          const y2 = y1 + tileSize * mahy / 2;
+          if (obj.stamp === tiles._stamp) {
+            ctx.strokeStyle = 'orange';
+          } else {
+            ctx.strokeStyle = 'blue';
+          }
 
-            if (prevX === tx && prevY === ty) {
-              ctx.strokeStyle = 'lime';
-            }
-            util.strokeCircle(ctx, x1 - dx, y1 - dy, 5);
-            ctx.beginPath();
-            ctx.moveTo(x1 - dx, y1 - dy);
-            ctx.lineTo(x2 - dx, y2 - dy);
-            ctx.stroke();
-          
+          if (prevX === tx && prevY === ty) {
+            ctx.strokeStyle = 'lime';
+          }
+          util.strokeCircle(ctx, x1 - dx, y1 - dy, 5);
+          ctx.beginPath();
+          ctx.moveTo(x1 - dx, y1 - dy);
+          ctx.lineTo(x2 - dx, y2 - dy);
+          ctx.stroke();
         }
 
 
@@ -419,12 +443,20 @@ const spatialManager = (function () {
   }
 
 
+  /**
+   *
+   * @param {number} width
+   * @param {number} height
+   */
   function init(width, height) {
     tiles = new Grid(width / tileSize, height / tileSize);
-    //tiles.init(width / tileSize, height / tileSize);
-    console.log(tiles);
   }
 
+
+  /**
+   * Once the Web Worker for the `tiles' has finished
+   * @param {function} callback
+   */
   function onready(callback) {
     tiles.onready(callback);
   }
@@ -461,9 +493,7 @@ const spatialManager = (function () {
       tiles,
       _unregisterTile,
     },
-    getTiles: () => {
-      return tiles
-    },
+    getTiles: () => tiles,
     NO_CONFLICT,
   };
 })();

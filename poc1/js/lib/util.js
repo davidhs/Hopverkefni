@@ -134,6 +134,10 @@ const util = (function () {
 
   util.distSq = (x1, y1, x2, y2) => (util.square(x2 - x1) + util.square(y2 - y1));
 
+  util.dist = (x1, y1, x2, y2) => {
+    return Math.sqrt(util.distSq(x1, y1, x2, y2));
+  };
+
   util.wrappedDistSq = (x1, y1, x2, y2, xWrap, yWrap) => {
     let dx = Math.abs(x2 - x1);
     let dy = Math.abs(y2 - y1);

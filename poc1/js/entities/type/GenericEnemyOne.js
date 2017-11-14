@@ -11,6 +11,8 @@ function GenericEnemyOne(cfg) {
   if (!this.sprite) throw Error('NEED TO SET SPRITE TO CHARACTER');
 
   this._scale = this.sprite.scale;
+
+  this._stuck = false;
 }
 
 // Inherit from Entity
@@ -58,6 +60,17 @@ GenericEnemyOne.prototype.update = function (du) {
     dy = directions.y;
   }
 
+  const pdx = Math.sign(player.cx - this.cx);
+  const pdy = Math.sign(player.cy - this.cy);
+
+  if (this._stuck || dx === 0 && dy === 0) {
+
+    // dx = pdx;
+    // dy = pdy;
+    dx = 0.75 * pdx + 2 * Math.random() - 1;
+    dy = 0.75 * pdy + 2 * Math.random() - 1;
+  }
+
 
 
 
@@ -69,6 +82,8 @@ GenericEnemyOne.prototype.update = function (du) {
   if (len < 100) {
     this.attack(du);
   }
+
+
 
   const udx = dx / len;
   const udy = dy / len;
@@ -124,8 +139,6 @@ GenericEnemyOne.prototype.update = function (du) {
   }
 
 
-  const pdx = Math.sign(player.cx - this.cx);
-  const pdy = Math.sign(player.cy - this.cy);
 
   let flags = spatialManager.register(this);
 
@@ -133,11 +146,19 @@ GenericEnemyOne.prototype.update = function (du) {
 
   // Wall crap
   if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
-    
-    newX = this.cx + pdx * Math.random();
-    newY = this.cy + pdy * Math.random();
-  
 
+    this.velX += (2 * Math.random() - 1) * 0.5;
+    this.velY += (2 * Math.random() - 1) * 0.5;
+
+
+    let newX = oldX + du * this.velX;
+    let newY = oldY + du * this.velY;
+  
+    if (flags < spatialManager.MIN_ENTITY) {
+      this.cx = newX;
+      this.cy = newY;
+      flags = spatialManager.register(this);
+    }
 
     if (flags < spatialManager.MIN_ENTITY) {
       this.cx = newX;
@@ -152,10 +173,13 @@ GenericEnemyOne.prototype.update = function (du) {
     }
 
     if (flags) {
+      this._stuck = true;
       this.cx = oldX;
       this.cy = oldY;
       flags = spatialManager.register(this);
     }
+  } else {
+    this._stuck = false;
   }
   // Return sett til ad stoppa Lint villu (ma taka ut ef tetta gerir bug)
   return 0;

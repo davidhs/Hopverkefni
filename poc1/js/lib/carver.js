@@ -16,6 +16,7 @@ let initialized = false;
 
 
 
+
 const TPL = [
   [-1, -1],
   [0, -1],
@@ -26,6 +27,7 @@ const TPL = [
   [-1, 1],
   [-1, 0],
 ];
+
 
 /*
 const TPL = [
