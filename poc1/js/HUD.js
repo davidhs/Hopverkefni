@@ -33,9 +33,6 @@ const HUD = (function () {
   let n_dw = 0;
   let n_dh = 0;
 
-
-
-
   // test key
   const KEY_HPTEST = keyCode('G');
 
@@ -85,7 +82,6 @@ const HUD = (function () {
   // witch weapon should appear on the screen, collected by
   // string from Player.js
   function whichhWeapon(gun) {
-    console.log(gun);
     if (gun === 'knife') {
       resetweapons();
       isKnife = true;
@@ -176,66 +172,57 @@ const HUD = (function () {
   }
 
 
-  //messy but works, will probably change this to make it look better
-  function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh){
-    if(isHandgun){
-      ctx.drawImage(selected, sx, sy, sw, sh, dx,dy, dw, dh);
-    }
-    else{
-      ctx.drawImage(exists, sx, sy, sw, sh, dx,dy, dw, dh);
-    }
-    sx += sw;
-    dx += dw;
-
-    if(isShotgun){
+  // messy but works, will probably change this to make it look better
+  function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
+    if (isHandgun) {
       ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-    else{
+    } else {
       ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
     }
     sx += sw;
     dx += dw;
 
-    if(isRifle){
-      ctx.drawImage(selected, sx, sy, sw, sh, dx,dy, dw, dh);
+    if (isShotgun) {
+      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
     }
-    else{
-      ctx.drawImage(exists, sx, sy, sw, sh, dx,dy, dw, dh);
-    }
-
     sx += sw;
     dx += dw;
 
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
-    sx += sw;
-    dx += dw;
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx,dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    if(isKnife){
-      ctx.drawImage(selected, sx, sy, sw, sh, dx,dy, dw, dh);
-    }
-    else{
-      ctx.drawImage(exists, sx, sy, sw, sh, dx,dy, dw, dh);
+    if (isRifle) {
+      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
     }
 
+    sx += sw;
+    dx += dw;
 
 
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
 
+    sx += sw;
+    dx += dw;
 
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
+    sx += sw;
+    dx += dw;
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
+
+    sx += sw;
+    dx += dw;
+
+    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
+
+    sx += sw;
+    dx += dw;
+
+    if (isKnife) {
+      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
   }
 
   // draw the hud bar
@@ -243,29 +230,15 @@ const HUD = (function () {
     ctx.clearRect(H_cx, H_cy, H_width, H_height);
     ctx.beginPath();
     ctx.drawImage(background, H_cx, H_cy, H_width, H_height);
-
-
-
-
-
-
-
-
-
-
     // draw healthbar
     if (hpLost < 1) {
       draw_healthbar(ctx, xHP, yHP, hpLost, widthHP, heightHP);
     }
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
 
-
     drawWeapon(ctx, W_cx, W_cy);
-
-    drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx,n_dy, n_dw, n_dh);
+    drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);
   }
-
-
 
   function update(du) {
     // test to see lifebar fades away
@@ -293,24 +266,16 @@ const HUD = (function () {
     // update Numbers
     n_sx = 0;
     n_sy = 0;
-    n_sw = exists.width/8;
+    n_sw = exists.width / 8;
     n_sh = exists.height;
     n_dx = H_cx + 220;
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
-
-
-
-
   }
-
-
-
 
   function render(ctx) {
     draw(ctx);
-
 
     // get images
     background = g_asset.raw.image.Hbackground;
@@ -322,7 +287,6 @@ const HUD = (function () {
     exists = g_asset.raw.image.exists;
     notexists = g_asset.raw.image.notexists;
     selected = g_asset.raw.image.selected;
-
   }
 
 
