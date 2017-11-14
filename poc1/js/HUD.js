@@ -84,25 +84,22 @@ const HUD = (function () {
 
   // witch weapon should appear on the screen, collected by
   // string from Player.js
-  function witchWeapon(gun) {
+  function whichhWeapon(gun) {
+    console.log(gun);
     if (gun === 'knife') {
-      console.log('1');
       resetweapons();
       isKnife = true;
     }
     if (gun === 'handgun') {
-      console.log('2');
       resetweapons();
       isHandgun = true;
     }
     if (gun === 'shotgun') {
-      console.log('3');
       resetweapons();
       isShotgun = true;
     }
 
     if (gun === 'rifle') {
-      console.log('4');
       resetweapons();
       isRifle = true;
     }
@@ -330,7 +327,7 @@ const HUD = (function () {
 
 
   return {
-    witchWeapon,
+    whichhWeapon,
     update,
     render,
   };
