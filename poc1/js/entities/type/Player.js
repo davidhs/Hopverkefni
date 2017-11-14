@@ -460,3 +460,9 @@ Player.prototype.render = function (ctx, cfg) {
   this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
   this.sprite.scale = origScale;
 };
+
+
+Player.prototype.getWitchWeapon = function(){;
+  return this.useWeapon;
+
+}
