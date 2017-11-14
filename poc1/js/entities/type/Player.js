@@ -47,16 +47,16 @@ Player.prototype.RELOAD = keyCode('R');
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
 Player.prototype.health = 100;
-Player.prototype.useWeapon = 1;
+Player.prototype.useWeapon = 0;
 Player.prototype.autoFire = false;
 
 const armory = [];
 
 const knife = {
   name: 'knife',
+  id: 0,
   auto: true,
   has: true,
-  weapon: 0,
   damage: 150,
   accuracy: 1,
   bulletSpeed: Infinity,
@@ -69,13 +69,13 @@ const knife = {
 };
 
 const pistol = {
-  name: 'pistol',
+  name: 'handgun',
+  id: 1,
   auto: false,
   has: true,
-  weapon: 1,
   damage: 24,
   accuracy: 0.8,
-  bulletSpeed: 5,
+  bulletSpeed: 15,
   fireRate: 60,
   reloadTime: 1,
   through: 0,
@@ -86,12 +86,12 @@ const pistol = {
 
 const shotgun = {
   name: 'shotgun',
+  id: 2,
   auto: false,
   has: true,
-  weapon: 2,
   damage: 9,
   accuracy: 0.1,
-  bulletSpeed: 5,
+  bulletSpeed: 10,
   fireRate: 100,
   reloadTime: 4,
   through: 0,
@@ -102,12 +102,12 @@ const shotgun = {
 
 const rifle = {
   name: 'rifle',
+  id: 3,
   auto: true,
   has: true,
-  weapon: 3,
   damage: 86,
   accuracy: 0.9,
-  bulletSpeed: 5,
+  bulletSpeed: 20,
   fireRate: 20,
   reloadTime: 2,
   through: 2,
@@ -118,12 +118,12 @@ const rifle = {
 
 const sniper = {
   name: 'sniper',
+  id: 4,
   auto: false,
   has: false,
-  weapon: 4,
   damage: 160,
   accuracy: 1,
-  bulletSpeed: 100,
+  bulletSpeed: 30,
   fireRate: 1,
   reloadTime: 3,
   through: 3,
@@ -134,12 +134,12 @@ const sniper = {
 
 const mg = {
   name: 'mg',
+  id: 5,
   auto: true,
   has: false,
-  weapon: 5,
   damage: 70,
   accuracy: 0.8,
-  bulletSpeed: 50,
+  bulletSpeed: 20,
   fireRate: 8,
   reloadTime: 8,
   through: 1,
@@ -150,9 +150,9 @@ const mg = {
 
 const ray = {
   name: 'ray',
+  id: 6,
   auto: false,
   has: false,
-  weapon: 6,
   damage: 300,
   accuracy: 1,
   bulletSpeed: 100,
@@ -171,6 +171,26 @@ armory.push(rifle);
 armory.push(sniper);
 armory.push(mg);
 armory.push(ray);
+
+// -------------- Shit Mix Begins -------------
+function selectWeapons(evt) {
+  const sel = (+String.fromCharCode(evt.keyCode));
+  if (Number.isNaN(sel)) {
+    return;
+  }
+  for (let i = 0; i < armory.length; i += 1) {
+    if (sel === armory[i].id) {
+      if (armory[i].has) {
+        console.log(armory[i].id);
+        this.useWeapon = armory[i].id;
+        console.log(this.useWeapon);
+        HUD.whichhWeapon(armory[i].name);
+      }
+      break;
+    }
+  }
+}
+// ------------- Shit Mix Ends -----------------
 
 // When the player stops accelerating then this
 // factor determines how quickly it halts.  A smaller
@@ -239,47 +259,6 @@ Player.prototype.update = function (du) {
   //      }
   //   }
 
-  if (eatKey(this.KNIFE) && armory[0].has) {
-    console.log('Knife selected!');
-    this.useWeapon = 0;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    //Alexander
-
-    HUD.witchWeapon('knife');
-
-  }
-
-  if (eatKey(this.PISTOL) && armory[1].has) {
-    console.log('PISTOL selected!');
-    this.useWeapon = 1;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    //Alexander
-
-    HUD.witchWeapon('handgun');
-  }
-
-  if (eatKey(this.SHOTGUN) && armory[2].has) {
-    console.log('Shotgun selected!');
-    this.useWeapon = 2;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    //Alexander
-
-    HUD.witchWeapon('shotgun');
-  }
-
-  if (eatKey(this.RIFLE) && armory[3].has) {
-    console.log('AK selected!');
-    this.useWeapon = 3;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    //Alexander
-
-    HUD.witchWeapon('rifle');
-  }
-
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
   if (noHorAcc) this.velX *= slowDown;
@@ -314,7 +293,10 @@ Player.prototype.update = function (du) {
 
   if (g_mouse.isDown) {
     if (armory[this.useWeapon].magazineAmmo > 0) {
+      console.log('Mouse is down!');
+      console.log(this.useWeapon);
       console.log(`Firing ${armory[this.useWeapon].name}`);
+      console.log('');
       this.fireBullet();
     } else {
       console.log(`Reload ${armory[this.useWeapon].name}`);
@@ -461,8 +443,4 @@ Player.prototype.render = function (ctx, cfg) {
   this.sprite.scale = origScale;
 };
 
-
-Player.prototype.getWitchWeapon = function(){;
-  return this.useWeapon;
-
-}
+document.onkeyup = selectWeapons;
