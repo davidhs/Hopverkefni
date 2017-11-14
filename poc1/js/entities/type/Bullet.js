@@ -51,6 +51,9 @@ Bullet.prototype.update = function (du) {
   const potentialCollision = spatialManager.register(this);
 
   if (potentialCollision) {
+
+    console.log("POTENTIAL EXPL");
+    
     const hitEntity = this.findHitEntity();
 
     if (hitEntity) {

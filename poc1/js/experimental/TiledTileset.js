@@ -15,6 +15,8 @@ function TiledTileset(cfg) {
 
   const tiles = this.cfg.tile;
 
+  console.log(tiles);
+
 
   if (tiles) {
     for (let i = 0; i < tiles.length; i += 1) {
@@ -23,37 +25,39 @@ function TiledTileset(cfg) {
 
 
       if (tile.objectgroup) {
-        let properties;
-        if (tile.objectgroup.property) {
-          properties = tile.objectgroup.property;
-        } else if (tile.objectgroup.properties) {
-          properties = tile.objectgroup.properties;
-        }
-
-        // So stupid...
-        properties = properties.property;
-
-
-        for (let j = 0; j < properties.length; j += 1) {
-          const property = properties[j];
-          const name = property['@attributes'].name;
-          const type = property['@attributes'].type;
-          const value = property['@attributes'].value;
-
-          let val;
-
-          if (type === 'bool') {
-            if (value === 'true') val = true;
-            else if (value === 'false') val = false;
-          } else {
-            val = value;
+        if (tile.objectgroup.property || tile.objectgroup.properties) {
+          let properties;
+          if (tile.objectgroup.property) {
+            properties = tile.objectgroup.property;
+          } else if (tile.objectgroup.properties) {
+            properties = tile.objectgroup.properties;
           }
 
-          tlut[id] = {
-            name,
-            type,
-            value: val,
-          };
+          // So stupid...
+          properties = properties.property;
+
+
+          for (let j = 0; j < properties.length; j += 1) {
+            const property = properties[j];
+            const name = property['@attributes'].name;
+            const type = property['@attributes'].type;
+            const value = property['@attributes'].value;
+
+            let val;
+
+            if (type === 'bool') {
+              if (value === 'true') val = true;
+              else if (value === 'false') val = false;
+            } else {
+              val = value;
+            }
+
+            tlut[id] = {
+              name,
+              type,
+              value: val,
+            };
+          }
         }
       }
     }

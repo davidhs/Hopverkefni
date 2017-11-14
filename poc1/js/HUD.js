@@ -304,6 +304,9 @@ const HUD = (function () {
     n_dh = 30;
 
 
+    console.log(Player.prototype.getWitchWeapon());
+
+
 
 
   }
