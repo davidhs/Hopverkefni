@@ -314,6 +314,8 @@ Graph.prototype.visualize = function () {
     });
 };
 
+let bigQ = null;
+
 /**
  * Computes a path from the initial node to the destination node
  * through the graph.
@@ -332,6 +334,7 @@ function dijkstra(graph, sourceID) {
         check: true,
         type: PriorityQueue.TYPE_MIN_PQ
     });
+    bigQ = Q;
 
     graph.vertex(sourceID).dist = 0;
 

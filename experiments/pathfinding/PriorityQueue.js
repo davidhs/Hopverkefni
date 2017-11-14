@@ -15,7 +15,9 @@ function PriorityQueue(cfg) {
   this._pq = [0];
   this._size = 0;
   this._check = false;
-  this._vilut = new Map();  // value --> index lookup table
+
+  this._lut = {};
+  this._vilut = new Map();
 
   if (cfg) {
     if (cfg.check) this._check = cfg.check;
@@ -29,11 +31,20 @@ function PriorityQueue(cfg) {
       }
     }
   }
+
+  this._nextID = 0;
 }
 
 // Static variables
 PriorityQueue.TYPE_MAX_PQ = 1;
 PriorityQueue.TYPE_MIN_PQ = 2;
+
+
+PriorityQueue.prototype._getNextID = function () {
+  const nextID = this._nextID;
+  this._nextID += 1;
+  return nextID;
+};
 
 
 /**
@@ -81,10 +92,16 @@ PriorityQueue.prototype._subcmp = function (key1, key2) {
  * @param {number} j 
  */
 PriorityQueue.prototype._cmp = function (index1, index2) {
-  const a = this._pq[index1];
-  const b = this._pq[index2];
+  const id1 = this._pq[index1];
+  const id2 = this._pq[index2];
 
-  return this._subcmp(a.key, b.key);
+  const item1 = this._lut[id1];
+  const item2 = this._lut[id2];
+
+  const key1 = item1.key;
+  const key2 = item2.key;
+
+  return this._subcmp(key1, key2);
 };
 
 
@@ -119,14 +136,14 @@ PriorityQueue.prototype._verify = function (k) {
  */
 PriorityQueue.prototype._exch = function (i, j) {
 
-  const item1 = this._pq[i];
-  const item2 = this._pq[j];
+  const id1 = this._pq[i];
+  const id2 = this._pq[j];
 
-  this._vilut.set(item1.value, j);
-  this._vilut.set(item2.value, i);
+  this._lut[id1].idx = j;
+  this._lut[id2].idx = i;
 
-  this._pq[i] = item2
-  this._pq[j] = item1;
+  this._pq[i] = id2;
+  this._pq[j] = id1;
 };
 
 /**
@@ -161,18 +178,21 @@ PriorityQueue.prototype._swim = function (k) {
   }
 };
 
+function snapshot(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
 
-/**
- *
- */
-PriorityQueue.prototype.enqueue = function (key, value) {
+PriorityQueue.prototype.add = function (key, value) {
   // Add item to end of array
 
   const idx = this._size + 1;
+  const id = this._getNextID();
 
-  this._vilut.set(value, idx);
+  this._vilut.set(value, id);
 
-  this._pq[idx] = { key, value };
+  this._lut[id] = { key, value, idx };
+
+  this._pq[idx] = id;
   this._size += 1;
   this._swim(this._size);
 
@@ -180,19 +200,6 @@ PriorityQueue.prototype.enqueue = function (key, value) {
     console.error('Failure in enqueueing.');
     throw Error();
   }
-};
-
-/**
- * 
- * @param {*} key 
- * @param {*} value 
- */
-PriorityQueue.prototype.push = function (key, value) {
-  this.enqueue(key, value);
-};
-
-PriorityQueue.prototype.add = function (key, value) {
-  this.enqueue(key, value);
 };
 
 
@@ -206,15 +213,18 @@ PriorityQueue.prototype.peek = function () {
 PriorityQueue.prototype.changePriority = function (value, newPriority) {
 
   // Index of the value in this._pq.
-  const idx = this._vilut.get(value);
+  const id = this._vilut.get(value);
+
+  const item = this._lut[id];
+  const idx = item.idx;
   
-  const oldPriority = this._pq[idx].key;
+  const oldPriority = item.key;
 
   // Only sink/swim if change of priority
   if (newPriority != oldPriority) {
     // We sink with lower priority
 
-    this._pq[idx].key = newPriority;
+    item.key = newPriority;
 
     if (this._subcmp(oldPriority, newPriority)) {
       // New priority is of higher priority.
@@ -227,39 +237,33 @@ PriorityQueue.prototype.changePriority = function (value, newPriority) {
     // We swim with higher priorty
   }
 
-  
-
   // Do sink or swim.
 };
 
-/**
- * Return and remove the largest key.
- */
-PriorityQueue.prototype.dequeue = function (valueOnly) {
+PriorityQueue.prototype.remove = function () {
   if (this._size === 0) throw Error();
-  valueOnly = typeof valueOnly !== 'undefined' ? valueOnly : true;
-  const maxElement = this._pq[1];
 
-  this._vilut.delete(maxElement.value);
+  const hiPriID = this._pq[1];
+
+  const hiPriItem = this._lut[hiPriID];
 
   this._exch(1, this._size);
   this._size -= 1;
   this._sink(1);
-  // this._pq[this._size + 1] = null;
+  
+
+  
+  this._vilut.delete(hiPriItem);
+  delete this._lut[hiPriID];
+
   delete this._pq[this._size + 1];
+  
   if (this._check && !this._verify()) {
     console.error('Failure in dequeueing.');
     throw Error();
   }
-  return valueOnly ? maxElement.value : maxElement;
-};
 
-PriorityQueue.prototype.pop = function (valueOnly) {
-  return this.dequeue(valueOnly);
-}
-
-PriorityQueue.prototype.remove = function (valueOnly) {
-  return this.dequeue(valueOnly);
+  return hiPriItem.value;
 }
 
 PriorityQueue.prototype.toString = function (k, p) {
