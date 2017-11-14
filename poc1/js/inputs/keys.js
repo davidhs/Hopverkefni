@@ -8,6 +8,7 @@
 
 const g_keys = [];
 
+
 function handleKeydown(evt) {
   // Prevent browser scrolling down when pressing SPACE
   if (evt.keyCode === 32 && evt.target === document.body) {
@@ -25,6 +26,7 @@ function handleKeyup(evt) {
 function keyCode(keyChar) {
   return keyChar.charCodeAt(0);
 }
+
 
 // Inspects, and then clears, a key's state
 //
