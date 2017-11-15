@@ -61,6 +61,7 @@ const HUD = (function () {
   let notexists = new Image();
   let selected = new Image();
 
+  let damage = 0;
 
   // =================
   // Weapon_handler
@@ -79,6 +80,10 @@ const HUD = (function () {
     isRaygun = false;
   }
 
+  function getDamage(dmg) {
+    this.damage = dmg;
+    return damage;
+  }
   // witch weapon should appear on the screen, collected by
   // string from Player.js
   function whichWeapon(gun) {
@@ -98,6 +103,14 @@ const HUD = (function () {
     if (gun === 'rifle') {
       resetweapons();
       isRifle = true;
+    }
+    if (gun === 'sniper') {
+      resetweapons();
+      isSniper = true;
+    }
+    if (gun === 'mg') {
+      resetweapons();
+      isSmg = true;
     }
   }
 
@@ -148,26 +161,41 @@ const HUD = (function () {
       ctx.drawImage(knife, x, y, width, height);
     }
     if (isHandgun) {
-      const width = 100;
-      const height = 35;
+      const width = 52;
+      const height = 40;
       ctx.beginPath();
       ctx.drawImage(handgun, x, y, width, height);
     }
     // TODO: SHOTGUN
 
     if (isRifle) {
-      const width = 120;
-      const height = 50;
+      const width = 78;
+      const height = 40;
       ctx.beginPath();
       ctx.drawImage(rifle, x, y, width, height);
     }
 
     //
     if (isShotgun) {
-      const width = 120;
-      const height = 50;
+      const width = 100;
+      const height = 40;
       ctx.beginPath();
       ctx.drawImage(shotgun, x - 20, y, width, height);
+    }
+
+    if (isSmg) {
+      const width = 62;
+      const height = 40;
+      ctx.beginPath();
+      ctx.drawImage(smg, x - 20, y, width, height);
+    }
+
+
+    if (isSniper) {
+      const width = 87;
+      const height = 40;
+      ctx.beginPath();
+      ctx.drawImage(sniper, x - 20, y, width, height);
     }
   }
 
@@ -199,6 +227,23 @@ const HUD = (function () {
     sx += sw;
     dx += dw;
 
+    if (isSmg) {
+      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+
+    sx += sw;
+    dx += dw;
+
+    if (isSniper) {
+      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+
+    sx += sw;
+    dx += dw;
 
     ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
 
@@ -284,6 +329,8 @@ const HUD = (function () {
     shotgun = g_asset.raw.image.shotgun;
     rifle = g_asset.raw.image.rifle1;
     handgun = g_asset.raw.image.handgun;
+    sniper = g_asset.raw.image.sniper;
+    smg = g_asset.raw.image.smg;
     exists = g_asset.raw.image.exists;
     notexists = g_asset.raw.image.notexists;
     selected = g_asset.raw.image.selected;
@@ -291,6 +338,7 @@ const HUD = (function () {
 
 
   return {
+    getDamage,
     whichWeapon,
     update,
     render,
