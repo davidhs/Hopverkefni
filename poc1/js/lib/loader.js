@@ -173,7 +173,6 @@ const loader = (function () {
    */
   function load(categories, callback) {
     if (DEBUG) console.log(`${FILENAME}: Input: ${JSON.stringify(categories)}`);
-
     // TODO: probably doesn't work
     if (!categories) {
       if (callback) {

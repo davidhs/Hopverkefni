@@ -100,6 +100,7 @@ const HUD = (function () {
   let selected = new Image();
   let line = new Image();
 
+  let damage = 0;
 
   // =================
   // Weapon_handler
@@ -114,6 +115,10 @@ const HUD = (function () {
     }
   }
 
+  function getDamage(dmg) {
+    this.damage = dmg;
+    return damage;
+  }
   // witch weapon should appear on the screen, collected by
 
   // id from Player.js
@@ -126,7 +131,6 @@ const HUD = (function () {
     else{
       weapons[id -1].is = true;
     }
-
   }
 
 
@@ -204,6 +208,7 @@ const HUD = (function () {
     ctx.font="12px Georgia";
     ctx.fillStyle = '#00ff00';
     ctx.fillText(magstatus, W_cx + 100, W_cy + 20);
+
 
     ctx.beginPath();
     ctx.drawImage(line, W_cx + 105,W_cy + 10,20,25);
@@ -302,6 +307,8 @@ const HUD = (function () {
     shotgun = g_asset.raw.image.shotgun;
     rifle = g_asset.raw.image.rifle1;
     handgun = g_asset.raw.image.handgun;
+    sniper = g_asset.raw.image.sniper;
+    smg = g_asset.raw.image.smg;
     exists = g_asset.raw.image.exists;
     notexists = g_asset.raw.image.notexists;
     selected = g_asset.raw.image.selected;
@@ -310,6 +317,7 @@ const HUD = (function () {
 
 
   return {
+    getDamage,
     whichWeapon,
     update,
     render,
