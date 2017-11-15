@@ -172,15 +172,7 @@ function selectWeapons(evt) {
     if (sel === armory[i].id) {
       if (armory[i].has) {
         selectedWeaponID = armory[i].id;
-        HUD.getDamage(armory[i].damage);
-        console.log(`Weapon name: ${armory[selectedWeaponID].name}`);
-        console.log(`Damage: ${armory[selectedWeaponID].damage}`);
-        console.log(`Total Ammo: ${armory[selectedWeaponID].ammo}`);
-        console.log(`Magazine Size: ${armory[selectedWeaponID].magazineSize}`);
-
-        console.log(selectedWeaponID);
         HUD.whichWeapon(armory[i].id);
-
       }
       break;
     }

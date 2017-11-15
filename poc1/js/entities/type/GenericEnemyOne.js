@@ -188,7 +188,7 @@ GenericEnemyOne.prototype.attack = function (du) {
 };
 
 GenericEnemyOne.prototype.takeBulletHit = function () {
-  this.hp -= HUD.damage;
+  this.hp -= Player.prototype.getBulletDamage();
   audioManager.play(g_url.audio.impact1);
 
   if (this.hp <= 0) {

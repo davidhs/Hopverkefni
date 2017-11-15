@@ -25,8 +25,6 @@ const HUD = (function () {
   let magazineSize = 0;
   let magazineAmmo = 0;
 
-
-
   // globals for Numbers
   let n_sx = 0;
   let n_sy = 0;
@@ -71,20 +69,13 @@ const HUD = (function () {
        has: false
      };
 
-     weapons.push(Handgun);
-     weapons.push(Shotgun);
-     weapons.push(Rifle);
-     weapons.push(Sniper);
-     weapons.push(Smg);
-     weapons.push(Raygun);
-     weapons.push(Knife);
-
-
-
-
-
-
-
+  weapons.push(Handgun);
+  weapons.push(Shotgun);
+  weapons.push(Rifle);
+  weapons.push(Sniper);
+  weapons.push(Smg);
+  weapons.push(Raygun);
+  weapons.push(Knife);
   // create images
   let background = new Image();
   let heart = new Image();
@@ -92,15 +83,14 @@ const HUD = (function () {
   let shotgun = new Image();
   let rifle = new Image();
   let handgun = new Image();
-  const sniper = new Image();
-  const smg = new Image();
-  const raygun = new Image();
+  let sniper = new Image();
+  let smg = new Image();
+  let raygun = new Image();
   let exists = new Image();
   let notexists = new Image();
   let selected = new Image();
   let line = new Image();
 
-  let damage = 0;
 
   // =================
   // Weapon_handler
@@ -110,26 +100,20 @@ const HUD = (function () {
   // won't be 2 guns true at the same time
 
   function resetweapons() {
-    for(var i = 0; i<weapons.length; i++){
+    for (let i = 0; i < weapons.length; i += 1) {
       weapons[i].is = false;
     }
   }
 
-  function getDamage(dmg) {
-    this.damage = dmg;
-    return damage;
-  }
   // witch weapon should appear on the screen, collected by
 
   // id from Player.js
   function whichWeapon(id) {
     resetweapons();
-    if(id === 0){
+    if (id === 0) {
       weapons[6].is = true;
-
-    }
-    else{
-      weapons[id -1].is = true;
+    } else {
+      weapons[id - 1].is = true;
     }
   }
 
@@ -203,42 +187,37 @@ const HUD = (function () {
     }
   }
 
-  function drawAmmo(ctx, ammo, magsize, magstatus){
+  function drawAmmo(ctx, ammo, magsize, magstatus) {
     ctx.beginPath();
-    ctx.font="12px Georgia";
+    ctx.font = '12px Georgia';
     ctx.fillStyle = '#00ff00';
     ctx.fillText(magstatus, W_cx + 100, W_cy + 20);
 
 
     ctx.beginPath();
-    ctx.drawImage(line, W_cx + 105,W_cy + 10,20,25);
+    ctx.drawImage(line, W_cx + 105, W_cy + 10, 20, 25);
 
     ctx.beginPath();
-    ctx.font="10px Georgia";
+    ctx.font = '10px Georgia';
     ctx.fillStyle = '#00ff00';
     ctx.fillText(ammo, W_cx + 117, W_cy + 30);
-
-
   }
 
 
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
-    for(var i = 0; i<weapons.length; i++){
-      if(weapons[i].is){
+    for (let i = 0; i < weapons.length; i += 1) {
+      if (weapons[i].is) {
         ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-      }
-      else if(weapons[i].has){
+      } else if (weapons[i].has) {
         ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-      }
-      else{
+      } else {
         ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
       }
-      if(i === 5){
+      if (i === 5) {
         sx += sw;
       }
       sx += sw;
       dx += dw;
-
     }
   }
 
@@ -317,7 +296,6 @@ const HUD = (function () {
 
 
   return {
-    getDamage,
     whichWeapon,
     update,
     render,
