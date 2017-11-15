@@ -89,9 +89,9 @@ const HUD = (function () {
   let shotgun = new Image();
   let rifle = new Image();
   let handgun = new Image();
-  let sniper = new Image();
-  let smg = new Image();
-  let raygun = new Image();
+  const sniper = new Image();
+  const smg = new Image();
+  const raygun = new Image();
   let exists = new Image();
   let notexists = new Image();
   let selected = new Image();
@@ -111,11 +111,13 @@ const HUD = (function () {
   }
 
   // witch weapon should appear on the screen, collected by
+
   // id from Player.js
   function whichWeapon(id) {
     resetweapons();
     if(id === 0){
       weapons[6].is = true;
+
     }
     else{
       weapons[id -1].is = true;
@@ -213,55 +215,6 @@ const HUD = (function () {
       dx += dw;
 
     }
-    /*if (isHandgun) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-    sx += sw;
-    dx += dw;
-
-    if (isShotgun) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-    sx += sw;
-    dx += dw;
-
-    if (isRifle) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-
-    sx += sw;
-    dx += dw;
-
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-    sx += sw;
-    dx += dw;
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    if (isKnife) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }*/
   }
 
   // draw the hud bar
