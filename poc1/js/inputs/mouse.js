@@ -128,40 +128,19 @@ const g_mouse = (function () {
   return mouse;
 }());
 
-
-// MOUSE EVENTS
-
 window.addEventListener('mousedown', (evt) => {
+  evt.preventDefault();
   g_mouse.handleEvent('mousedown', evt, g_canvas);
 });
 window.addEventListener('mouseup', (evt) => {
+  evt.preventDefault();
   g_mouse.handleEvent('mouseup', evt, g_canvas);
 });
 window.addEventListener('mousemove', (evt) => {
+  evt.preventDefault();
   g_mouse.handleEvent('mousemove', evt, g_canvas);
 });
 window.addEventListener('click', (evt) => {
+  evt.preventDefault();
   g_mouse.handleEvent('click', evt, g_canvas);
 });
-
-
-// TOUCH EVENTS
-
-/*
-window.addEventListener("touchstart", evt => {
-  console.log('touchstart');
-  g_mouse.handleEvent('touchstart', evt, g_canvas);
-}, false);
-window.addEventListener("touchend", evt => {
-  console.log('touchend');
-  g_mouse.handleEvent('touchend', evt, g_canvas);
-}, false);
-window.addEventListener("touchcancel", evt => {
-  console.log('touchcancel');
-  g_mouse.handleEvent('touchcancel', evt, g_canvas);
-}, false);
-window.addEventListener("touchmove", evt => {
-  console.log('touchmove');
-  g_mouse.handleEvent('touchmove', evt, g_canvas);
-}, false);
-*/

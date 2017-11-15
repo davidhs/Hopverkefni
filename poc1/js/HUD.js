@@ -20,7 +20,7 @@ const HUD = (function () {
   // globals for weapons
   let W_cx = 0;
   let W_cy = 0;
-  let weapons = [];
+  const weapons = [];
 
 
   // globals for Numbers
@@ -54,9 +54,9 @@ const HUD = (function () {
   let shotgun = new Image();
   let rifle = new Image();
   let handgun = new Image();
-  let sniper = new Image();
-  let smg = new Image();
-  let raygun = new Image();
+  const sniper = new Image();
+  const smg = new Image();
+  const raygun = new Image();
   let exists = new Image();
   let notexists = new Image();
   let selected = new Image();
