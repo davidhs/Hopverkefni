@@ -322,9 +322,9 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
-    //if (armory[this.useWeapon].magazineAmmo > 0) {
+    if (armory[this.useWeapon].magazineAmmo > 0) {
       // console.log(`Firing ${armory[this.useWeapon].name}`);
-     if (armory[selectedWeaponID].magazineAmmo > 0) {
+    // if (armory[selectedWeaponID].magazineAmmo > 0) {
       this.fireBullet();
       if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
