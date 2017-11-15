@@ -150,11 +150,11 @@ const spatialManager = (function () {
 
     const x1 = e1.cx;
     const y1 = e1.cy;
-    const r1 = e1.radius;
+    const r1 = e1.radius * 0.5;
 
     const x2 = e2.cx;
     const y2 = e2.cy;
-    const r2 = e2.radius;
+    const r2 = e2.radius * 0.5;
 
     const dx = x2 - x1;
     const dy = y2 - y1;

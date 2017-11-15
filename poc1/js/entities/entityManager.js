@@ -118,10 +118,23 @@ const entityManager = (function () {
         aCategory[i].render(ctx, cfg);
       }
     }
+
+
+    if (_genericEnemiesOne.length < 10) {
+      for (let i = 0; i < 10; i += 1) {
+        const cx = Math.random() * g_world.getWidth();
+        const cy = Math.random() * g_world.getHeight();
+        generateGenericEnemyOne({
+          cx,
+          cy,
+          sprite: g_asset.sprite.donkey,
+        });
+      }
+    }
   }
 
   function init() {
-    for (let i = 0; i < 100; i += 1) {
+    for (let i = 0; i < 1000; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyOne({

@@ -481,7 +481,10 @@ function startGame() {
 
   const canvas = g_canvas;
 
-  screenManager.setDimensions(640, 480);
+  // NNEEDS NOT BE HARDCODED!
+  // screenManager.setDimensions(640, 480);
+
+  screenManager.setDimensions(800, 600);
 
   g_canvas.width = screenManager.getWidth();
   g_canvas.height = screenManager.getHeight();
@@ -535,6 +538,7 @@ function startGame() {
 
   // Event handling
 
+  // TODO this should be loaded first
   mapHandler.getManifest((manifest) => {
     const maps = manifest.maps;
 
