@@ -1,5 +1,5 @@
 // Tells GPU to use lower precision floats.
-precision mediump float; 
+precision mediump float;
 
 // This shader is responsible for creating a one dimensional
 // shadow map from the occluder image.
@@ -48,7 +48,7 @@ void main() {
   // edge.
   for (float y = 0.0; y < MAX_ITERATIONS; y += 1.0) {
 
-    // If y exceeds `u_res.y' break.  Ideally I 
+    // If y exceeds `u_res.y' break.  Ideally I
     // wanted `y >= u_res.y' but then the compiler
     // complained.
     if (y >= u_res.y) {
@@ -67,7 +67,7 @@ void main() {
     // on the interval [0, 1].
     float radius1 = y / u_res.y;
 
-    // Convert to a normalized from, i.e. from 
+    // Convert to a normalized from, i.e. from
     // [[0, 1], [0, 1]] to [[-1, 1], [-1, 1]].
     float angle2 = 2.0 * angle1 - 1.0;
     float radius2 = 2.0 * radius1 - 1.0;

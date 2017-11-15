@@ -72,7 +72,6 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-
   spatialManager.update(du);
 
   // Update entities.
@@ -261,6 +260,12 @@ function renderSimulation(ctx) {
     }
   }
 
+
+  // ctxs.filter = "blur(16px)";
+  // ctxs.filter = 'drop-shadow(0 0 100 20)';
+
+
+
   // Subtract occluders from shadow
 
   ctxs.drawImage(g_occlusion, 0, 0);
@@ -296,9 +301,13 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_shadows, 0, 0, w, h);
 
 
-  ctxp.globalCompositeOperation = 'source-over';
-  ctxp.drawImage(g_top, 0, 0);
-  ctxp.globalAlpha = 1.0;
+
+    ctxp.globalCompositeOperation = 'source-over';
+    ctxp.drawImage(g_top, 0, 0);
+    ctxp.globalAlpha = 1.0;
+
+
+
 
 
   // --- DRAW HUD ---
@@ -466,7 +475,7 @@ function startGame() {
   assetLoader.addProcessor('textureAtlas', TextureAtlas);
   assetLoader.addProcessor('sequence', Sequence);
   assetLoader.addProcessor('sprite', Sprite);
-  assetLoader.addProcessor('fastImage', FastImage);
+  // assetLoader.addProcessor('fastImage', FastImage);
   assetLoader.addProcessor('tiledMap', TiledMap);
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 

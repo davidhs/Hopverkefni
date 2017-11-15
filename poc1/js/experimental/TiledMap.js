@@ -107,9 +107,6 @@ TiledMap.prototype._getLayerName = function (layer) {
   return layer['@attributes'].name;
 };
 
-TiledMap.prototype._render = function (ctx, data2D, textureAtlas) {
-
-};
 
 TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
   // BLANK?
@@ -142,22 +139,15 @@ TiledMap.prototype._renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
   const textureAtlas = this.tilesets[sidx].textureAtlas;
   const tlut = this.tilesets[sidx].tlut;
 
+
   if (cfg && cfg.occlusion) {
     const pkg = tlut[tidx];
 
     if (pkg) {
-      /*
-            const oldFillStyle = ctx.fillStyle;
-            ctx.fillStyle = "#000";
-            ctx.fillRect(x, y, w, h);
-            ctx.fill();
-            ctx.fillStyle = oldFillStyle;
-            */
-
-      textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+      textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h, cfg);
     }
   } else {
-    textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h);
+    textureAtlas.renderIndexTile(ctx, tidx, x, y, w, h, cfg);
   }
 };
 

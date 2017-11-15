@@ -91,8 +91,9 @@ const audioManager = (function () {
 
     if (!found) {
       const audio = new Audio(url);
-      handle = audio;
-      audio.play();
+      // TODO sound is too loud
+      // handle = audio;
+      // audio.play();
       aa[url].list.push(audio);
     }
 

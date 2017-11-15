@@ -225,7 +225,11 @@ const HUD = (function () {
   function draw(ctx) {
     ctx.clearRect(H_cx, H_cy, H_width, H_height);
     ctx.beginPath();
-    ctx.drawImage(background, H_cx, H_cy, H_width, H_height);
+    ctx.drawImage(
+      background, 
+      0, 0, background.width, background.height,
+      H_cx, H_cy, H_width, H_height
+    );
     // draw healthbar
     if (hpLost < 1) {
       draw_healthbar(ctx, xHP, yHP, hpLost, widthHP, heightHP);
