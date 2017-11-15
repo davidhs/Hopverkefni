@@ -21,6 +21,7 @@ const entityManager = (function () {
   const _bullets = [];
   const _players = [];
   const _explosions = [];
+  const _blood = [];
   const _genericEnemiesOne = [];
 
   const _categories = [
@@ -28,6 +29,7 @@ const entityManager = (function () {
     _players,
     _genericEnemiesOne,
     _explosions,
+    _blood,
   ];
 
   // "PRIVATE" METHODS
@@ -42,13 +44,15 @@ const entityManager = (function () {
 
   // TODO: maybe we want to fire different types of bullets.
   // figure out how to do that.
-  function fireBullet(cx, cy, velX, velY, rotation) {
+  function fireBullet(cx, cy, velX, velY, rotation, damage, through) {
     const bullet = new Bullet({
       cx,
       cy,
       velX,
       velY,
       rotation,
+      damage,
+      through,
     });
     if (DEBUG) console.log(bullet);
     _bullets.push(bullet);
@@ -70,8 +74,13 @@ const entityManager = (function () {
   // TODO: bind in JSON which type explosion,
   // and explosion rate.
   function generateExplosion(descr) {
-    descr.sequence = g_asset.sequence.explosion;
+    descr.sequence = g_asset.sequence.explosion3;
     _explosions.push(new AnimatedImage(descr));
+  }
+
+  function generateBlood(descr) {
+    descr.sequence = g_asset.sequence.blood3;
+    _blood.push(new AnimatedImage(descr));
   }
 
   function generateGenericEnemyOne(cfg) {
@@ -134,6 +143,7 @@ const entityManager = (function () {
     render,
     fireBullet,
     generateExplosion,
+    generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
     OK,

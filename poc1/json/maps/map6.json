@@ -272,7 +272,8 @@
                     "donkey": "notdonkey.png",
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
-                    "Hbackground": "HUD.png"
+                    "Hbackground": "HUD.png",
+                    "Line": "line.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",

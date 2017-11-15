@@ -48,7 +48,6 @@ GenericEnemyOne.prototype.update = function (du) {
 
   const directions = spatialManager.getDirection(this.cx - this.getRadius(), this.cy - this.getRadius());
 
-
   const cx = player.cx;
   const cy = player.cy;
 
@@ -181,7 +180,6 @@ GenericEnemyOne.prototype.update = function (du) {
       this.cy = oldY;
       spatialID = spatialManager.register(this);
     }
-
   } else {
     this._stuck = false;
   }
@@ -200,7 +198,7 @@ GenericEnemyOne.prototype.attack = function (du) {
 };
 
 GenericEnemyOne.prototype.takeBulletHit = function () {
-  this.hp -= 25;
+  this.hp -= Player.prototype.getBulletDamage();
   audioManager.play(g_url.audio.impact1);
 
   if (this.hp <= 0) {
