@@ -329,7 +329,7 @@ function renderSimulation(ctx) {
 
 
 function setup(response) {
-  console.log('Setting up...');
+  // console.log('Setting up...');
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
@@ -433,7 +433,7 @@ function setup(response) {
 
   // Experimental
   g_tm = g_asset.tiledMap.tm1;
-  console.log(g_asset);
+  // console.log(g_asset);
 
   // --- Spatial Manager ---
 

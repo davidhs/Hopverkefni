@@ -64,14 +64,11 @@ GenericEnemyOne.prototype.update = function (du) {
   const pdy = Math.sign(player.cy - this.cy);
 
   if (this._stuck || dx === 0 && dy === 0) {
-
     // dx = pdx;
     // dy = pdy;
     dx = 0.75 * pdx + 2 * Math.random() - 1;
     dy = 0.75 * pdy + 2 * Math.random() - 1;
   }
-
-
 
 
   // const dx = player.cx - this.cx;
@@ -82,7 +79,6 @@ GenericEnemyOne.prototype.update = function (du) {
   if (len < 100) {
     this.attack(du);
   }
-
 
 
   const udx = dx / len;
@@ -126,8 +122,8 @@ GenericEnemyOne.prototype.update = function (du) {
   const oldY = this.cy;
 
 
-  let newX = this.cx + du * this.velX;
-  let newY = this.cy + du * this.velY;
+  const newX = this.cx + du * this.velX;
+  const newY = this.cy + du * this.velY;
 
   this.cx = newX;
   this.cy = newY;
@@ -139,45 +135,43 @@ GenericEnemyOne.prototype.update = function (du) {
   }
 
 
-
-  let flags = spatialManager.register(this);
-
+  let spatialID = spatialManager.register(this);
 
 
   // Wall crap
-  if (flags > 0 && flags < spatialManager.MIN_ENTITY) {
-
+  if (spatialID !== spatialManager.NO_CONFLICT) {
     this.velX += (2 * Math.random() - 1) * 0.5;
     this.velY += (2 * Math.random() - 1) * 0.5;
 
 
-    let newX = oldX + du * this.velX;
-    let newY = oldY + du * this.velY;
-  
-    if (flags < spatialManager.MIN_ENTITY) {
+    const newX = oldX + du * this.velX;
+    const newY = oldY + du * this.velY;
+
+    if (spatialID !== spatialManager.NO_CONFLICT) {
       this.cx = newX;
       this.cy = newY;
-      flags = spatialManager.register(this);
+      spatialID = spatialManager.register(this);
     }
 
-    if (flags < spatialManager.MIN_ENTITY) {
+    if (spatialID !== spatialManager.NO_CONFLICT) {
       this.cx = newX;
       this.cy = oldY;
-      flags = spatialManager.register(this);
+      spatialID = spatialManager.register(this);
     }
 
-    if (flags < spatialManager.MIN_ENTITY) {
+    if (spatialID !== spatialManager.NO_CONFLICT) {
       this.cx = oldX;
       this.cy = newY;
-      flags = spatialManager.register(this);
+      spatialID = spatialManager.register(this);
     }
 
-    if (flags) {
+    if (spatialID !== spatialManager.NO_CONFLICT) {
       this._stuck = true;
       this.cx = oldX;
       this.cy = oldY;
-      flags = spatialManager.register(this);
+      spatialID = spatialManager.register(this);
     }
+
   } else {
     this._stuck = false;
   }

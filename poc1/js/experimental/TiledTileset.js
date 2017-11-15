@@ -15,8 +15,6 @@ function TiledTileset(cfg) {
 
   const tiles = this.cfg.tile;
 
-  console.log(tiles);
-
 
   if (tiles) {
     for (let i = 0; i < tiles.length; i += 1) {
