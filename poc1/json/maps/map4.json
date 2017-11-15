@@ -44,6 +44,39 @@
                     "tileHeight": 16
                 }
             },
+            "blood": {
+                "dep": ["raw.image.blood"],
+                "cfg": {
+                    "image": "raw.image.blood",
+                    "tileWidth": 100,
+                    "tileHeight": 100,
+                    "nrOfTiles": 9,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down"
+                }
+            },
+            "blood2": {
+                "dep": ["raw.image.blood2"],
+                "cfg": {
+                    "image": "raw.image.blood2",
+                    "tileWidth": 100,
+                    "tileHeight": 100,
+                    "nrOfTiles": 6,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down"
+                }
+            },
+            "blood3": {
+                "dep": ["raw.image.blood3"],
+                "cfg": {
+                    "image": "raw.image.blood3",
+                    "tileWidth": 98.125,
+                    "tileHeight": 98.125,
+                    "nrOfTiles": 64,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down"
+                }
+            },
             "explosion": {
                 "dep": ["raw.image.explosion"],
                 "cfg": {
@@ -51,6 +84,28 @@
                     "tileWidth": 100,
                     "tileHeight": 100,
                     "nrOfTiles": 74,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down"
+                }
+            },
+            "explosion2": {
+                "dep": ["raw.image.explosion2"],
+                "cfg": {
+                    "image": "raw.image.explosion2",
+                    "tileWidth": 100,
+                    "tileHeight": 125,
+                    "nrOfTiles": 20,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down"
+                }
+            },
+            "explosion3": {
+                "dep": ["raw.image.explosion3"],
+                "cfg": {
+                    "image": "raw.image.explosion3",
+                    "tileWidth": 100,
+                    "tileHeight": 100,
+                    "nrOfTiles": 49,
                     "primaryDirection": "right",
                     "secondaryDirection": "down"
                 }
@@ -85,14 +140,6 @@
                     "image": "raw.image.explosionSpritesheet6",
                     "tileWidth": 16,
                     "tileHeight": 16
-                }
-            },
-            "blood": {
-                "dep": ["raw.image.blood"],
-                "cfg": {
-                    "image": "raw.image.blood",
-                    "tileWidth": 512,
-                    "tileHeight": 512
                 }
             },
             "spritesheet1": {
@@ -141,6 +188,51 @@
                     "secondaryDirection": "down",
                     "textureAtlas": "textureAtlas.explosion"
                 }
+            },
+            "explosion2": {
+                "dep": ["textureAtlas.explosion2"],
+                "cfg": {
+                    "all": true,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down",
+                    "textureAtlas": "textureAtlas.explosion2"
+                }
+            },
+            "explosion3": {
+                "dep": ["textureAtlas.explosion3"],
+                "cfg": {
+                    "all": true,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down",
+                    "textureAtlas": "textureAtlas.explosion3"
+                }
+            },
+            "blood": {
+                "dep": ["textureAtlas.blood"],
+                "cfg": {
+                    "all": true,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down",
+                    "textureAtlas": "textureAtlas.blood"
+                }
+            },
+            "blood2": {
+                "dep": ["textureAtlas.blood2"],
+                "cfg": {
+                    "all": true,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down",
+                    "textureAtlas": "textureAtlas.blood2"
+                }
+            },
+            "blood3": {
+                "dep": ["textureAtlas.blood3"],
+                "cfg": {
+                    "all": true,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down",
+                    "textureAtlas": "textureAtlas.blood3"
+                }
             }
         },
         "sprite": {
@@ -162,12 +254,6 @@
                 "cfg": {
                     "scale": 0.2,
                     "image": "raw.image.rifle"
-                }
-            },
-            "blood": {
-                "dep": ["raw.image.blood"],
-                "cfg": {
-                    "image": "raw.image.blood"
                 }
             },
             "donkey": {
@@ -254,7 +340,6 @@
                 "paths": {
                     "cursor": "cursor.png",
                     "rock": "rock.png",
-                    "blood": "blood.png",
                     "bullet": "bullet.png",
                     "rifle": "survivor-shoot_rifle_0.png",
                     "blockMap": "block-map.png",
@@ -266,7 +351,12 @@
             }, {
                 "prefix": "img/spritesheets/explosions/",
                 "paths": {
+                    "blood": "blood.png",
+                    "blood2": "blood2.png",
+                    "blood3": "blood3.png",
                     "explosion": "spritesheet1.png",
+                    "explosion2": "spritesheet2.png",
+                    "explosion3": "spritesheet3.png",
                     "explosionSpritesheet2": "explosionSpritesheet2.png",
                     "explosionSpritesheet3": "explosionSpritesheet3.png",
                     "explosionSpritesheet5": "explosionSpritesheet5.png",
@@ -286,7 +376,9 @@
                 "knife": "knife.png",
                 "rifle1": "rifle.png",
                 "handgun": "handgun.png",
-                "shotgun": "shotgun.png"
+                "shotgun": "shotgun.png",
+                "smg": "mg.png",
+                "sniper": "sniper.png"
               }
             }, {
               "prefix": "img/spritesheets/numbers/",
