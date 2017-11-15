@@ -249,46 +249,6 @@ Player.prototype.update = function (du) {
   //      }
   //   }
 
-  if (eatKey(this.KNIFE) && armory[0].has) {
-    console.log('Knife selected!');
-    this.useWeapon = 0;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    // Alexander
-
-    HUD.witchWeapon('knife');
-  }
-
-  if (eatKey(this.PISTOL) && armory[1].has) {
-    console.log('PISTOL selected!');
-    this.useWeapon = 1;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    // Alexander
-
-    HUD.witchWeapon('handgun');
-  }
-
-  if (eatKey(this.SHOTGUN) && armory[2].has) {
-    console.log('Shotgun selected!');
-    this.useWeapon = 2;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    // Alexander
-
-    HUD.witchWeapon('shotgun');
-  }
-
-  if (eatKey(this.RIFLE) && armory[3].has) {
-    console.log('AK selected!');
-    this.useWeapon = 3;
-    this.bulletCooldown = armory[this.useWeapon].fireRate;
-
-    // Alexander
-
-    HUD.witchWeapon('rifle');
-  }
-
   const slowDown = 1.0 / (1.0 + this.decay * du);
 
   if (noHorAcc) this.velX *= slowDown;
@@ -470,8 +430,6 @@ Player.prototype.render = function (ctx, cfg) {
   this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
   this.sprite.scale = origScale;
 };
-
-
 
 Player.prototype.getWitchWeapon = function () {
   return this.useWeapon;
