@@ -33,6 +33,36 @@ function TextureAtlas(cfg) {
     this.image = img;
   }
 
+
+
+  const data = this.image.getContext('2d').getImageData(0, 0, this.image.width, this.image.height).data;
+
+  // Create occlusion images
+
+  const oc = document.createElement('canvas');
+  oc.width = this.image.width;
+  oc.height = this.image.height;
+
+  const octx = oc.getContext('2d');
+  const imageData = octx.getImageData(0, 0, this.image.width, this.image.height);
+  const odata = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
+
+    odata[i] = 0;
+    odata[i + 1] = 0;
+    odata[i + 2] = 0;
+    odata[i + 3] = a;
+  }
+
+  octx.putImageData(imageData, 0, 0);
+
+  this.oimage = oc;
+
   // Default behavior
 
   // JavaScript is garbage. If somewhere in the code,
@@ -175,13 +205,13 @@ TextureAtlas.prototype.sample = function (tx, ty, x, y) {
   };
 };
 
-TextureAtlas.prototype.renderIndexTile = function (ctx, index, x, y, w, h) {
+TextureAtlas.prototype.renderIndexTile = function (ctx, index, x, y, w, h, cfg) {
   const tx = index % this.cols;
   const ty = Math.floor(index / this.cols);
-  this.renderTile(ctx, tx, ty, x, y, w, h);
+  this.renderTile(ctx, tx, ty, x, y, w, h, cfg);
 };
 
-TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h) {
+TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h, cfg) {
   // From this canvas
   const sx = tx * this.tileWidth;
   const sy = ty * this.tileHeight;
@@ -194,5 +224,15 @@ TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h) {
   const dw = w;
   const dh = h;
 
-  ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
+  if (cfg) {
+    if (cfg.occlusion) {
+      ctx.drawImage(this.oimage, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
+    }
+  } else {
+    ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+
 };

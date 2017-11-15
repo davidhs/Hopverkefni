@@ -11,7 +11,7 @@
             "width": 32,
             "height": 32
         },
-        "shadowSize": 256,
+        "shadowSize": 128,
         "muted": true
     },
 
@@ -226,25 +226,6 @@
                 "cfg": {
                     "textureAtlas": "textureAtlas.terrain_atlas",
                     "cfg": "raw.xml.pmap1tileset3"
-                }
-            }
-        },
-        "fastImage": {
-            "cursor": {
-                "dep": ["raw.image.cursor"],
-                "cfg": {
-                    "image": "raw.image.cursor"
-                }
-            },
-            "cursor2": {
-                "dep": ["raw.image.crosshair"],
-                "cfg": {
-                    "scale": 0.05,
-                    "bias": {
-                        "x": "-50%",
-                        "y": "-50%"
-                    },
-                    "image": "raw.image.crosshair"
                 }
             }
         },

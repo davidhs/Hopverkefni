@@ -70,6 +70,16 @@ GenericEnemyOne.prototype.update = function (du) {
     dy = 0.75 * pdy + 2 * Math.random() - 1;
   }
 
+  const _dx = player.cx - this.cx;
+  const _dy = player.cy - this.cy;
+  const _dist = _dx ** 2 + _dy ** 2;
+  const _thresh = (g_viewport.getIW() * 1.5) ** 2;
+
+  if (_dist > _thresh) {
+    dx = 0;
+    dy = 0;
+  }
+
 
   // const dx = player.cx - this.cx;
   // const dy = player.cy - this.cy;

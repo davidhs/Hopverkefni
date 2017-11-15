@@ -435,4 +435,6 @@ Player.prototype.getWitchWeapon = function () {
   return this.useWeapon;
 };
 
+// TODO DON'T DO THIS!!
+// POTENTIALLY MESSED UP WITH keys.js LISTENERS
 document.onkeyup = selectWeapons;
