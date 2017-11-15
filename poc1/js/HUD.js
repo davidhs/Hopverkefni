@@ -20,7 +20,11 @@ const HUD = (function () {
   // globals for weapons
   let W_cx = 0;
   let W_cy = 0;
-  let weapons = [];
+  const weapons = [];
+  let ammo = 0;
+  let magazineSize = 0;
+  let magazineAmmo = 0;
+
 
 
   // globals for Numbers
@@ -38,13 +42,47 @@ const HUD = (function () {
 
 
   // toggle on or off weapon images
-  let isRifle = false;
-  let isHandgun = true;
-  let isShotgun = false;
-  let isKnife = false;
-  let isSniper = false;
-  let isSmg = false;
-  let isRaygun = false;
+  const Rifle = {
+    is: false,
+    has: true
+   };
+   const Handgun = {
+      is: true,
+      has: true
+    };
+  const Shotgun = {
+     is: false,
+     has: true
+   };
+ const Knife = {
+    is: false,
+    has: true
+  };
+  const Sniper = {
+     is: false,
+     has: false
+   };
+   const Smg = {
+      is: false,
+      has: false
+    };
+    const Raygun = {
+       is: false,
+       has: false
+     };
+
+     weapons.push(Handgun);
+     weapons.push(Shotgun);
+     weapons.push(Rifle);
+     weapons.push(Sniper);
+     weapons.push(Smg);
+     weapons.push(Raygun);
+     weapons.push(Knife);
+
+
+
+
+
 
 
   // create images
@@ -54,12 +92,13 @@ const HUD = (function () {
   let shotgun = new Image();
   let rifle = new Image();
   let handgun = new Image();
-  let sniper = new Image();
-  let smg = new Image();
-  let raygun = new Image();
+  const sniper = new Image();
+  const smg = new Image();
+  const raygun = new Image();
   let exists = new Image();
   let notexists = new Image();
   let selected = new Image();
+  let line = new Image();
 
   let damage = 0;
 
@@ -71,13 +110,9 @@ const HUD = (function () {
   // won't be 2 guns true at the same time
 
   function resetweapons() {
-    isRifle = false;
-    isHandgun = false;
-    isShotgun = false;
-    isKnife = false;
-    isSniper = false;
-    isSmg = false;
-    isRaygun = false;
+    for(var i = 0; i<weapons.length; i++){
+      weapons[i].is = false;
+    }
   }
 
   function getDamage(dmg) {
@@ -85,32 +120,16 @@ const HUD = (function () {
     return damage;
   }
   // witch weapon should appear on the screen, collected by
-  // string from Player.js
-  function whichWeapon(gun) {
-    if (gun === 'knife') {
-      resetweapons();
-      isKnife = true;
-    }
-    if (gun === 'handgun') {
-      resetweapons();
-      isHandgun = true;
-    }
-    if (gun === 'shotgun') {
-      resetweapons();
-      isShotgun = true;
-    }
 
-    if (gun === 'rifle') {
-      resetweapons();
-      isRifle = true;
+  // id from Player.js
+  function whichWeapon(id) {
+    resetweapons();
+    if(id === 0){
+      weapons[6].is = true;
+
     }
-    if (gun === 'sniper') {
-      resetweapons();
-      isSniper = true;
-    }
-    if (gun === 'mg') {
-      resetweapons();
-      isSmg = true;
+    else{
+      weapons[id -1].is = true;
     }
   }
 
@@ -154,119 +173,72 @@ const HUD = (function () {
 
   // draw gun
   function drawWeapon(ctx, x, y) {
-    if (isKnife) {
+    if (weapons[6].is) {
       const width = 100;
       const height = 50;
       ctx.beginPath();
       ctx.drawImage(knife, x, y, width, height);
     }
-    if (isHandgun) {
-      const width = 52;
-      const height = 40;
+    if (weapons[0].is) {
+      const width = 100;
+      const height = 35;
       ctx.beginPath();
       ctx.drawImage(handgun, x, y, width, height);
     }
     // TODO: SHOTGUN
 
-    if (isRifle) {
-      const width = 78;
-      const height = 40;
+    if (weapons[1].is) {
+      const width = 120;
+      const height = 50;
       ctx.beginPath();
       ctx.drawImage(rifle, x, y, width, height);
     }
 
     //
-    if (isShotgun) {
-      const width = 100;
-      const height = 40;
+    if (weapons[2].is) {
+      const width = 120;
+      const height = 50;
       ctx.beginPath();
       ctx.drawImage(shotgun, x - 20, y, width, height);
     }
+  }
 
-    if (isSmg) {
-      const width = 62;
-      const height = 40;
-      ctx.beginPath();
-      ctx.drawImage(smg, x - 20, y, width, height);
-    }
+  function drawAmmo(ctx, ammo, magsize, magstatus){
+    ctx.beginPath();
+    ctx.font="12px Georgia";
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText(magstatus, W_cx + 100, W_cy + 20);
 
 
-    if (isSniper) {
-      const width = 87;
-      const height = 40;
-      ctx.beginPath();
-      ctx.drawImage(sniper, x - 20, y, width, height);
-    }
+    ctx.beginPath();
+    ctx.drawImage(line, W_cx + 105,W_cy + 10,20,25);
+
+    ctx.beginPath();
+    ctx.font="10px Georgia";
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText(ammo, W_cx + 117, W_cy + 30);
+
+
   }
 
 
-  // messy but works, will probably change this to make it look better
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
-    if (isHandgun) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-    sx += sw;
-    dx += dw;
+    for(var i = 0; i<weapons.length; i++){
+      if(weapons[i].is){
+        ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+      else if(weapons[i].has){
+        ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+      else{
+        ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+      if(i === 5){
+        sx += sw;
+      }
+      sx += sw;
+      dx += dw;
 
-    if (isShotgun) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-    sx += sw;
-    dx += dw;
-
-    if (isRifle) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-
-    sx += sw;
-    dx += dw;
-
-    if (isSmg) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-
-    sx += sw;
-    dx += dw;
-
-    if (isSniper) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-    sx += sw;
-    dx += dw;
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
-
-    sx += sw;
-    dx += dw;
-
-    if (isKnife) {
-      ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-    } else {
-      ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
     }
   }
 
@@ -282,6 +254,7 @@ const HUD = (function () {
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
 
     drawWeapon(ctx, W_cx, W_cy);
+    drawAmmo(ctx, ammo, magazineSize, magazineAmmo);
     drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);
   }
 
@@ -305,7 +278,7 @@ const HUD = (function () {
     heightHP = 15;
 
     // update weapons
-    W_cx = (g_viewport.getIW() / 2);
+    W_cx = ((g_viewport.getIW() / 10) * 4);
     W_cy = H_cy + 35;
 
     // update Numbers
@@ -317,6 +290,11 @@ const HUD = (function () {
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
+
+    //update ammo
+    ammo = Player.prototype.getAmmoStatus();
+    magazineAmmo = Player.prototype.getMagazineStatus();
+    magazineSize = Player.prototype.getMagazineSize();
   }
 
   function render(ctx) {
@@ -334,6 +312,7 @@ const HUD = (function () {
     exists = g_asset.raw.image.exists;
     notexists = g_asset.raw.image.notexists;
     selected = g_asset.raw.image.selected;
+    line = g_asset.raw.image.Line;
   }
 
 
