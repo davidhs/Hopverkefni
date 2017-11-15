@@ -21,6 +21,8 @@ Bullet.prototype.cx = 200;
 Bullet.prototype.cy = 200;
 Bullet.prototype.velX = 1;
 Bullet.prototype.velY = 1;
+Bullet.prototype.damage = 25;
+Bullet.prototype.through = 0;
 
 // Convert times from milliseconds to "nominal" time units.
 
@@ -65,20 +67,20 @@ Bullet.prototype.update = function (du) {
     } else {
       const entity = spatialManager.getEntity(spatialID);
 
-
-      const canTakeHit = entity.takeBulletHit;
+      const canTakeHit = entity.takeBulletHit();
       if (canTakeHit) canTakeHit.call(entity);
 
       audioManager.play(g_url.audio.explosion1);
 
-      entityManager.generateExplosion({
+      entityManager.generateBlood({
         cx: this.cx,
         cy: this.cy,
       });
-
-      return entityManager.KILL_ME_NOW;
+      if (this.through === 0) {
+        return entityManager.KILL_ME_NOW;
+      }
+      this.through -= 1;
     }
-
     spatialManager.register(this, true);
   }
 
