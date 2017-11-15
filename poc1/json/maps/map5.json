@@ -232,7 +232,7 @@
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
                     "Hbackground": "HUD.png",
-                    "test": "Numbers/exists/one.png"
+                    "Line": "line.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",

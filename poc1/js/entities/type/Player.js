@@ -176,7 +176,8 @@ function selectWeapons(evt) {
         console.log(armory[i].id);
         selectedWeaponID = armory[i].id;
         console.log(selectedWeaponID);
-        HUD.whichWeapon(armory[i].name);
+        HUD.whichWeapon(armory[i].id);
+
       }
       break;
     }
