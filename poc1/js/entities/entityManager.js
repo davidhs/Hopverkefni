@@ -149,9 +149,6 @@ const entityManager = (function () {
     OK,
     KILL_ME_NOW,
 
-    // FIXME: this is just a hack to get
-    // the player's position so the viewport can
-    // track the player.
     getPos: getPlayer,
     getPlayer,
   };
