@@ -20,7 +20,7 @@ const HUD = (function () {
   // globals for weapons
   let W_cx = 0;
   let W_cy = 0;
-  let weapons = [];
+  const weapons = [];
 
 
   // globals for Numbers
@@ -38,13 +38,48 @@ const HUD = (function () {
 
 
   // toggle on or off weapon images
-  let isRifle = false;
-  let isHandgun = true;
-  let isShotgun = false;
-  let isKnife = false;
-  let isSniper = false;
-  let isSmg = false;
-  let isRaygun = false;
+  const Rifle = {
+    is: false,
+    has: true
+   };
+   const Handgun = {
+      is: true,
+      has: true
+    };
+  const Shotgun = {
+     is: false,
+     has: true
+   };
+ const Knife = {
+    is: false,
+    has: true
+  };
+  const Sniper = {
+     is: false,
+     has: false
+   };
+   const Smg = {
+      is: false,
+      has: false
+    };
+    const Raygun = {
+       is: false,
+       has: false
+     };
+
+     weapons.push(Handgun);
+     weapons.push(Shotgun);
+     weapons.push(Rifle);
+     weapons.push(Sniper);
+     weapons.push(Smg);
+     weapons.push(Raygun);
+     weapons.push(Knife);
+     console.log(weapons);
+
+
+
+
+
 
 
   // create images
@@ -70,35 +105,22 @@ const HUD = (function () {
   // won't be 2 guns true at the same time
 
   function resetweapons() {
-    isRifle = false;
-    isHandgun = false;
-    isShotgun = false;
-    isKnife = false;
-    isSniper = false;
-    isSmg = false;
-    isRaygun = false;
+    for(var i = 0; i<weapons.length; i++){
+      weapons[i].is = false;
+    }
   }
 
   // witch weapon should appear on the screen, collected by
-  // string from Player.js
-  function whichhWeapon(gun) {
-    if (gun === 'knife') {
-      resetweapons();
-      isKnife = true;
+  // id from Player.js
+  function whichWeapon(id) {
+    resetweapons();
+    if(id === 0){
+      weapons[6].is = true;
     }
-    if (gun === 'handgun') {
-      resetweapons();
-      isHandgun = true;
-    }
-    if (gun === 'shotgun') {
-      resetweapons();
-      isShotgun = true;
+    else{
+      weapons[id -1].is = true;
     }
 
-    if (gun === 'rifle') {
-      resetweapons();
-      isRifle = true;
-    }
   }
 
 
@@ -141,13 +163,13 @@ const HUD = (function () {
 
   // draw gun
   function drawWeapon(ctx, x, y) {
-    if (isKnife) {
+    if (weapons[6].is) {
       const width = 100;
       const height = 50;
       ctx.beginPath();
       ctx.drawImage(knife, x, y, width, height);
     }
-    if (isHandgun) {
+    if (weapons[0].is) {
       const width = 100;
       const height = 35;
       ctx.beginPath();
@@ -155,7 +177,7 @@ const HUD = (function () {
     }
     // TODO: SHOTGUN
 
-    if (isRifle) {
+    if (weapons[1].is) {
       const width = 120;
       const height = 50;
       ctx.beginPath();
@@ -163,7 +185,7 @@ const HUD = (function () {
     }
 
     //
-    if (isShotgun) {
+    if (weapons[2].is) {
       const width = 120;
       const height = 50;
       ctx.beginPath();
@@ -174,7 +196,24 @@ const HUD = (function () {
 
   // messy but works, will probably change this to make it look better
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
-    if (isHandgun) {
+    for(var i = 0; i<weapons.length; i++){
+      if(weapons[i].is){
+        ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+      else if(weapons[i].has){
+        ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+      else{
+        ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
+      if(i === 5){
+        sx += sw;
+      }
+      sx += sw;
+      dx += dw;
+
+    }
+    /*if (isHandgun) {
       ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
     } else {
       ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
@@ -222,7 +261,7 @@ const HUD = (function () {
       ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
     } else {
       ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
+    }*/
   }
 
   // draw the hud bar
@@ -291,7 +330,7 @@ const HUD = (function () {
 
 
   return {
-    whichhWeapon,
+    whichWeapon,
     update,
     render,
   };
