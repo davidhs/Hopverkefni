@@ -21,6 +21,10 @@ const HUD = (function () {
   let W_cx = 0;
   let W_cy = 0;
   const weapons = [];
+  let ammo = 0;
+  let magazineSize = 0;
+  let magazineAmmo = 0;
+
 
 
   // globals for Numbers
@@ -74,7 +78,6 @@ const HUD = (function () {
      weapons.push(Smg);
      weapons.push(Raygun);
      weapons.push(Knife);
-     console.log(weapons);
 
 
 
@@ -95,6 +98,7 @@ const HUD = (function () {
   let exists = new Image();
   let notexists = new Image();
   let selected = new Image();
+  let line = new Image();
 
 
   // =================
@@ -195,8 +199,24 @@ const HUD = (function () {
     }
   }
 
+  function drawAmmo(ctx, ammo, magsize, magstatus){
+    ctx.beginPath();
+    ctx.font="12px Georgia";
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText(magstatus, W_cx + 100, W_cy + 20);
 
-  // messy but works, will probably change this to make it look better
+    ctx.beginPath();
+    ctx.drawImage(line, W_cx + 105,W_cy + 10,20,25);
+
+    ctx.beginPath();
+    ctx.font="10px Georgia";
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText(ammo, W_cx + 117, W_cy + 30);
+
+
+  }
+
+
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
     for(var i = 0; i<weapons.length; i++){
       if(weapons[i].is){
@@ -229,6 +249,7 @@ const HUD = (function () {
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
 
     drawWeapon(ctx, W_cx, W_cy);
+    drawAmmo(ctx, ammo, magazineSize, magazineAmmo);
     drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);
   }
 
@@ -252,7 +273,7 @@ const HUD = (function () {
     heightHP = 15;
 
     // update weapons
-    W_cx = (g_viewport.getIW() / 2);
+    W_cx = ((g_viewport.getIW() / 10) * 4);
     W_cy = H_cy + 35;
 
     // update Numbers
@@ -264,6 +285,11 @@ const HUD = (function () {
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
+
+    //update ammo
+    ammo = Player.prototype.getAmmoStatus();
+    magazineAmmo = Player.prototype.getMagazineStatus();
+    magazineSize = Player.prototype.getMagazineSize();
   }
 
   function render(ctx) {
@@ -279,6 +305,7 @@ const HUD = (function () {
     exists = g_asset.raw.image.exists;
     notexists = g_asset.raw.image.notexists;
     selected = g_asset.raw.image.selected;
+    line = g_asset.raw.image.Line;
   }
 
 
