@@ -67,8 +67,12 @@ Bullet.prototype.update = function (du) {
     } else {
       const entity = spatialManager.getEntity(spatialID);
 
-      const canTakeHit = entity.takeBulletHit();
-      if (canTakeHit) canTakeHit.call(entity);
+      // Check whether the entity has the method [takeBulletHit].
+      const canTakeHit = entity.takeBulletHit;
+      if (canTakeHit) {
+        // If so cause entity to "take hit."
+        canTakeHit.call(entity);
+      }
 
       audioManager.play(g_url.audio.explosion1);
 

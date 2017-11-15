@@ -29,6 +29,7 @@ const audioManager = (function () {
   function mute() {
     if (muted) return;
     muted = true;
+    console.log('muted');
 
     for (let i = 0, urls = Object.keys(aa); i < urls.length; i += 1) {
       const url = urls[i];
@@ -47,6 +48,7 @@ const audioManager = (function () {
   function unmute() {
     if (!muted) return;
     muted = false;
+    console.log('unmuted');
   }
 
 
@@ -89,7 +91,9 @@ const audioManager = (function () {
       }
     }
 
-    if (!found) {
+    // && aa[url].list.length <= 16
+
+    if (!found ) {
       const audio = new Audio(url);
       // TODO sound is too loud
       // handle = audio;
