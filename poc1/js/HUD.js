@@ -115,6 +115,13 @@ const HUD = (function () {
     }
   }
 
+  // =================
+  // Hp handler
+  // =================
+
+  function damage(Damage){
+    hpLost += Damage;
+  }
 
   // =================
   // draw functions
