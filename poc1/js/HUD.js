@@ -282,5 +282,6 @@ const HUD = (function () {
     whichWeapon,
     update,
     render,
+    damage
   };
 }());
