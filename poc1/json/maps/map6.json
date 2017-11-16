@@ -290,16 +290,9 @@
                     "dungeon": "dungeonTileset.png",
                     "tileset3": "tileset3.png",
                     "ta_terrainAtlas": "terrain_atlas.png",
-                    "ta_tileset4": "tileset4.png"
+                    "ta_tileset4": "tileset4.png",
+                    "guns": "guns.png"
                 }
-            }, {
-              "prefix": "img/guns/",
-              "paths": {
-                "knife": "knife.png",
-                "rifle1": "rifle.png",
-                "handgun": "handgun.png",
-                "shotgun": "shotgun.png"
-              }
             }, {
               "prefix": "img/spritesheets/numbers/",
               "paths": {

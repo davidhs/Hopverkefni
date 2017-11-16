@@ -25,6 +25,13 @@ const HUD = (function () {
   let magazineSize = 0;
   let magazineAmmo = 0;
 
+  let g_sx = 0;
+  let g_sy = 0;
+  let g_sw = 0;
+  let g_sh = 0;
+
+
+
   // globals for Numbers
   let n_sx = 0;
   let n_sy = 0;
@@ -52,21 +59,17 @@ const HUD = (function () {
      is: false,
      has: true
    };
- const Knife = {
-    is: false,
-    has: true
-  };
   const Sniper = {
      is: false,
-     has: false
+     has: true
    };
    const Smg = {
       is: false,
-      has: false
+      has: true
     };
     const Raygun = {
        is: false,
-       has: false
+       has: true
      };
 
   weapons.push(Handgun);
@@ -75,21 +78,16 @@ const HUD = (function () {
   weapons.push(Sniper);
   weapons.push(Smg);
   weapons.push(Raygun);
-  weapons.push(Knife);
+
+
   // create images
   let background = new Image();
   let heart = new Image();
-  let knife = new Image();
-  let shotgun = new Image();
-  let rifle = new Image();
-  let handgun = new Image();
-  let sniper = new Image();
-  let smg = new Image();
-  let raygun = new Image();
   let exists = new Image();
   let notexists = new Image();
   let selected = new Image();
   let line = new Image();
+  let guns = new Image();
 
 
   // =================
@@ -157,33 +155,11 @@ const HUD = (function () {
 
   // draw gun
   function drawWeapon(ctx, x, y) {
-    if (weapons[6].is) {
-      const width = 100;
-      const height = 50;
-      ctx.beginPath();
-      ctx.drawImage(knife, x, y, width, height);
-    }
-    if (weapons[0].is) {
-      const width = 100;
-      const height = 35;
-      ctx.beginPath();
-      ctx.drawImage(handgun, x, y, width, height);
-    }
-    // TODO: SHOTGUN
-
-    if (weapons[1].is) {
-      const width = 120;
-      const height = 50;
-      ctx.beginPath();
-      ctx.drawImage(rifle, x, y, width, height);
-    }
-
-    //
-    if (weapons[2].is) {
-      const width = 120;
-      const height = 50;
-      ctx.beginPath();
-      ctx.drawImage(shotgun, x - 20, y, width, height);
+    for(var i = 0; i<weapons.length; i++){
+      if(weapons[i].is){
+        ctx.drawImage(guns, g_sx, g_sy, g_sw, g_sh, x, y, 100, 50);
+      }
+      g_sx += g_sw;
     }
   }
 
@@ -213,9 +189,6 @@ const HUD = (function () {
       } else {
         ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
       }
-      if (i === 5) {
-        sx += sw;
-      }
       sx += sw;
       dx += dw;
     }
@@ -226,7 +199,7 @@ const HUD = (function () {
     ctx.clearRect(H_cx, H_cy, H_width, H_height);
     ctx.beginPath();
     ctx.drawImage(
-      background, 
+      background,
       0, 0, background.width, background.height,
       H_cx, H_cy, H_width, H_height
     );
@@ -261,15 +234,19 @@ const HUD = (function () {
     heightHP = 15;
 
     // update weapons
-    W_cx = ((g_viewport.getIW() / 10) * 4);
+    W_cx = ((g_viewport.getIW() / 10) * 5);
     W_cy = H_cy + 35;
+    g_sx = 0;
+    g_sy = 0;
+    g_sw = guns.width/6;
+    g_sh = guns.height;
 
     // update Numbers
     n_sx = 0;
     n_sy = 0;
     n_sw = exists.width / 8;
     n_sh = exists.height;
-    n_dx = H_cx + 220;
+    n_dx = (g_viewport.getIW()/10)*4;
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
@@ -286,16 +263,11 @@ const HUD = (function () {
     // get images
     background = g_asset.raw.image.Hbackground;
     heart = g_asset.raw.image.heart;
-    knife = g_asset.raw.image.knife;
-    shotgun = g_asset.raw.image.shotgun;
-    rifle = g_asset.raw.image.rifle1;
-    handgun = g_asset.raw.image.handgun;
-    sniper = g_asset.raw.image.sniper;
-    smg = g_asset.raw.image.smg;
     exists = g_asset.raw.image.exists;
     notexists = g_asset.raw.image.notexists;
     selected = g_asset.raw.image.selected;
     line = g_asset.raw.image.Line;
+    guns = g_asset.raw.image.guns;
   }
 
 
