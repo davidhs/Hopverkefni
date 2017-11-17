@@ -1,6 +1,6 @@
 {
     "type": "map",
-    "name": "Yet another test! (2)",
+    "name": "map3",
     "cfg": {
         "world": {
             "width": 100,
@@ -273,7 +273,8 @@
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
                     "Hbackground": "HUD.png",
-                    "Line": "line.png"
+                    "Line": "line.png",
+                    "minimap3": "minimap3.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",

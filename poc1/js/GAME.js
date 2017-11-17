@@ -277,6 +277,9 @@ function renderSimulation(ctx) {
     g_mouse.render(ctxh);
   }
 
+
+
+
   // === DRAW TO BACK-RENDERING CANVAS ===
 
   // --- DRAW BACKGROUND ---
@@ -315,12 +318,19 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_hud, 0, 0);
   ctxp.globalAlpha = 1.0;
 
+  // --- DRAW RADAR ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_radar, 0, 0);
+  ctxp.globalAlpha = 1.0;
+
 
   // === DRAW TO RENDERING CANVAS ===
 
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(g_pre, 0, 0);
+
+
 
   /*
   ctx.fillstyle = "#000";
@@ -399,6 +409,9 @@ function setup(response) {
 
   g_top.width = g_canvas.width;
   g_top.height = g_canvas.height;
+
+  g_radar.width = g_canvas.width;
+  g_radar.height = g_canvas.height;
 
   // Init g_url.
   g_url = response.urls;

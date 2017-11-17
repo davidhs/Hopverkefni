@@ -292,6 +292,9 @@ Player.prototype.update = function (du) {
   this.cx = newX;
   this.cy = newY;
 
+  //redraw player position on minimap
+  Minimap.playerPosition(this.cx, this.cy);
+
 
   if (!g_noClip) {
     if (!g_world.inBounds(this.cx, this.cy, 0)) {
