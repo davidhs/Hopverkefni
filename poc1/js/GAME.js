@@ -402,6 +402,9 @@ function setup(response) {
   g_radar.width = g_canvas.width;
   g_radar.height = g_canvas.height;
 
+  g_hudbar.width = g_canvas.width;
+  g_hudbar.height = g_canvas.height;
+
 
 
   // --- Mouse ---
@@ -475,7 +478,7 @@ function setup(response) {
   if (tmLights) {
     for (let i = 0; i < tmLights.length; i += 1) {
       const light = tmLights[i];
-  
+
       const po = {
         x: light.x + light.width / 2,
         y: light.y + light.height / 2,
@@ -485,7 +488,7 @@ function setup(response) {
           b: 255,
         },
       };
-  
+
       g_lights.push(po);
     }
   }
