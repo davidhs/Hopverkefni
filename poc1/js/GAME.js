@@ -318,7 +318,7 @@ function renderSimulation(ctx) {
 
 function setup(response) {
 
-
+  console.log("Loading...");
 
   // Init g_url.
   g_url = response.urls;
@@ -592,6 +592,7 @@ function startGame() {
 
       // Except that I do want to create a bunch of functions!
       btn.addEventListener('press', (evt) => {
+        console.log('Loading: ' + mapKey);
         canvas.removeEventListener('mousedown', mel);
         mapHandler.openMap(mapKey, setup);
       });

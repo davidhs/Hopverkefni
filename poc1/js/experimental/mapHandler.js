@@ -12,6 +12,10 @@ const mapHandler = (function () {
   // PUBLIC FUNCTIONS
   // ================
 
+
+  const DEBUG = true;
+  const FILENAME = 'assetLoader.js';
+
   function getManifest(callback) {
     loader.load(
       { json: { manifest: 'json/manifest.json' } },
@@ -47,8 +51,10 @@ const mapHandler = (function () {
 
   function _loadAssets(assets, callback) {
     if (assets) {
+      if (DEBUG) console.log(`${util.timestamp()}: Assets are in map?.json.`);
       assetLoader.load(assets, callback);
     } else {
+      if (DEBUG) console.log(`${util.timestamp()}: Assets are in assets.json.`);
       loader.load({
         json: {
           assets: 'json/assets.json'
@@ -61,8 +67,11 @@ const mapHandler = (function () {
   }
 
   function openMap(mapName, callback) {
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Opening map [${mapName}].`);
     getMap(mapName, (map) => {
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: loading assets...`);
       _loadAssets(map.assets, (response) => {
+        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: sending response back.`);
         callback({
           map,
           assets: response.assets,

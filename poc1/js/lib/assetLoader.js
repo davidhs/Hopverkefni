@@ -98,9 +98,12 @@ const assetLoader = (function () {
   }
 
   let TICK_COUNT = 0;
-  const MAX_TICKS = 50;
+  const MAX_TICKS = 100;
 
   function tick() {
+
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Tick:`, util.snapshot(groups));
+
     for (let j = 0; j < groups.length; j += 1) {
       processBundles(groups[j]);
     }
@@ -116,10 +119,16 @@ const assetLoader = (function () {
       }
     }
 
-    TICK_COUNT += 1;
-
-    if (rerun && TICK_COUNT < MAX_TICKS) {
+    if (rerun) {
       tick();
+    }
+
+    if (DEBUG) {
+      TICK_COUNT += 1;
+      if (TICK_COUNT >= MAX_TICKS) {
+        console.error("EXCEEDED LIMIT: ", groups);
+        throw Error();
+      }
     }
   }
 
@@ -196,6 +205,10 @@ const assetLoader = (function () {
   // PUBLIC FUNCTIONS
 
   function load(assetsRequest, callback) {
+
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: START`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Assets request:`, util.snapshot(assetsRequest));
+
     // PROCESSING RAW DATA
     const stuffToFetch = {};
     const urls = {};
@@ -220,6 +233,8 @@ const assetLoader = (function () {
     }
 
     loader.load(stuffToFetch, (response) => {
+      
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: stuff to fetch:`, util.snapshot(stuffToFetch));
       processAssets({
         response,
         urls: stuffToFetch,
