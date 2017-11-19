@@ -46,7 +46,10 @@ GenericEnemyOne.prototype.update = function (du) {
   // Find target
   const player = entityManager.getPlayer();
 
-  const directions = spatialManager.getDirection(this.cx - this.getRadius(), this.cy - this.getRadius());
+  const _gx = this.cx - this.getRadius();
+  const _gy = this.cy - this.getRadius();
+
+  const directions = spatialManager.getDirection(_gx, _gy);
 
   const cx = player.cx;
   const cy = player.cy;
@@ -109,7 +112,9 @@ GenericEnemyOne.prototype.update = function (du) {
   const EPS = 0.1;
 
   if (this._soundRunning) {
-    const pr = Math.max(Math.abs(this.velX) / this.maxSpeed, Math.abs(this.velY) / this.maxSpeed);
+    const pr_x = Math.abs(this.velX) / this.maxSpeed;
+    const pr_y = Math.abs(this.velY) / this.maxSpeed;
+    const pr = Math.max(pr_x, pr_y);
     this._soundRunning.playbackRate = pr;
     this._soundRunning.volume = pr;
   }
@@ -178,7 +183,7 @@ GenericEnemyOne.prototype.update = function (du) {
       this._stuck = true;
       this.cx = oldX;
       this.cy = oldY;
-      spatialID = spatialManager.register(this);
+      spatialManager.register(this);
     }
   } else {
     this._stuck = false;

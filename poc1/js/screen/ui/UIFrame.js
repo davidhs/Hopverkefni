@@ -23,7 +23,10 @@ UIFrame.prototype = Object.create(UIElement.prototype);
 
 // UIFrame.prototype = new UIElement();
 
-
+/**
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ */
 UIFrame.prototype.render = function (ctx) {
   const oldfillStyle = ctx.fillStyle;
 

@@ -31,7 +31,6 @@ const HUD = (function () {
   let g_sh = 0;
 
 
-
   // globals for Numbers
   let n_sx = 0;
   let n_sy = 0;
@@ -49,28 +48,28 @@ const HUD = (function () {
   // toggle on or off weapon images
   const Rifle = {
     is: false,
-    has: true
-   };
-   const Handgun = {
-      is: true,
-      has: true
-    };
+    has: true,
+  };
+  const Handgun = {
+    is: true,
+    has: true,
+  };
   const Shotgun = {
-     is: false,
-     has: true
-   };
+    is: false,
+    has: true,
+  };
   const Sniper = {
-     is: false,
-     has: true
-   };
-   const Smg = {
-      is: false,
-      has: true
-    };
-    const Raygun = {
-       is: false,
-       has: true
-     };
+    is: false,
+    has: true,
+  };
+  const Smg = {
+    is: false,
+    has: true,
+  };
+  const Raygun = {
+    is: false,
+    has: true,
+  };
 
   weapons.push(Handgun);
   weapons.push(Shotgun);
@@ -119,7 +118,7 @@ const HUD = (function () {
   // Hp handler
   // =================
 
-  function damage(Damage){
+  function damage(Damage) {
     hpLost += Damage;
   }
 
@@ -162,8 +161,8 @@ const HUD = (function () {
 
   // draw gun
   function drawWeapon(ctx, x, y) {
-    for(var i = 0; i<weapons.length; i++){
-      if(weapons[i].is){
+    for (let i = 0; i < weapons.length; i += 1) {
+      if (weapons[i].is) {
         ctx.drawImage(guns, g_sx, g_sy, g_sw, g_sh, x, y, 100, 50);
       }
       g_sx += g_sw;
@@ -208,7 +207,7 @@ const HUD = (function () {
     ctx.drawImage(
       background,
       0, 0, background.width, background.height,
-      H_cx, H_cy, H_width, H_height
+      H_cx, H_cy, H_width, H_height,
     );
     // draw healthbar
     if (hpLost < 1) {
@@ -245,7 +244,7 @@ const HUD = (function () {
     W_cy = H_cy + 35;
     g_sx = 0;
     g_sy = 0;
-    g_sw = guns.width/6;
+    g_sw = guns.width / 6;
     g_sh = guns.height;
 
     // update Numbers
@@ -253,12 +252,12 @@ const HUD = (function () {
     n_sy = 0;
     n_sw = exists.width / 8;
     n_sh = exists.height;
-    n_dx = (g_viewport.getIW()/10)*4;
+    n_dx = (g_viewport.getIW() / 10) * 4;
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
 
-    //update ammo
+    // update ammo
     ammo = Player.prototype.getAmmoStatus();
     magazineAmmo = Player.prototype.getMagazineStatus();
     magazineSize = Player.prototype.getMagazineSize();
@@ -282,6 +281,6 @@ const HUD = (function () {
     whichWeapon,
     update,
     render,
-    damage
+    damage,
   };
 }());

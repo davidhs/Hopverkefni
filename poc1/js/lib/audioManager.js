@@ -93,7 +93,7 @@ const audioManager = (function () {
 
     // && aa[url].list.length <= 16
 
-    if (!found ) {
+    if (!found) {
       const audio = new Audio(url);
       // TODO sound is too loud
       // handle = audio;

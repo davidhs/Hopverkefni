@@ -11,11 +11,13 @@ function Weapon(
   name, damage, ammo, magazine, magazineAmmos,
   reloadTime, bulletSpeed, fireRate, through, accuracy,
 ) {
-  this.name = this.name;
-  this.damage = this.damage;
-  this.ammo = this.ammo;
-  this.magazine = this.magazine;
-  this.magazineAmmos = this.magazineAmmos;
+  // TODO self assignment is pointless.
+  // this.name = this.name;
+  // this.damage = this.damage;
+  // this.ammo = this.ammo;
+  // this.magazine = this.magazine;
+  // this.magazineAmmos = this.magazineAmmos;
+
   this.reloadTime = this.reloadTime || 1;
   this.bulletSpeed = this.bulletSpeed || 15;
   this.fireRate = this.fireRate || 2;

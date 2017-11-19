@@ -34,7 +34,6 @@ function TextureAtlas(cfg) {
   }
 
 
-
   const data = this.image.getContext('2d').getImageData(0, 0, this.image.width, this.image.height).data;
 
   // Create occlusion images
@@ -233,6 +232,4 @@ TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h, cfg) {
   } else {
     ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
   }
-
-
 };

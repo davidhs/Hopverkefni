@@ -259,7 +259,7 @@ const spatialManager = (function () {
     const sx = _getX(player.cx);
     const sy = _getY(player.cy);
 
-    tiles.carveShortestPath(sx, sy);
+    tiles.setSource(sx, sy);
 
     tiles.update(du);
   }
@@ -329,6 +329,12 @@ const spatialManager = (function () {
     }
 
     delete entities[spatialID];
+  }
+
+  function isRegistered(entity) {
+    const spatialID = entity.getSpatialID();
+    if (_registered[spatialID]) return true;
+    return false;
   }
 
   /**
@@ -421,6 +427,10 @@ const spatialManager = (function () {
     return result;
   }
 
+  function forceRecompute() {
+    tiles.forceRecompute();
+  }
+
 
   /**
    * Some entity with upper left position (x, y) requests
@@ -457,7 +467,7 @@ const spatialManager = (function () {
         const obj = tiles.get(tx, ty);
         const ci = tiles.getCI(tx, ty);
 
-        if (typeof ci === 'undefined') throw Error();
+        if (typeof ci === 'undefined') continue;
 
         const count = obj.count;
 
@@ -548,12 +558,6 @@ const spatialManager = (function () {
   }
 
 
-  function isRegistered(entity) {
-    const spatialID = entity.getSpatialID();
-    if (_registered[spatialID]) return true;
-    return false;
-  }
-
   // EXPOSURE
 
   return {
@@ -574,6 +578,8 @@ const spatialManager = (function () {
     registerTile,
     register,
     unregister,
+
+    forceRecompute,
 
     MIN_ENTITY,
     WALL_ID,
