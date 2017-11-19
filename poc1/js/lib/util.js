@@ -133,6 +133,24 @@ const util = (function () {
 
   util.randRange = (min, max) => (min + Math.random() * (max - min));
 
+
+  util.getCanvas = (image) => {
+    if (image instanceof HTMLCanvasElement) {
+      return image;
+    } else if (image instanceof Image) {
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0);
+      return canvas;
+    } else {
+      throw Error();
+    }
+
+    return null;
+  };
+
   util.square = x => (x * x);
 
   util.cube = x => (x * x * x);

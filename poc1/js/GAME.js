@@ -317,22 +317,38 @@ function renderSimulation(ctx) {
 
 
 function setup(response) {
+
+
+
+  // Init g_url.
+  g_url = response.urls;
+  
+  // Init g_asset.
+  g_asset = response.assets;
+
   // console.log('Setting up...');
   // Unroll response.
   const map = response.map;
   const assets = response.assets;
 
+  // --- Tiled Map ---
+
+  g_tm = g_asset.tiledMap.tm1;
+
+  const width = g_tm.tileWidth * g_tm.widthInTiles;
+  const height = g_tm.tileHeight * g_tm.heightInTiles;
+
 
   g_viewport.stickToWorld(true);
 
 
-  g_muted = map.cfg.muted ? map.cfg.muted : false;
+  g_muted = activeManifest.cfg.activeManifest ? map.cfg.muted : false;
 
   // Setting world
-  g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
-  g_world.setHeight(map.cfg.world.width, map.cfg.world.unit);
-  g_world.setTileWidth(map.cfg.tile.width);
-  g_world.setTileHeight(map.cfg.tile.height);
+  g_world.setWidth(width, 'px');
+  g_world.setHeight(height, 'px');
+  g_world.setTileWidth(g_tm.tileWidth);
+  g_world.setTileHeight(g_tm.tileHeight);
 
 
   const viewportWidth = activeManifest.cfg.screen.width;
@@ -382,12 +398,6 @@ function setup(response) {
   g_radar.width = g_canvas.width;
   g_radar.height = g_canvas.height;
 
-  // Init g_url.
-  g_url = response.urls;
-
-  // Init g_asset.
-  g_asset = response.assets;
-
   // --- Mouse ---
 
   // Set mouse cursor image.
@@ -409,14 +419,8 @@ function setup(response) {
     g_asset.raw.text.lights,
     g_asset.raw.text.shadowMap,
     g_asset.raw.text.shadowMask,
-    map.cfg.shadowSize ? map.cfg.shadowSize : 64,
+    activeManifest.cfg.shadowSize ? map.cfg.shadowSize : 64,
   );
-
-
-  // --- Tiled Map ---
-
-  g_tm = g_asset.tiledMap.tm1;
-  console.log(g_tm);
 
   // --- Entity Manager ---
 
@@ -460,7 +464,7 @@ function setup(response) {
   for (let i = 0; i < tmLights.length; i += 1) {
     const light = tmLights[i];
 
-    g_lights.push({
+    const po = {
       x: light.x + light.width / 2,
       y: light.y + light.height / 2,
       color: {
@@ -468,12 +472,10 @@ function setup(response) {
         g: 255,
         b: 255,
       },
-    });
+    };
+
+    g_lights.push(po);
   }
-
-
-  // Temporary occlusion map from spatial manager.  TODO: remove later.
-  // g_testWOM = spatialManager.getWallOcclusionMap();
 
   // --- Start Game ---
 
@@ -617,28 +619,3 @@ startGame();
 // DEBUG STUFF, REMOVE LATER
 // =========================
 
-// Eughh...
-const fOcclusionMap = function (canvas) {
-  function occluder(rgba1, rgba2) {
-    const rgbaInit = [rgba1.r, rgba1.g, rgba1.b, rgba1.a];
-    const [r, g, b, a] = rgbaInit;
-
-    const threshold = 1;
-
-    let brightness = 255;
-
-    if (r <= threshold || g <= threshold || b <= threshold) {
-      brightness = 0;
-    }
-
-    const tRgba = [0, 0, 0, brightness];
-    const [tr, tg, tb, ta] = tRgba;
-
-    rgba2.r = tr;
-    rgba2.g = tg;
-    rgba2.b = tb;
-    rgba2.a = ta;
-  }
-
-  return util.forAllPixels(canvas, occluder);
-};
