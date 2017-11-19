@@ -3,8 +3,8 @@
     "name": "map3",
     "cfg": {
         "world": {
-            "width": 100,
-            "height": 100,
+            "width": 32,
+            "height": 32,
             "unit": "t"
         },
         "tile": {
@@ -176,6 +176,13 @@
                     "scale": 0.15,
                     "image": "raw.image.donkey"
                 }
+            },
+            "terrorist": {
+              "dep": ["raw.image.terrorist"],
+              "cfg": {
+                "scale": 0.3,
+                "image": "raw.image.terrorist"
+              }
             }
         },
         "tiledMap": {
@@ -274,7 +281,8 @@
                     "heart": "hp.png",
                     "Hbackground": "HUD.png",
                     "Line": "line.png",
-                    "minimap3": "minimap3.png"
+                    "minimap3": "minimap3.png",
+                    "terrorist": "terrorist.png"
                 }
             }, {
                 "prefix": "img/spritesheets/explosions/",

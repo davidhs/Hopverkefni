@@ -206,7 +206,7 @@ function renderSimulation(ctx) {
 
   // === HUDBAR ===
 
-  HUD.render(ctxh);
+  HUD.render(ctxhb);
 
 
   // === SHADOWS ===
@@ -293,6 +293,10 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_radar, 0, 0);
   ctxp.globalAlpha = 1.0;
 
+  // --- DRAW HUDBAR ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_hudbar, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
   // === DRAW TO RENDERING CANVAS ===
 
@@ -322,7 +326,7 @@ function setup(response) {
 
   // Init g_url.
   g_url = response.urls;
-  
+
   // Init g_asset.
   g_asset = response.assets;
 
@@ -398,6 +402,11 @@ function setup(response) {
   g_radar.width = g_canvas.width;
   g_radar.height = g_canvas.height;
 
+  g_hudbar.width = g_canvas.width;
+  g_hudbar.height = g_canvas.height;
+
+
+
   // --- Mouse ---
 
   // Set mouse cursor image.
@@ -469,7 +478,7 @@ function setup(response) {
   if (tmLights) {
     for (let i = 0; i < tmLights.length; i += 1) {
       const light = tmLights[i];
-  
+
       const po = {
         x: light.x + light.width / 2,
         y: light.y + light.height / 2,
@@ -479,7 +488,7 @@ function setup(response) {
           b: 255,
         },
       };
-  
+
       g_lights.push(po);
     }
   }
@@ -627,4 +636,3 @@ startGame();
 // =========================
 // DEBUG STUFF, REMOVE LATER
 // =========================
-

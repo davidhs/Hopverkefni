@@ -18,15 +18,18 @@ const entityManager = (function () {
   // to request the blessed release of death!
   const KILL_ME_NOW = -1;
 
+
   const categories = {
     bullets: [],
     players: [],
     genericEnemiesOne: [],
     explosions: [],
+    terrexplotions: [],
     blood: [],
   };
 
   const categoryNames = Object.keys(categories);
+
 
   // PUBLIC METHODS
 
@@ -66,6 +69,11 @@ const entityManager = (function () {
     categories.explosions.push(new AnimatedImage(descr));
   }
 
+  function generateTerrexplotion(descr){
+    descr.sequence = g_asset.sequence.explosionSpritesheet5;
+    categories.terrexplotions.push(new AnimatedImage(descr));
+  }
+
   function generateBlood(descr) {
     descr.sequence = g_asset.sequence.blood3;
     categories.blood.push(new AnimatedImage(descr));
@@ -74,6 +82,7 @@ const entityManager = (function () {
   function generateGenericEnemyOne(cfg) {
     categories.genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
+
 
   function update(du) {
     for (let i = 0; i < categoryNames.length; i += 1) {
@@ -118,18 +127,10 @@ const entityManager = (function () {
         item.render(ctx, cfg);
       }
     }
-  }
+
+}
 
   function init() {
-    for (let i = 0; i < 0; i += 1) {
-      const cx = Math.random() * g_world.getWidth();
-      const cy = Math.random() * g_world.getHeight();
-      generateGenericEnemyOne({
-        cx,
-        cy,
-        sprite: g_asset.sprite.donkey,
-      });
-    }
   }
 
   function getPlayer() {
@@ -145,6 +146,7 @@ const entityManager = (function () {
     render,
     fireBullet,
     generateExplosion,
+    generateTerrexplotion,
     generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
