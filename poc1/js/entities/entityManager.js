@@ -23,9 +23,8 @@ const entityManager = (function () {
     bullets: [],
     players: [],
     genericEnemiesOne: [],
-    genericEnemiesOne: [],
     explosions: [],
-    terrexplotions = [];
+    terrexplotions: [],
     blood: [],
   };
 
@@ -83,9 +82,7 @@ const entityManager = (function () {
   function generateGenericEnemyOne(cfg) {
     categories.genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
-  function generateGenericEnemyTwo(cfg){
-    categories.genericEnemiesTwo.push(new GenericEnemyTwo(cfg));
-  }
+
 
   function update(du) {
     for (let i = 0; i < categoryNames.length; i += 1) {
@@ -130,29 +127,10 @@ const entityManager = (function () {
         item.render(ctx, cfg);
       }
     }
-    if(_genericEnemiesTwo.length < 10){
-      for (let i = 0; i < 10; i += 1) {
-        const cx = Math.random() * g_world.getWidth();
-        const cy = Math.random() * g_world.getHeight();
-        generateGenericEnemyTwo({
-          cx,
-          cy,
-          sprite: g_asset.sprite.terrorist,
-      });
-    }
-  }
+
 }
 
   function init() {
-    for (let i = 0; i < 0; i += 1) {
-      const cx = Math.random() * g_world.getWidth();
-      const cy = Math.random() * g_world.getHeight();
-      generateGenericEnemyTwo({
-        cx,
-        cy,
-        sprite: g_asset.sprite.terrorist,
-      });
-    }
   }
 
   function getPlayer() {
@@ -172,7 +150,6 @@ const entityManager = (function () {
     generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
-    generateGenericEnemyTwo,
     OK,
     KILL_ME_NOW,
 

@@ -38,10 +38,12 @@ const Minimap = (function () {
 
 
   function update(du) {
-    tilewidth = g_master.map.cfg.tile.width;
-    tileheight = g_master.map.cfg.tile.width;
-    worldwidth = g_master.map.cfg.world.width * tilewidth;
-    worldheight = g_master.map.cfg.world.height * tileheight;
+
+    /*tilewidth = g_master.map.cfg.tile.width;
+    tileheight = g_master.map.cfg.tile.height;*/
+    worldwidth = g_world.getWidth();
+
+    worldheight = g_world.getHeight();
     cx = (g_viewport.getIW()/4)*3;
     cy = 0;
     width = g_viewport.getIW() / 4;

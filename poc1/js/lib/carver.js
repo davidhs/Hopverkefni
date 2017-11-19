@@ -1,5 +1,5 @@
 // Web worker!
-importScripts('PriorityQueue.js');
+importScripts('datastructure/PriorityQueue.js');
 
 
 const go = {

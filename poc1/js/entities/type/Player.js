@@ -272,7 +272,7 @@ Player.prototype.update = function (du) {
   if (g_mouse.isDown) {
     if (armory[selectedWeaponID].magazineAmmo > 0) {
       this.fireBullet();
-      console.log(`Left in clip: ${armory[selectedWeaponID].magazineAmmo}`);
+      if (DEBUG_PLAYER) console.log(`Left in clip: ${armory[selectedWeaponID].magazineAmmo}`);
       if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
       }
@@ -358,8 +358,8 @@ Player.prototype.getRadius = function () {
 };
 
 Player.prototype.reloadWeapon = function () {
-  console.log(`Reload ${armory[selectedWeaponID].ammo} bullets left`);
-  console.log(`in ${armory[selectedWeaponID].name}`);
+  if (DEBUG_PLAYER) console.log(`Reload ${armory[selectedWeaponID].ammo} bullets left`);
+  if (DEBUG_PLAYER) console.log(`in ${armory[selectedWeaponID].name}`);
   this.bulletCooldown = armory[selectedWeaponID].reloadTime;
   if (armory[selectedWeaponID].ammo >= armory[selectedWeaponID].magazineSize) {
     armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].magazineSize;
