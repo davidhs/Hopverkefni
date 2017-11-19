@@ -18,31 +18,19 @@ const entityManager = (function () {
   // to request the blessed release of death!
   const KILL_ME_NOW = -1;
 
-  const _bullets = [];
-  const _players = [];
-  const _explosions = [];
-  const _terrexplotions = [];
-  const _blood = [];
-  const _genericEnemiesOne = [];
-  const _genericEnemiesTwo = [];
 
-  const _categories = [
-    _bullets,
-    _players,
-    _terrexplotions,
-    _genericEnemiesOne,
-    _genericEnemiesTwo,
-    _explosions,
-    _blood,
-  ];
+  const categories = {
+    bullets: [],
+    players: [],
+    genericEnemiesOne: [],
+    genericEnemiesOne: [],
+    explosions: [],
+    terrexplotions = [];
+    blood: [],
+  };
 
-  // "PRIVATE" METHODS
+  const categoryNames = Object.keys(categories);
 
-  function _forEachOf(aCategory, fn) {
-    for (let i = 0; i < aCategory.length; i += 1) {
-      fn.call(aCategory[i]);
-    }
-  }
 
   // PUBLIC METHODS
 
@@ -59,15 +47,15 @@ const entityManager = (function () {
       through,
     });
     if (DEBUG) console.log(bullet);
-    _bullets.push(bullet);
+    categories.bullets.push(bullet);
   }
 
   function generatePlayer(descr) {
-    _players.push(new Player(descr));
+    categories.players.push(new Player(descr));
   }
 
   function generateItems(descr) {
-    _items.push(new Items(descr));
+    categories.items.push(new Items(descr));
   }
 
   // function generateWeapon(descr) {
@@ -79,68 +67,67 @@ const entityManager = (function () {
   // and explosion rate.
   function generateExplosion(descr) {
     descr.sequence = g_asset.sequence.explosion3;
-    _explosions.push(new AnimatedImage(descr));
+    categories.explosions.push(new AnimatedImage(descr));
   }
 
   function generateTerrexplotion(descr){
     descr.sequence = g_asset.sequence.explosionSpritesheet5;
-    _terrexplotions.push(new AnimatedImage(descr));
+    categories.terrexplotions.push(new AnimatedImage(descr));
   }
 
   function generateBlood(descr) {
     descr.sequence = g_asset.sequence.blood3;
-    _blood.push(new AnimatedImage(descr));
+    categories.blood.push(new AnimatedImage(descr));
   }
 
   function generateGenericEnemyOne(cfg) {
-    _genericEnemiesOne.push(new GenericEnemyOne(cfg));
+    categories.genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
   function generateGenericEnemyTwo(cfg){
-    _genericEnemiesTwo.push(new GenericEnemyTwo(cfg));
+    categories.genericEnemiesTwo.push(new GenericEnemyTwo(cfg));
   }
 
   function update(du) {
-    for (let c = 0; c < _categories.length; c += 1) {
-      const aCategory = _categories[c];
-      let i = 0;
+    for (let i = 0; i < categoryNames.length; i += 1) {
+      const categoryName = categoryNames[i];
 
-      while (i < aCategory.length) {
-        const status = aCategory[i].update(du);
+      const items = categories[categoryName];
 
+      for (let j = 0; j < items.length; j += 1) {
+        const item = items[j];
+
+        const status = item.update(du);
 
         if (status === KILL_ME_NOW) {
-          // Probably superfluous
-          delete aCategory[i];
-
-          // remove the dead guy, and shuffle the others down to
-          // prevent a confusing gap from appearing in the array
-          aCategory.splice(i, 1);
-        } else {
-          i += 1;
+          delete items[j];
+          items.splice(j, 1);
         }
       }
     }
   }
 
   function render(ctx, cfg) {
-    for (let c = 0; c < _categories.length; c += 1) {
-      const aCategory = _categories[c];
+    for (let i = 0; i < categoryNames.length; i += 1) {
+      const categoryName = categoryNames[i];
 
-      for (let i = 0; i < aCategory.length; i += 1) {
-        aCategory[i].render(ctx, cfg);
+      // If the configuration has a blacklist for the categories
+      // and this category name is in it, then do not render.
+      if (cfg.categoryBlacklist && cfg.categoryBlacklist.has(categoryName)) {
+        continue;
       }
-    }
 
+      // If the configuration has a whitelist for the categories
+      // and this category is not found in the whitelist, then do not render.
+      if (cfg.categoryWhitelist && !cfg.categoryWhitelist.has(categoryName)) {
+        continue;
+      }
 
-    if (_genericEnemiesOne.length < 10) {
-      for (let i = 0; i < 10; i += 1) {
-        const cx = Math.random() * g_world.getWidth();
-        const cy = Math.random() * g_world.getHeight();
-        generateGenericEnemyOne({
-          cx,
-          cy,
-          sprite: g_asset.sprite.donkey,
-        });
+      const items = categories[categoryName];
+
+      for (let j = 0; j < items.length; j += 1) {
+        const item = items[j];
+
+        item.render(ctx, cfg);
       }
     }
     if(_genericEnemiesTwo.length < 10){
@@ -157,7 +144,7 @@ const entityManager = (function () {
 }
 
   function init() {
-    for (let i = 0; i < 1000; i += 1) {
+    for (let i = 0; i < 0; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
       generateGenericEnemyTwo({
@@ -169,7 +156,9 @@ const entityManager = (function () {
   }
 
   function getPlayer() {
-    if (_players.length > 0) return _players[0];
+    if (categories.players.length > 0) {
+      return categories.players[0];
+    }
     return null;
   }
 

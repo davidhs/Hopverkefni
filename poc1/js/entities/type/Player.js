@@ -292,7 +292,7 @@ Player.prototype.update = function (du) {
   this.cx = newX;
   this.cy = newY;
 
-  //redraw player position on minimap
+  // redraw player position on minimap
   Minimap.playerPosition(this.cx, this.cy);
 
 
@@ -322,11 +322,12 @@ Player.prototype.update = function (du) {
       if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = oldY;
-        spatialID = spatialManager.register(this);
+        spatialManager.register(this);
       }
     }
 
     if (!spatialManager.isRegistered(this)) {
+      // Last attempt
       spatialManager.register(this);
       if (!spatialManager.isRegistered(this)) {
         throw Error();

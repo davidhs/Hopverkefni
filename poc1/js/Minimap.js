@@ -44,17 +44,17 @@ const Minimap = (function () {
     worldheight = g_master.map.cfg.world.height * tileheight;
     cx = (g_viewport.getIW()/4)*3;
     cy = 0;
-    width = g_viewport.getIW()/4;
-    height = g_viewport.getIH()/4;
+    width = g_viewport.getIW() / 4;
+    height = g_viewport.getIH() / 4;
   }
 
   function render(ctx) {
-    if(g_master.map.name == "map3"){
-    ctx.globalAlpha = 0.5;
-    drawMinimap(ctx);
-  }
+    if (g_master.map.name === 'map3') {
+      ctx.globalAlpha = 0.5;
+      drawMinimap(ctx);
+    }
 
-    //get images
+    // get images
     minimap3 = g_asset.raw.image.minimap3;
   }
 
@@ -62,6 +62,6 @@ const Minimap = (function () {
   return {
     update,
     render,
-    playerPosition
+    playerPosition,
   };
 }());

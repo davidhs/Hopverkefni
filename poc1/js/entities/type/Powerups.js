@@ -7,7 +7,9 @@
 function Powerups(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
-  this.sprite = this.sprite;
+
+  // TODO self assignment is pointless.
+  // this.sprite = this.sprite;
 
   audioManager.play(g_url.audio.powerup);
 }

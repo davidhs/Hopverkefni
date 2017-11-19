@@ -1,24 +1,14 @@
 'use strict';
 
-/* global  document :true */
+/* global g_viewport document :true */
 
 const g_infobar = (function () {
   const infobar = {};
-
-  let sx;
-  let sy;
-  let dx;
-  let dy;
-  let sWidth;
-  let sHeight;
-  let dWidth;
-  let dHeight;
 
   infobar.sx = g_viewport.getX + g_viewport.getWidth / 4;
   infobar.sy = g_viewport.getY;
   infobar.sWidth = g_viewport.getwidth / 2;
   infobar.sHeight = 100;
-
 
   infobar.canvas = document.createElement('canvas');
   infobar.canvas.width = infobar.sWidth;
@@ -31,10 +21,10 @@ const g_infobar = (function () {
   infobar.ctx.fill();
   console.log('pepp');
 
-
   infobar.getWidth = function () {
     return infobar.width;
   };
+
   infobar.getHeight = function () {
     return infobar.height;
   };

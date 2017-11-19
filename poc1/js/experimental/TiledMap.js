@@ -5,6 +5,10 @@ function TiledMap(cfg) {
   const tilesets = cfg.tilesets;
 
 
+  console.log(map);
+  console.log(tilesets);
+
+
   // Safety
   for (let i = 0; i < tilesets.length; i += 1) {
     if (typeof tilesets[i] === 'string') {
@@ -17,10 +21,11 @@ function TiledMap(cfg) {
   const width = parseInt(map['@attributes'].width, 10);
   const height = parseInt(map['@attributes'].height, 10);
 
+  // Width and height of map in terms of tiles.
   this.widthInTiles = width;
   this.heightInTiles = height;
 
-  // Width in pixels
+  // Width and height of tiles in pixels.
   const tileWidth = parseInt(map['@attributes'].tilewidth, 10);
   const tileHeight = parseInt(map['@attributes'].tileheight, 10);
 
@@ -42,13 +47,12 @@ function TiledMap(cfg) {
   // TOP LAYERS (OVERHEAD)
   this.isTopLayer = {};
 
+  // Process layers.
   for (let i = 0; i < layers.length; i += 1) {
     const layer = layers[i];
     const name = this._getLayerName(layer);
 
-
     // LAYER TYPE
-
 
     if (!layer.properties) {
       console.error('Need level properties!');
@@ -97,6 +101,57 @@ function TiledMap(cfg) {
 
     data2Ds.push(rows);
   }
+
+  // Process object group
+
+  const objectGroup = map.objectgroup;
+
+  // 1 object laye
+
+  const objectGroupAttributes = objectGroup['@attributes'];
+  // Objects
+
+  this.objects = {};
+
+  console.log(objectGroup);
+
+  for (let i = 0; i < objectGroup.object.length; i += 1) {
+    const object = objectGroup.object[i];
+    const objectAttributes = object['@attributes'];
+
+    console.log(object);
+
+    let shape = 'rectangle';
+
+    if (object.ellipse) {
+      shape = 'ellipse';
+    }
+
+    let name = objectAttributes.name;
+    let type = objectAttributes.type;
+    let x = parseInt(objectAttributes.x, 10);
+    let y = parseInt(objectAttributes.y, 10);
+    let width = parseInt(objectAttributes.width, 10);
+    let height = parseInt(objectAttributes.height, 10);
+
+    if (!name) name = 'unknownName';
+    if (!type) type = 'unknownType';
+    if (!x) x = 0;
+    if (!y) y = 0;
+    if (!width) width = 0;
+    if (!height) height = 0;
+
+
+    if (!this.objects[type]) this.objects[type] = [];
+
+    const insObj = {
+      shape, name, type, x, y, width, height,
+    };
+
+    this.objects[type].push(insObj);
+  }
+
+  console.log('OBJECTS:', this.objects);
 
   this.map = map;
   this.tilesets = tilesets;
@@ -304,7 +359,7 @@ TiledMap.prototype.addObstructions = function () {
 
           if (tlut[tidx]) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
-              //spatialManager.debug.registerTile(spatialManager.WALL_ID, tx, ty);
+              // spatialManager.debug.registerTile(spatialManager.WALL_ID, tx, ty);
               spatialManager.registerTile(spatialManager.WALL_ID, tx, ty);
             }
           }
@@ -312,4 +367,8 @@ TiledMap.prototype.addObstructions = function () {
       }
     }
   }
+
+
+  // Force recompute
+  spatialManager.forceRecompute();
 };
