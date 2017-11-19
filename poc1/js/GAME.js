@@ -424,12 +424,17 @@ function setup(response) {
 
   // --- Entity Manager ---
 
-  // Assign a player a sprite image.
-  entityManager.generatePlayer({
+  const gpo = {
     sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path),
-    cx: g_tm.objects.playerStart[0].x + g_tm.objects.playerStart[0].width / 2,
-    cy: g_tm.objects.playerStart[0].y + g_tm.objects.playerStart[0].height / 2,
-  });
+  };
+
+  if (g_tm.objects && g_tm.objects.playerStart) {
+    gpo.cx = g_tm.objects.playerStart[0].x + g_tm.objects.playerStart[0].width / 2;
+    gpo.cy = g_tm.objects.playerStart[0].y + g_tm.objects.playerStart[0].height / 2;
+  }
+
+  // Assign a player a sprite image.
+  entityManager.generatePlayer(gpo);
 
   // Initialize entity manager.
   entityManager.init();
@@ -461,21 +466,24 @@ function setup(response) {
 
   const tmLights = g_tm.objects.light;
 
-  for (let i = 0; i < tmLights.length; i += 1) {
-    const light = tmLights[i];
-
-    const po = {
-      x: light.x + light.width / 2,
-      y: light.y + light.height / 2,
-      color: {
-        r: 255,
-        g: 255,
-        b: 255,
-      },
-    };
-
-    g_lights.push(po);
+  if (tmLights) {
+    for (let i = 0; i < tmLights.length; i += 1) {
+      const light = tmLights[i];
+  
+      const po = {
+        x: light.x + light.width / 2,
+        y: light.y + light.height / 2,
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+        },
+      };
+  
+      g_lights.push(po);
+    }
   }
+
 
   // --- Start Game ---
 
