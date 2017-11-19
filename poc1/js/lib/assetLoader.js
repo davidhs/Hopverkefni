@@ -160,10 +160,16 @@ const assetLoader = (function () {
       const typeCatalog = assets[type];
       for (let i = 0, keys = Object.keys(typeCatalog); i < keys.length; i += 1) {
         const name = keys[i];
+
+        const _desc = typeCatalog[name];
+
+        // If thing has no dependencies, then add an empty list.
+        if (!_desc.dep) _desc.dep = [];
+
         const bundle = {
           type,
           name: keys[i],
-          desc: typeCatalog[name],
+          desc: _desc,
           ready: false,
         };
         bundles.push(bundle);
