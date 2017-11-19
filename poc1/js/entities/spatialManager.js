@@ -331,6 +331,12 @@ const spatialManager = (function () {
     delete entities[spatialID];
   }
 
+  function isRegistered(entity) {
+    const spatialID = entity.getSpatialID();
+    if (_registered[spatialID]) return true;
+    return false;
+  }
+
   /**
     *
     * @param {Entity} entity
@@ -551,12 +557,6 @@ const spatialManager = (function () {
     return entities[spatialID].entity;
   }
 
-
-  function isRegistered(entity) {
-    const spatialID = entity.getSpatialID();
-    if (_registered[spatialID]) return true;
-    return false;
-  }
 
   // EXPOSURE
 

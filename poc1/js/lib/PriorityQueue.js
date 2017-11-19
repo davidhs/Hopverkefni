@@ -3,10 +3,10 @@
 /**
  * Creates a priority queue.  Can specify whether it's a min or max
  * priority queue, or supply custom comparator.
- * 
+ *
  * By default it's a max priority queue.
- * 
- * @param {*} cfg 
+ *
+ * @param {*} cfg
  */
 function PriorityQueue(cfg) {
   // Defaults
@@ -27,7 +27,7 @@ function PriorityQueue(cfg) {
       } else if (cfg.type === PriorityQueue.TYPE_MIN_PQ) {
         this._subcmp = this._subcmpMin;
       } else {
-        console.error("None specified:", cfg.type);
+        console.error('None specified:', cfg.type);
       }
     }
   }
@@ -57,9 +57,9 @@ PriorityQueue.prototype.clear = function () {
 
 
 /**
- * 
- * @param {number} a 
- * @param {number} b 
+ *
+ * @param {number} a
+ * @param {number} b
  */
 PriorityQueue.prototype._subcmpMin = function (key1, key2) {
   return key1 > key2;
@@ -67,18 +67,18 @@ PriorityQueue.prototype._subcmpMin = function (key1, key2) {
 
 
 /**
- * 
- * @param {number} a 
- * @param {number} b 
+ *
+ * @param {number} a
+ * @param {number} b
  */
 PriorityQueue.prototype._subcmpMax = function (key1, key2) {
   return key1 < key2;
 };
 
 /**
- * 
- * @param {number} a 
- * @param {number} b 
+ *
+ * @param {number} a
+ * @param {number} b
  */
 PriorityQueue.prototype._subcmp = function (key1, key2) {
   return this._subcmpMax(key1, key2);
@@ -87,9 +87,9 @@ PriorityQueue.prototype._subcmp = function (key1, key2) {
 /**
  * Compares items at indicies index1 and index2 in internal
  * array.
- * 
- * @param {number} i 
- * @param {number} j 
+ *
+ * @param {number} i
+ * @param {number} j
  */
 PriorityQueue.prototype._cmp = function (index1, index2) {
   const id1 = this._pq[index1];
@@ -107,8 +107,8 @@ PriorityQueue.prototype._cmp = function (index1, index2) {
 
 /**
  * Verifies the priority queue, that's it's in a legal state.
- * 
- * @param {number} k 
+ *
+ * @param {number} k
  */
 PriorityQueue.prototype._verify = function (k) {
   k = k || 1;
@@ -130,12 +130,11 @@ PriorityQueue.prototype._verify = function (k) {
 
 /**
  * Swaps items at indices i and j in internal array.
- * 
- * @param {number} i 
- * @param {number} j 
+ *
+ * @param {number} i
+ * @param {number} j
  */
 PriorityQueue.prototype._exch = function (i, j) {
-
   const id1 = this._pq[i];
   const id2 = this._pq[j];
 
@@ -147,8 +146,8 @@ PriorityQueue.prototype._exch = function (i, j) {
 };
 
 /**
- * 
- * @param {number} k 
+ *
+ * @param {number} k
  */
 PriorityQueue.prototype._sink = function (k) {
   const n = this._size;
@@ -168,7 +167,7 @@ PriorityQueue.prototype._sink = function (k) {
 
 /**
  * Pushes item at index k up the priority queue
- * 
+ *
  * @param {number} k index of item
  */
 PriorityQueue.prototype._swim = function (k) {
@@ -216,18 +215,17 @@ PriorityQueue.prototype.peek = function () {
  * @param newPriority
  */
 PriorityQueue.prototype.changePriority = function (value, newPriority) {
-
   // Index of the value in this._pq.
   const id = this._vilut[value];
 
   const item = this._lut[id];
   const idx = item.idx;
-  
+
   const oldPriority = item.key;
 
   // Only sink/swim if change of priority
   // XXX !=
-  if (newPriority != oldPriority) {
+  if (newPriority !== oldPriority) {
     // We sink with lower priority
 
     item.key = newPriority;
@@ -256,20 +254,20 @@ PriorityQueue.prototype.remove = function () {
   this._exch(1, this._size);
   this._size -= 1;
   this._sink(1);
-  
+
 
   delete this._vilut[hiPriItem];
   delete this._lut[hiPriID];
 
   delete this._pq[this._size + 1];
-  
+
   if (this._check && !this._verify()) {
     console.error('Failure in dequeueing.');
     throw Error();
   }
 
   return hiPriItem.value;
-}
+};
 
 /*
 PriorityQueue.prototype.toString = function (k, p) {

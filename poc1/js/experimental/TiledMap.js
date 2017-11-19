@@ -144,12 +144,14 @@ function TiledMap(cfg) {
 
     if (!this.objects[type]) this.objects[type] = [];
 
-    const insObj = {shape, name, type, x, y, width, height};
+    const insObj = {
+      shape, name, type, x, y, width, height,
+    };
 
     this.objects[type].push(insObj);
   }
 
-  console.log("OBJECTS:", this.objects);
+  console.log('OBJECTS:', this.objects);
 
   this.map = map;
   this.tilesets = tilesets;
@@ -357,7 +359,7 @@ TiledMap.prototype.addObstructions = function () {
 
           if (tlut[tidx]) {
             if (tlut[tidx].name === 'collision' && tlut[tidx].value) {
-              //spatialManager.debug.registerTile(spatialManager.WALL_ID, tx, ty);
+              // spatialManager.debug.registerTile(spatialManager.WALL_ID, tx, ty);
               spatialManager.registerTile(spatialManager.WALL_ID, tx, ty);
             }
           }

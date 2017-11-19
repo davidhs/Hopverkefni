@@ -89,9 +89,9 @@ function updateSimulation(du) {
 
 
   const player = entityManager.getPlayer();
-  
-    g_lights[0].x = player.cx;
-    g_lights[0].y = player.cy;
+
+  g_lights[0].x = player.cx;
+  g_lights[0].y = player.cy;
 }
 
 // =================
@@ -141,7 +141,6 @@ function renderSimulation(ctx) {
   const w = g_canvas.width;
   const h = g_canvas.height;
 
-  
 
   // Clear canvases.
   ctx.clearRect(0, 0, w, h);
@@ -272,8 +271,6 @@ function renderSimulation(ctx) {
   ctxp.globalAlpha = 1.0;
   ctxp.globalCompositeOperation = 'destination-in';
   ctxp.drawImage(g_shadows, 0, 0, w, h);
-
-
 
 
   ctxp.globalCompositeOperation = 'source-over';
@@ -417,16 +414,16 @@ function setup(response) {
 
 
   // --- Tiled Map ---
-  
+
   g_tm = g_asset.tiledMap.tm1;
   console.log(g_tm);
-  
+
   // --- Entity Manager ---
 
   // Assign a player a sprite image.
   entityManager.generatePlayer({
     sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path),
-    cx: g_tm.objects.playerStart[0].x + g_tm.objects.playerStart[0].width / 2, 
+    cx: g_tm.objects.playerStart[0].x + g_tm.objects.playerStart[0].width / 2,
     cy: g_tm.objects.playerStart[0].y + g_tm.objects.playerStart[0].height / 2,
   });
 
@@ -443,7 +440,6 @@ function setup(response) {
   spatialManager.onready(() => {
     g_tm.addObstructions();
   });
-
 
 
   g_lights = [];
@@ -501,69 +497,66 @@ function startGame() {
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
 
-
   // Event handling
 
   // TODO this should be loaded first
   mapHandler.getManifest((manifest) => {
-
     const canvas = g_canvas;
-    
-      // NNEEDS NOT BE HARDCODED!
-      // screenManager.setDimensions(640, 480);
-    
-      screenManager.setDimensions(manifest.cfg.screen.width, manifest.cfg.screen.height);
-    
-      g_canvas.width = screenManager.getWidth();
-      g_canvas.height = screenManager.getHeight();
-    
-      const mel = (evt) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = evt.clientX - rect.left;
-        const y = evt.clientY - rect.top;
-    
-        screenManager.press(x, y);
-      };
-    
-    
-      canvas.addEventListener('mousedown', mel);
-    
-      const ctx = canvas.getContext('2d');
-    
-      const startScreen = new UIContainer();
-    
-      const list1 = new UIList();
-    
-      const button1 = new UIButton('Select Map');
-      const button2 = new UIButton('About');
-      const button3 = new UIButton('Exit');
-    
-      button1.setWidth(300);
-    
-      button1.addEventListener('press', (evt) => {
-        screenManager.selectCard(1);
-        screenManager.render(ctx);
-      });
-    
-      list1.addChild(button1);
-      list1.addChild(button2);
-      list1.addChild(new UIBlank());
-      list1.addChild(button3);
-    
-      startScreen.addChild(list1);
-    
-      const mapSelectionScreen = new UIContainer();
-      const list2 = new UIList();
-    
-      mapSelectionScreen.addChild(list2);
-    
-      screenManager.setLayout('card');
-      screenManager.addChild(startScreen, 0);
-      screenManager.addChild(mapSelectionScreen, 1);
-    
-      screenManager.setBackgroundColor('#f0f0f0');
-      screenManager.selectCard(0);
 
+    // NNEEDS NOT BE HARDCODED!
+    // screenManager.setDimensions(640, 480);
+
+    screenManager.setDimensions(manifest.cfg.screen.width, manifest.cfg.screen.height);
+
+    g_canvas.width = screenManager.getWidth();
+    g_canvas.height = screenManager.getHeight();
+
+    const mel = (evt) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top;
+
+      screenManager.press(x, y);
+    };
+
+
+    canvas.addEventListener('mousedown', mel);
+
+    const ctx = canvas.getContext('2d');
+
+    const startScreen = new UIContainer();
+
+    const list1 = new UIList();
+
+    const button1 = new UIButton('Select Map');
+    const button2 = new UIButton('About');
+    const button3 = new UIButton('Exit');
+
+    button1.setWidth(300);
+
+    button1.addEventListener('press', (evt) => {
+      screenManager.selectCard(1);
+      screenManager.render(ctx);
+    });
+
+    list1.addChild(button1);
+    list1.addChild(button2);
+    list1.addChild(new UIBlank());
+    list1.addChild(button3);
+
+    startScreen.addChild(list1);
+
+    const mapSelectionScreen = new UIContainer();
+    const list2 = new UIList();
+
+    mapSelectionScreen.addChild(list2);
+
+    screenManager.setLayout('card');
+    screenManager.addChild(startScreen, 0);
+    screenManager.addChild(mapSelectionScreen, 1);
+
+    screenManager.setBackgroundColor('#f0f0f0');
+    screenManager.selectCard(0);
 
 
     const maps = manifest.maps;

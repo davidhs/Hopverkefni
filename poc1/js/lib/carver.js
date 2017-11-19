@@ -26,74 +26,51 @@ const TPL = [
 ];
 
 
-/*
-const TPL = [
-    [0, -1],
-    [1, 0],
-    [0, 1],
-    [-1, 0],
-  ];
-  */
+const SQRT_2 = Math.sqrt(2);
 
 
 let flatData = [];
 
 
-// Receive message
-onmessage = (evt) => {
-  const data = evt.data;
+function init(w, h) {
+  initialized = true;
 
+  width = w;
+  height = h;
 
-  if (data[0] === 'init') {
-    const w = data[1];
-    const h = data[2];
+  go.width = w;
+  go.height = h;
 
-    if (typeof w !== 'undefined' && typeof h !== 'undefined') {
-      init(w, h);
+  grid = [];
+  for (let i = 0; i < this.height; i += 1) {
+    const row = [];
+    for (let j = 0; j < this.width; j += 1) {
+      const obj = {
+        score: Number.POSITIVE_INFINITY,
+        parent: { x: 0, y: 0 },
+        x: j,
+        y: i,
+        obstruction: false,
+      };
+      row.push(obj);
     }
-
-    flatData = [];
-    let idx = 0;
-    for (let y = 0; y < h; y += 1) {
-      for (let x = 0; x < w; x += 1) {
-        flatData[idx] = 0;
-        flatData[idx + 1] = 0;
-        idx += 2;
-      }
-    }
-  } else if (data[0] === 'carve') {
-    carveShortestPath(data[1], data[2]);
-
-    flatData = [];
-    let idx = 0;
-    for (let y = 0; y < height; y += 1) {
-      for (let x = 0; x < width; x += 1) {
-        flatData[idx] = 0 + grid[y][x].parent.x;
-        flatData[idx + 1] = 0 + grid[y][x].parent.y;
-
-        idx += 2;
-      }
-    }
-
-    postMessage(['grid', flatData]);
-  } else if (data[0] === 'obstruction') {
-    const x = data[1];
-    const y = data[2];
-
-    const node = get(x, y);
-
-    node.obstruction = true;
-    node.parent.x = 0;
-    node.parent.y = 0;
-
-    updateGrid();
+    grid.push(row);
   }
 
+  go.grid = grid;
+}
 
-  // Send message
-  postMessage('hi');
-};
+function _get(x, y) {
+  if (x < 0 || x >= width) return false;
+  if (y < 0 || y >= height) return false;
+  return go.grid[y][x];
+}
 
+function get(x, y) {
+  if (x < 0 || x >= width) throw Error();
+  if (y < 0 || y >= height) throw Error();
+  return go.grid[y][x];
+}
 
 // Max square for tile at (x, y)
 function msq(x, y) {
@@ -186,54 +163,13 @@ function updateGrid() {
 }
 
 
-function init(w, h) {
-  initialized = true;
-
-  width = w;
-  height = h;
-
-  go.width = w;
-  go.height = h;
-
-  grid = [];
-  for (let i = 0; i < this.height; i += 1) {
-    const row = [];
-    for (let j = 0; j < this.width; j += 1) {
-      const obj = {
-        score: Number.POSITIVE_INFINITY,
-        parent: { x: 0, y: 0 },
-        x: j,
-        y: i,
-        obstruction: false,
-      };
-      row.push(obj);
-    }
-    grid.push(row);
-  }
-
-  go.grid = grid;
-}
-
-function _get(x, y) {
-  if (x < 0 || x >= width) return false;
-  if (y < 0 || y >= height) return false;
-  return go.grid[y][x];
-}
-
-function get(x, y) {
-  if (x < 0 || x >= width) throw Error();
-  if (y < 0 || y >= height) throw Error();
-  return go.grid[y][x];
-}
-
-
 function carveShortestPath(sx, sy) {
   if (!initialized) return false;
   if (sx < 0 || sx >= width) return false;
   if (sy < 0 || sy >= height) return false;
 
 
-  if (sx === last_sx && sy === last_sy) return;
+  if (sx === last_sx && sy === last_sy) return false;
 
   const sNode = this.get(sx, sy);
 
@@ -318,9 +254,6 @@ function carveShortestPath(sx, sy) {
   return false;
 }
 
-
-const SQRT_2 = Math.sqrt(2);
-
 function _hce(x1, y1, x2, y2) {
   const dx = Math.abs(x2 - x1);
   const dy = Math.abs(y2 - y1);
@@ -333,3 +266,58 @@ function _hce(x1, y1, x2, y2) {
 
   return dist;
 }
+
+// Receive message
+onmessage = (evt) => {
+  const data = evt.data;
+
+
+  if (data[0] === 'init') {
+    const w = data[1];
+    const h = data[2];
+
+    if (typeof w !== 'undefined' && typeof h !== 'undefined') {
+      init(w, h);
+    }
+
+    flatData = [];
+    let idx = 0;
+    for (let y = 0; y < h; y += 1) {
+      for (let x = 0; x < w; x += 1) {
+        flatData[idx] = 0;
+        flatData[idx + 1] = 0;
+        idx += 2;
+      }
+    }
+  } else if (data[0] === 'carve') {
+    carveShortestPath(data[1], data[2]);
+
+    flatData = [];
+    let idx = 0;
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        flatData[idx] = 0 + grid[y][x].parent.x;
+        flatData[idx + 1] = 0 + grid[y][x].parent.y;
+
+        idx += 2;
+      }
+    }
+
+    postMessage(['grid', flatData]);
+  } else if (data[0] === 'obstruction') {
+    const x = data[1];
+    const y = data[2];
+
+    const node = get(x, y);
+
+    node.obstruction = true;
+    node.parent.x = 0;
+    node.parent.y = 0;
+
+    updateGrid();
+  }
+
+
+  // Send message
+  postMessage('hi');
+};
