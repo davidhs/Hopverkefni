@@ -33,7 +33,7 @@ const loader = (function () {
 
   const DEBUG = false;
   const VERBOSE = false;
-  const FILENAME = 'loader2.js';
+  const FILENAME = 'loader.js';
 
   const _catname = ['image', 'audio', 'text', 'json', 'xml'];
   const _catlu = {};
@@ -55,15 +55,15 @@ const loader = (function () {
   processor.image = function (handle, url, callback) {
     const img = new Image();
 
-    if (DEBUG) console.log(`${FILENAME}: Processing image: ${url}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Processing image: ${url}`);
 
     img.onload = function (evt) {
-      if (DEBUG) console.log(`${FILENAME}: Done processing image: ${url}`);
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing image: ${url}`);
       callback(img, 'image', handle, url);
     };
 
     img.onerror = function (evt) {
-      if (DEBUG) console.log(`${FILENAME}: Done processing image (error): ${url}`);
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing image (error): ${url}`);
       callback(null, 'image', handle, url);
     };
 
@@ -72,9 +72,9 @@ const loader = (function () {
 
   // Process audio, most likely not needed.
   processor.audio = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing audio: ${url}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Processing audio: ${url}`);
     const audio = new Audio(url, 'audio');
-    if (DEBUG) console.log(`${FILENAME}: Done processing audio: ${url}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing audio: ${url}`);
     callback(audio, 'audio', handle, url);
   };
 
@@ -86,10 +86,10 @@ const loader = (function () {
     xhr.responseType = 'text';
     xhr.onload = function () {
       if (xhr.status === 200) {
-        if (DEBUG) console.log(`${FILENAME}: Done processing text: ${url}`);
+        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing text: ${url}`);
         callback(xhr.responseText, 'text', handle, url);
       } else {
-        if (DEBUG) console.log(`${FILENAME}: Done processing text (error): ${url}`);
+        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing text (error): ${url}`);
         callback(null, 'text', handle, url);
       }
     };
@@ -97,9 +97,9 @@ const loader = (function () {
   };
 
   processor.xml = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing XML: ${url}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Processing XML: ${url}`);
     processor.text(handle, url, (response) => {
-      if (DEBUG) console.log(`${FILENAME}: Done processing XML: ${url}`);
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing XML: ${url}`);
       if (response === null) callback(null, 'xml', handle, url);
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(response, 'text/xml');
@@ -109,9 +109,9 @@ const loader = (function () {
 
 
   processor.json = function (handle, url, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Processing JSON: ${url}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Processing JSON: ${url}`);
     processor.text(handle, url, (response) => {
-      if (DEBUG) console.log(`${FILENAME}: Done processing JSON: ${url}`);
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing JSON: ${url}`);
       if (response === null) callback(null, 'json', handle, url);
       const json = JSON.parse(response);
       callback(json, 'json', handle, url);
@@ -127,7 +127,9 @@ const loader = (function () {
    * @param {string} url
    */
   function assetTick(asset, type, handle, url) {
-    if (DEBUG) console.log(`${FILENAME}: Remaining bundles before: ${bundles.length}`);
+
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Tick:`, asset, type, handle, url);
+
     for (let i = 0; i < bundles.length; i += 1) {
       const bundle = bundles[i];
       const bundleLut = bundle.lut;
@@ -147,11 +149,12 @@ const loader = (function () {
       // bundle, call callback with
       // assets.
       if (bundle.count === bundle.size) {
-        if (DEBUG) console.log(`${FILENAME}: Before release: ${JSON.stringify(bundle)}`);
+        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Remaining bundles: ${bundles.length}`);
+        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Before release:`, util.snapshot(bundle));
 
         delete bundles[i];
 
-        if (DEBUG) console.log(`${FILENAME}: Bundle at index ${i} complete.`);
+        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Bundle at index ${i} complete.`);
 
         bundles.splice(i, 1);
         i -= 1;
@@ -159,7 +162,6 @@ const loader = (function () {
         bundle.callback(bundle.asset);
       }
     }
-    if (DEBUG) console.log(`${FILENAME}: Remaining bundles after: ${bundles.length}`);
   }
 
   // PUBLIC FUNCTIONS
@@ -172,7 +174,7 @@ const loader = (function () {
    * @param {function} callback
    */
   function load(categories, callback) {
-    if (DEBUG) console.log(`${FILENAME}: Input: ${JSON.stringify(categories)}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Input:`, util.snapshot(categories));
     // TODO: probably doesn't work
     if (!categories) {
       if (callback) {
@@ -184,7 +186,7 @@ const loader = (function () {
     for (let i = 0, keys = Object.keys(categories); i < keys.length; i += 1) {
       const key = keys[i];
       if (!_catlu[key]) {
-        console.error(`Type not supported: ${key}`);
+        console.error(`${util.timestamp()}: ${FILENAME}: Type not supported: ${key}`);
       }
     }
 
@@ -216,23 +218,23 @@ const loader = (function () {
       bundle.category[catname] = urls;
     }
 
-    if (DEBUG) console.log(`${FILENAME}: Bundle state: ${JSON.stringify(bundle)}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Bundle state:`, util.snapshot(bundle));
 
     // Check if bundle is empty
     if (bundle.size === 0) {
-      if (DEBUG) console.log(`${FILENAME}: Bundle is empty.`);
+      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Bundle is empty.`);
       if (callback) callback(null);
       return;
     }
 
-    if (DEBUG) console.log(`${FILENAME}: Adding bundle with ${bundle.size} elements.`);
-    if (DEBUG) console.log(`${FILENAME}: Bundle to process: ${JSON.stringify(bundle)}`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Adding bundle with ${bundle.size} elements.`);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Bundle to process:`, util.snapshot(bundle));
 
     // Push to bundles.
     bundles.push(bundle);
 
     const categoryNames = Object.keys(bundle.category);
-    if (DEBUG) console.log(`${FILENAME}: Category names requested:`, categoryNames);
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Category names requested:`, categoryNames);
 
 
     for (let i = 0; i < categoryNames.length; i += 1) {

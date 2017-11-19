@@ -151,6 +151,14 @@ const util = (function () {
     return null;
   };
 
+  util.range = (a, b) => {
+    const l = [];
+    for (let i = a; i < b; i += 1) {
+      l.push(i);
+    }
+    return l;
+  };
+
   util.square = x => (x * x);
 
   util.cube = x => (x * x * x);
@@ -183,6 +191,24 @@ const util = (function () {
     for (let i = 0; i < arr.length; i += 1) if (arr[i]) return true;
 
     return false;
+  };
+
+  util.timestamp = () => {
+    const d = new Date();
+
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+
+    const hour = d.getHours();
+    const minute = d.getMinutes();
+    const second = d.getSeconds();
+
+    const ms = d.getMilliseconds();
+
+    const str = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + "." + ms;
+
+    return str;
   };
 
   function objectStringReplacement(obj, stringTarget, replacement) {

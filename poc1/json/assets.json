@@ -1,5 +1,74 @@
 {
     "textureAtlas": {
+        "survivorFeetWalk": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/feet/walk/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-walk_' + x + '.png')"
+                }
+            }
+        },
+        "survivorFeetRun": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/feet/run/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-run_' + x + '.png')"
+                }
+            }
+        },
+        "survivorFeetStrafeLeft": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/feet/strafe_left/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-strafe_left_' + x + '.png')"
+                }
+            }
+        },
+        "survivorFeetStrafeRight": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/feet/strafe_right/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-strafe_right_' + x + '.png')"
+                }
+            }
+        },
+        "survivorRifleIdle": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/rifle/idle/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-idle_rifle_' + x + '.png')"
+                }
+            }
+        },
+        "survivorRifleMove": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/rifle/move/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-move_rifle_' + x + '.png')"
+                }
+            }
+        },
+        "survivorRifleReload": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/rifle/reload/",
+                "paths": {
+                    "eval": "util.range(0, 20).map(x => 'survivor-reload_rifle_' + x + '.png')"
+                }
+            }
+        },
+        "survivorRifleShoot": {
+            "cfg": {
+                "pathPrefix": "img/Top_Down_Survivor/rifle/shoot/",
+                "paths": {
+                    "eval": "util.range(0, 3).map(x => 'survivor-shoot_rifle_' + x + '.png')"
+                }
+            }
+        },
+
+
+
+
+
         "dungeon": {
             "dep": ["raw.image.dungeon"],
             "cfg": {
