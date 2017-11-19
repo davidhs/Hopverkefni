@@ -5,10 +5,6 @@ function TiledMap(cfg) {
   const tilesets = cfg.tilesets;
 
 
-  console.log(map);
-  console.log(tilesets);
-
-
   // Safety
   for (let i = 0; i < tilesets.length; i += 1) {
     if (typeof tilesets[i] === 'string') {
@@ -113,13 +109,9 @@ function TiledMap(cfg) {
 
   this.objects = {};
 
-  console.log(objectGroup);
-
   for (let i = 0; i < objectGroup.object.length; i += 1) {
     const object = objectGroup.object[i];
     const objectAttributes = object['@attributes'];
-
-    console.log(object);
 
     let shape = 'rectangle';
 
@@ -150,8 +142,6 @@ function TiledMap(cfg) {
 
     this.objects[type].push(insObj);
   }
-
-  console.log('OBJECTS:', this.objects);
 
   this.map = map;
   this.tilesets = tilesets;

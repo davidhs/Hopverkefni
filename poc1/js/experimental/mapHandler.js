@@ -44,9 +44,25 @@ const mapHandler = (function () {
     });
   }
 
+
+  function _loadAssets(assets, callback) {
+    if (assets) {
+      assetLoader.load(assets, callback);
+    } else {
+      loader.load({
+        json: {
+          assets: 'json/assets.json'
+        }
+      }, (response) => {
+        const assets = response.json.assets;
+        assetLoader.load(assets, callback);
+      });
+    }
+  }
+
   function openMap(mapName, callback) {
     getMap(mapName, (map) => {
-      assetLoader.load(map.assets, (response) => {
+      _loadAssets(map.assets, (response) => {
         callback({
           map,
           assets: response.assets,
