@@ -300,7 +300,7 @@ UIElement.prototype.setBackgroundColor = function (color) {
 
 /**
  *
- * @param {string} color
+ * @param {string} background
  */
 UIElement.prototype.setBackground = function (background) {
   this.background = background;

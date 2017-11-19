@@ -58,9 +58,8 @@ function Grid(width, height) {
  * 
  * @param {*} du 
  */
-Grid.prototype.update = function (du) {
+Grid.prototype.update = function (du, force) {
   this._elapsedTime += du;
-  
 
   if (this._elapsedTime < 10) return;
 
@@ -68,7 +67,11 @@ Grid.prototype.update = function (du) {
 
   if (this._lastX === this._x && this._lastY === this._y) return;
 
-  
+  this._update();
+};
+
+
+Grid.prototype._update = function () {
   this._carver.postMessage(['carve', this._x, this._y]);
 
   this._lastX = this._x;
@@ -119,6 +122,10 @@ Grid.prototype.set = function (x, y, value) {
   this._grid[y][x] = value;
 };
 
+Grid.prototype.forceRecompute = function () {
+  this._update();
+};
+
 
 /**
  * 
@@ -150,15 +157,16 @@ Grid.prototype.addObstruction = function (x, y) {
   this._carver.postMessage(['obstruction', x, y]);
 };
 
+
 // Carve shortest path from x to y
-Grid.prototype.carveShortestPath = function (x, y) {
-
-  this._x = x;
-  this._y = y;
-
-  if (this._firstTime) {
-    this._carver.postMessage(['carve', this._x, this._y]);
-    this._lastX = this._x;
-    this._lastY = this._y;
-  }
+Grid.prototype.setSource = function (x, y) {
+  
+    this._x = x;
+    this._y = y;
+  
+    if (this._firstTime) {
+      this._lastX = this._x;
+      this._lastY = this._y;
+      this._update();
+    }
 };

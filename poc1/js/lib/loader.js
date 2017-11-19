@@ -185,7 +185,6 @@ const loader = (function () {
       const key = keys[i];
       if (!_catlu[key]) {
         console.error(`Type not supported: ${key}`);
-        continue;
       }
     }
 

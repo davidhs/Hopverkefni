@@ -16,3 +16,6 @@ package-lock.json
 # Please, no log files.
 .log
 .log.*
+
+# Webstorm
+.idea/

@@ -210,6 +210,11 @@ PriorityQueue.prototype.peek = function () {
   return this._pq[1];
 };
 
+/**
+ *
+ * @param value
+ * @param newPriority
+ */
 PriorityQueue.prototype.changePriority = function (value, newPriority) {
 
   // Index of the value in this._pq.
@@ -221,6 +226,7 @@ PriorityQueue.prototype.changePriority = function (value, newPriority) {
   const oldPriority = item.key;
 
   // Only sink/swim if change of priority
+  // XXX !=
   if (newPriority != oldPriority) {
     // We sink with lower priority
 
