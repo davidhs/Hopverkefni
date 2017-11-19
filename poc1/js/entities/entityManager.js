@@ -21,13 +21,17 @@ const entityManager = (function () {
   const _bullets = [];
   const _players = [];
   const _explosions = [];
+  const _terrexplotions = [];
   const _blood = [];
   const _genericEnemiesOne = [];
+  const _genericEnemiesTwo = [];
 
   const _categories = [
     _bullets,
     _players,
+    _terrexplotions,
     _genericEnemiesOne,
+    _genericEnemiesTwo,
     _explosions,
     _blood,
   ];
@@ -78,6 +82,11 @@ const entityManager = (function () {
     _explosions.push(new AnimatedImage(descr));
   }
 
+  function generateTerrexplotion(descr){
+    descr.sequence = g_asset.sequence.explosionSpritesheet5;
+    _terrexplotions.push(new AnimatedImage(descr));
+  }
+
   function generateBlood(descr) {
     descr.sequence = g_asset.sequence.blood3;
     _blood.push(new AnimatedImage(descr));
@@ -85,6 +94,9 @@ const entityManager = (function () {
 
   function generateGenericEnemyOne(cfg) {
     _genericEnemiesOne.push(new GenericEnemyOne(cfg));
+  }
+  function generateGenericEnemyTwo(cfg){
+    _genericEnemiesTwo.push(new GenericEnemyTwo(cfg));
   }
 
   function update(du) {
@@ -131,16 +143,27 @@ const entityManager = (function () {
         });
       }
     }
+    if(_genericEnemiesTwo.length < 10){
+      for (let i = 0; i < 10; i += 1) {
+        const cx = Math.random() * g_world.getWidth();
+        const cy = Math.random() * g_world.getHeight();
+        generateGenericEnemyTwo({
+          cx,
+          cy,
+          sprite: g_asset.sprite.terrorist,
+      });
+    }
   }
+}
 
   function init() {
     for (let i = 0; i < 1000; i += 1) {
       const cx = Math.random() * g_world.getWidth();
       const cy = Math.random() * g_world.getHeight();
-      generateGenericEnemyOne({
+      generateGenericEnemyTwo({
         cx,
         cy,
-        sprite: g_asset.sprite.donkey,
+        sprite: g_asset.sprite.terrorist,
       });
     }
   }
@@ -156,9 +179,11 @@ const entityManager = (function () {
     render,
     fireBullet,
     generateExplosion,
+    generateTerrexplotion,
     generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
+    generateGenericEnemyTwo,
     OK,
     KILL_ME_NOW,
 

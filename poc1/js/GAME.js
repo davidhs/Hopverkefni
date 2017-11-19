@@ -197,7 +197,7 @@ function renderSimulation(ctx) {
 
   // === HUDBAR ===
 
-  HUD.render(ctxh);
+  HUD.render(ctxhb);
 
 
   // === SHADOWS ===
@@ -323,6 +323,10 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_radar, 0, 0);
   ctxp.globalAlpha = 1.0;
 
+  // --- DRAW HUDBAR ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_hudbar, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
   // === DRAW TO RENDERING CANVAS ===
 
@@ -412,6 +416,9 @@ function setup(response) {
 
   g_radar.width = g_canvas.width;
   g_radar.height = g_canvas.height;
+
+  g_hudbar.width = g_canvas.width;
+  g_hudbar.height = g_canvas.height;
 
   // Init g_url.
   g_url = response.urls;

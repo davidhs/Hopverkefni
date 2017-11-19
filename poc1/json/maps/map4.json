@@ -130,8 +130,11 @@
                 "dep": ["raw.image.explosionSpritesheet5"],
                 "cfg": {
                     "image": "raw.image.explosionSpritesheet5",
-                    "tileWidth": 16,
-                    "tileHeight": 16
+                    "tileWidth": 64,
+                    "tileHeight": 64,
+                    "nrOfTiles": 23,
+                    "primaryDirection": "right",
+                    "secondaryDirection": "down"
                 }
             },
             "explosionSpritesheet6": {
@@ -207,6 +210,15 @@
                     "textureAtlas": "textureAtlas.explosion3"
                 }
             },
+            "explosionSpritesheet5":{
+              "dep": ["textureAtlas.explosionSpritesheet5"],
+              "cfg": {
+                  "all": true,
+                  "primaryDirection": "right",
+                  "secondaryDirection": "down",
+                  "textureAtlas": "textureAtlas.explosionSpritesheet5"
+                }
+            },
             "blood": {
                 "dep": ["textureAtlas.blood"],
                 "cfg": {
@@ -262,6 +274,13 @@
                     "scale": 0.15,
                     "image": "raw.image.donkey"
                 }
+            },
+            "terrorist": {
+              "dep": ["raw.image.terrorist"],
+              "cfg": {
+                "scale": 0.3,
+                "image": "raw.image.terrorist"
+              }
             }
         },
         "tiledMap": {
@@ -328,7 +347,8 @@
                     "crosshair": "crosshair.png",
                     "heart": "hp.png",
                     "Hbackground": "HUD.png",
-                    "Line": "line.png"
+                    "Line": "line.png",
+                    "terrorist": "terrorist.png"
 
 
                 }
