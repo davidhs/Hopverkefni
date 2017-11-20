@@ -68,6 +68,7 @@ const PISTOL = {
   reloadTime: 60,
   through: 0,
   ammo: 96,
+  maxAmmo: 96,
   magazineSize: 12,
   magazineAmmo: 12,
 };
@@ -86,6 +87,7 @@ const SHOTGUN = {
   reloadTime: 180,
   through: 0,
   ammo: 40,
+  maxAmmo: 40,
   magazineSize: 8,
   magazineAmmo: 8,
 };
@@ -104,6 +106,7 @@ const RIFLE = {
   reloadTime: 120,
   through: 2,
   ammo: 90,
+  maxAmmo: 90,
   magazineSize: 30,
   magazineAmmo: 30,
 };
@@ -122,6 +125,7 @@ const SNIPER = {
   reloadTime: 120,
   through: 5,
   ammo: 30,
+  maxAmmo: 30,
   magazineSize: 10,
   magazineAmmo: 10,
 };
@@ -140,6 +144,7 @@ const MG = {
   reloadTime: 300,
   through: 1,
   ammo: 300,
+  maxAmmo: 300,
   magazineSize: 100,
   magazineAmmo: 100,
 };
@@ -159,6 +164,7 @@ const RAY = {
   reloadTime: 1,
   through: 0,
   ammo: 30,
+  maxAmmo: 30,
   magazineSize: 10,
   magazineAmmo: 10,
 };
@@ -455,12 +461,16 @@ Player.prototype.takeDamage = function (hp) {
   if (this.health < 0) this._reset();
 };
 
-Player.prototype.takeLife = function (hp) {
+Player.prototype.pickupLife = function (hp) {
   if (this.health + hp >= 100) {
     this.health += hp;
   } else {
     this.health = 100;
   }
+};
+
+Player.prototype.pickupAmmo = function () {
+  ARMORY[weaponID].ammo = ARMORY[weaponID].maxAmmo;
 };
 
 Player.prototype.render = function (ctx, cfg) {

@@ -308,6 +308,13 @@
                 "image": "raw.image.medicpack"
             }
         },
+        "ammopack": {
+            "dep": ["raw.image.ammopack"],
+            "cfg": {
+                "scale": 0.8,
+                "image": "raw.image.ammopack"
+            }
+        },
         "blood": {
             "dep": ["raw.image.blood"],
             "cfg": {
@@ -527,6 +534,7 @@
                 "blockMap": "block-map.png",
                 "donkey": "notdonkey.png",
                 "medicpack": "medic.png",
+                "ammopack": "ammo.png",
                 "crosshair": "crosshair.png",
                 "heart": "hp.png",
                 "Hbackground": "HUD.png",
