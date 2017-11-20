@@ -11,17 +11,17 @@
     },
     "maps": {
         "map1": {
-            "name": "Debug map 1",
+            "name": "Awakenings",
             "path": "map4.json"
         },
         "map3": {
 
-            "name": "TEST MAP",
+            "name": "Pink Acid",
             "path": "map6.json"
 
         },
         "map4": {
-          "name": "sandbox",
+          "name": "Sandbox",
           "path": "sandbox.json"
         }
     },
