@@ -84,21 +84,27 @@ const audioManager = (function () {
         handle = audio;
 
         audio.playbackRate = 1.0;
-        audio.volume = 1.0;
+        audio.volume = 0.5;
         audio.currentTime = 0;
         audio.loop = loop;
         audio.play();
       }
     }
 
+    const HARD_LIMIT = 8;
+
     // && aa[url].list.length <= 16
 
-    if (!found) {
-      const audio = new Audio(url);
+    if (!found && aa[url].list.length < HARD_LIMIT) {
+      for (let i = 0; i < HARD_LIMIT; i += 1) {
+        const audio = new Audio(url);
+        aa[url].list.push(audio);
+      }
+
+
       // TODO sound is too loud
       // handle = audio;
       // audio.play();
-      aa[url].list.push(audio);
     }
 
     return handle;

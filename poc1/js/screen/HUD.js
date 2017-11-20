@@ -130,17 +130,17 @@ const HUD = (function () {
   // draw function for healtbar
 
   function draw_healthbar(ctx, x, y, perclost, width, thickness) {
-    if (hpLost <= 0.5) {
+    if (perclost <= 0.5) {
       ctx.beginPath();
       ctx.fillStyle = '#00cc00';
       ctx.rect(x, y, width * (1 - perclost), thickness);
       ctx.fill();
-    } else if (hpLost <= 0.70) {
+    } else if (perclost <= 0.70) {
       ctx.beginPath();
       ctx.fillStyle = '#ff9933';
       ctx.rect(x, y, width * (1 - perclost), thickness);
       ctx.fill();
-    } else if (hpLost <= 0.9) {
+    } else if (perclost <= 0.9) {
       ctx.beginPath();
       ctx.fillStyle = '#ff3300';
       ctx.rect(x, y, width * (1 - perclost), thickness);
@@ -210,9 +210,15 @@ const HUD = (function () {
       H_cx, H_cy, H_width, H_height,
     );
     // draw healthbar
+    /*
     if (hpLost < 1) {
       draw_healthbar(ctx, xHP, yHP, hpLost, widthHP, heightHP);
     }
+    */
+    const player = entityManager.getPlayer();
+    const hpPercLost = 1.0 - player.health / 100;
+
+    draw_healthbar(ctx, xHP, yHP, hpPercLost, widthHP, heightHP);
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
 
     drawWeapon(ctx, W_cx, W_cy);

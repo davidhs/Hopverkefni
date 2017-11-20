@@ -542,6 +542,15 @@ const spatialManager = (function () {
    */
   function init(width, height) {
     tiles = new Grid(width / tileSize, height / tileSize);
+
+    // Set portals.
+
+    if (g_tm && g_tm.objects) {
+      const portalSource = g_tm.objects.portalSource;
+      const portalTarget = g_tm.objects.portalTarget;
+    }
+
+    
   }
 
 

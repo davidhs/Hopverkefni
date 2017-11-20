@@ -31,6 +31,9 @@ const entityManager = (function () {
   const categoryNames = Object.keys(categories);
 
 
+  let _spawnRegions = [];
+
+
   // PUBLIC METHODS
 
   // TODO: maybe we want to fire different types of bullets.
@@ -69,7 +72,7 @@ const entityManager = (function () {
     categories.explosions.push(new AnimatedImage(descr));
   }
 
-  function generateTerrexplotion(descr){
+  function generateTerrexplotion(descr) {
     descr.sequence = g_asset.sequence.explosionSpritesheet5;
     categories.terrexplotions.push(new AnimatedImage(descr));
   }
@@ -85,6 +88,7 @@ const entityManager = (function () {
 
 
   function update(du) {
+
     for (let i = 0; i < categoryNames.length; i += 1) {
       const categoryName = categoryNames[i];
 
@@ -100,6 +104,34 @@ const entityManager = (function () {
           items.splice(j, 1);
         }
       }
+    }
+
+    for (let i = 0; i < _spawnRegions.length; i += 1) {
+      const spawnRegion = _spawnRegions[i];
+
+      spawnRegion.duration += du;
+
+      if (spawnRegion.duration >= spawnRegion.rate || !spawnRegion.init) {
+        spawnRegion.init = true;
+        spawnRegion.duration = 0;
+
+        console.log(du);
+
+
+
+
+        for (let j = 0; j < spawnRegion.quantity; j += 1) {
+
+    
+          const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+          const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+          generateGenericEnemyOne({
+            cx, cy,
+            sprite: g_asset.sprite.donkey
+           });
+          }
+        }
     }
   }
 
@@ -127,10 +159,43 @@ const entityManager = (function () {
         item.render(ctx, cfg);
       }
     }
-
-}
+  }
 
   function init() {
+
+    console.log(g_tm);
+
+    // spawn regions
+
+    if (g_tm && g_tm.objects && g_tm.objects.spawnRegion) {
+      const spawnRegions = g_tm.objects.spawnRegion;
+
+      for (let i = 0; i < spawnRegions.length; i += 1) {
+        const spawnRegion = spawnRegions[i];
+        console.log(spawnRegion);
+
+        const type = spawnRegion.props.type;
+        const respawn = spawnRegion.props.respawn;
+        const quantity = spawnRegion.props.quantity;
+        const x = spawnRegion.x;
+        const y = spawnRegion.y;
+        const w = spawnRegion.width;
+        const h = spawnRegion.height;
+        const rate = 1000;
+        const init = false;
+        const duration = 0;
+
+        _spawnRegions.push({
+          type, respawn, quantity, x, y, w, h, rate, init, duration,
+        });
+      }
+    }
+
+    // spawn entities
+
+    if (g_tm && g_tm.objects && g_tm.objects.spawnEntity) {
+      const spawnEntities = g_tm.objects.spawnEntity;
+    }
   }
 
   function getPlayer() {
@@ -152,6 +217,7 @@ const entityManager = (function () {
     generateGenericEnemyOne,
     OK,
     KILL_ME_NOW,
+    
 
     getPos: getPlayer,
     getPlayer,
