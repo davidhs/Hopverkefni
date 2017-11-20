@@ -23,6 +23,7 @@ Bullet.prototype.velX = 1;
 Bullet.prototype.velY = 1;
 Bullet.prototype.damage = 25;
 Bullet.prototype.through = 0;
+Bullet.prototype.accuracy = 1;
 
 // Convert times from milliseconds to "nominal" time units.
 
@@ -40,8 +41,8 @@ Bullet.prototype.update = function (du) {
   // COLLISION HANDLING
   // ==================
 
-  const oldCX = this.cx;
-  const oldCY = this.cy;
+  const oldCX = this.cx + this.accuracy;
+  const oldCY = this.cy + this.accuracy;
 
   this.cx += this.velX * du;
   this.cy += this.velY * du;

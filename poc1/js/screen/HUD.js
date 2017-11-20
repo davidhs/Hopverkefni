@@ -17,10 +17,10 @@ const HUD = (function () {
   let heightHP = 0;
   let hpLost = 0;
 
-  // globals for weapons
+  // globals for WEAPONS
   let W_cx = 0;
   let W_cy = 0;
-  const weapons = [];
+  const WEAPONS = [];
   let ammo = 0;
   let magazineSize = 0;
   let magazineAmmo = 0;
@@ -46,43 +46,43 @@ const HUD = (function () {
   let kills = 0;
 
   // toggle on or off weapon images
-  const Handgun = {
+  const PISTOL = {
     id: 1,
-    is: true,
+    isActive: true,
     has: true,
   };
-  const Shotgun = {
+  const SHOTGUN = {
     id: 2,
-    is: false,
+    isActive: false,
     has: true,
   };
-  const Rifle = {
+  const RIFLE = {
     id: 3,
-    is: false,
+    isActive: false,
     has: true,
   };
-  const Sniper = {
+  const SNIPER = {
     id: 4,
-    is: false,
+    isActive: false,
     has: true,
   };
-  const Smg = {
+  const MG = {
     id: 5,
-    is: false,
+    isActive: false,
     has: true,
   };
-  const Raygun = {
+  const RAY = {
     id: 6,
-    is: false,
+    isActive: false,
     has: false,
   };
 
-  weapons.push(Handgun);
-  weapons.push(Shotgun);
-  weapons.push(Rifle);
-  weapons.push(Sniper);
-  weapons.push(Smg);
-  weapons.push(Raygun);
+  WEAPONS.push(PISTOL);
+  WEAPONS.push(SHOTGUN);
+  WEAPONS.push(RIFLE);
+  WEAPONS.push(SNIPER);
+  WEAPONS.push(MG);
+  WEAPONS.push(RAY);
 
 
   // create images
@@ -102,17 +102,17 @@ const HUD = (function () {
   // reset weapon values to false so there
   // won't be 2 guns true at the same time
 
-  function resetweapons() {
-    for (let i = 0; i < weapons.length; i += 1) {
-      weapons[i].is = false;
+  function resetWEAPONS() {
+    for (let i = 0; i < WEAPONS.length; i += 1) {
+      WEAPONS[i].isActive = false;
     }
   }
 
   // id from Player.js
   function whichWeapon(id) {
-    if (weapons[id].has) {
-      resetweapons();
-      weapons[id].is = true;
+    if (WEAPONS[id].has) {
+      resetWEAPONS();
+      WEAPONS[id].isActive = true;
     }
   }
 
@@ -165,8 +165,8 @@ const HUD = (function () {
 
   // draw gun
   function drawWeapon(ctx, x, y) {
-    for (let i = 0; i < weapons.length; i += 1) {
-      if (weapons[i].is) {
+    for (let i = 0; i < WEAPONS.length; i += 1) {
+      if (WEAPONS[i].isActive) {
         ctx.drawImage(guns, g_sx, g_sy, g_sw, g_sh, x - 20, y, 100, 40);
       }
       g_sx += g_sw;
@@ -198,10 +198,10 @@ const HUD = (function () {
 
 
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
-    for (let i = 0; i < weapons.length; i += 1) {
-      if (weapons[i].is) {
+    for (let i = 0; i < WEAPONS.length; i += 1) {
+      if (WEAPONS[i].isActive) {
         ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-      } else if (weapons[i].has) {
+      } else if (WEAPONS[i].has) {
         ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
       } else {
         ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
@@ -257,7 +257,7 @@ const HUD = (function () {
     widthHP = (H_width / 8);
     heightHP = 15;
 
-    // update weapons
+    // update WEAPONS
     W_cx = ((g_viewport.getIW() / 10) * 5);
     W_cy = H_cy + 35;
     g_sx = 0;

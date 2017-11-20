@@ -39,17 +39,17 @@ Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
 Player.prototype.health = 100;
 
-const armory = [];
-let selectedWeaponID = 1;
+const ARMORY = [];
+let weaponID = 1;
 let kills = 0;
 
-const pistol = {
+const PISTOL = {
   name: 'handgun',
   id: 1,
   auto: false,
-  has: true,
+  pickedUp: true,
   damage: 27,
-  accuracy: 0.8,
+  accuracy: 10,
   bulletSpeed: 15,
   fireRate: 4,
   reloadTime: 60,
@@ -59,13 +59,13 @@ const pistol = {
   magazineAmmo: 12,
 };
 
-const shotgun = {
+const SHOTGUN = {
   name: 'shotgun',
   id: 2,
   auto: false,
-  has: true,
+  pickedUp: true,
   damage: 300,
-  accuracy: 0.1,
+  accuracy: 40,
   bulletSpeed: 10,
   fireRate: 10,
   reloadTime: 180,
@@ -75,13 +75,13 @@ const shotgun = {
   magazineAmmo: 8,
 };
 
-const rifle = {
+const RIFLE = {
   name: 'rifle',
   id: 3,
   auto: true,
-  has: true,
+  pickedUp: true,
   damage: 86,
-  accuracy: 0.9,
+  accuracy: 20,
   bulletSpeed: 20,
   fireRate: 3,
   reloadTime: 120,
@@ -91,13 +91,13 @@ const rifle = {
   magazineAmmo: 30,
 };
 
-const sniper = {
+const SNIPER = {
   name: 'sniper',
   id: 4,
   auto: false,
-  has: true,
+  pickedUp: true,
   damage: 300,
-  accuracy: 1,
+  accuracy: 0,
   bulletSpeed: 40,
   fireRate: 1,
   reloadTime: 120,
@@ -107,13 +107,13 @@ const sniper = {
   magazineAmmo: 10,
 };
 
-const mg = {
+const MG = {
   name: 'mg',
   id: 5,
   auto: true,
-  has: true,
+  pickedUp: true,
   damage: 70,
-  accuracy: 0.8,
+  accuracy: 30,
   bulletSpeed: 20,
   fireRate: 8,
   reloadTime: 300,
@@ -123,13 +123,13 @@ const mg = {
   magazineAmmo: 100,
 };
 
-const ray = {
+const RAY = {
   name: 'ray',
   id: 6,
   auto: false,
-  has: true,
+  pickedUp: false,
   damage: 1000,
-  accuracy: 1,
+  accuracy: 0,
   bulletSpeed: 30,
   fireRate: 1,
   reloadTime: 1,
@@ -139,12 +139,12 @@ const ray = {
   magazineAmmo: 10,
 };
 
-armory.push(pistol);
-armory.push(shotgun);
-armory.push(rifle);
-armory.push(sniper);
-armory.push(mg);
-armory.push(ray);
+ARMORY.push(PISTOL);
+ARMORY.push(SHOTGUN);
+ARMORY.push(RIFLE);
+ARMORY.push(SNIPER);
+ARMORY.push(MG);
+ARMORY.push(RAY);
 
 // -------------- Shit Mix Begins -------------
 function selectWeapons(evt) {
@@ -152,10 +152,10 @@ function selectWeapons(evt) {
   if (Number.isNaN(sel)) {
     return;
   }
-  for (let i = 0; i < armory.length; i += 1) {
-    if (sel === armory[i].id) {
-      if (armory[i].has) {
-        selectedWeaponID = i;
+  for (let i = 0; i < ARMORY.length; i += 1) {
+    if (sel === ARMORY[i].id) {
+      if (ARMORY[i].pickedUp) {
+        weaponID = i;
         HUD.whichWeapon(i);
       }
       break;
@@ -249,10 +249,10 @@ Player.prototype.update = function (du) {
   // TODO: Handle firitng
 
   if (g_mouse.isDown) {
-    if (armory[selectedWeaponID].magazineAmmo > 0) {
+    if (ARMORY[weaponID].magazineAmmo > 0) {
       this.fireBullet();
-      if (DEBUG_PLAYER) console.log(`Left in clip: ${armory[selectedWeaponID].magazineAmmo}`);
-      if (!armory[selectedWeaponID].auto) {
+      if (DEBUG_PLAYER) console.log(`Left in clip: ${ARMORY[weaponID].magazineAmmo}`);
+      if (!ARMORY[weaponID].auto) {
         g_mouse.isDown = false;
       }
     }
@@ -315,24 +315,28 @@ Player.prototype.update = function (du) {
   }
 };
 
+Player.prototype.getArmory = function () {
+  return ARMORY;
+};
+
 Player.prototype.getSelectedWeapon = function () {
-  return armory[selectedWeaponID].id;
+  return ARMORY[weaponID].id;
 };
 
 Player.prototype.getAmmoStatus = function () {
-  return armory[selectedWeaponID].ammo;
+  return ARMORY[weaponID].ammo;
 };
 
 Player.prototype.getMagazineStatus = function () {
-  return armory[selectedWeaponID].magazineAmmo;
+  return ARMORY[weaponID].magazineAmmo;
 };
 
 Player.prototype.getMagazineSize = function () {
-  return armory[selectedWeaponID].magazineSize;
+  return ARMORY[weaponID].magazineSize;
 };
 
 Player.prototype.getBulletDamage = function () {
-  return armory[selectedWeaponID].damage;
+  return ARMORY[weaponID].damage;
 };
 
 Player.prototype.getKillCount = function () {
@@ -349,15 +353,24 @@ Player.prototype.updateKills = function () {
 };
 
 Player.prototype.reloadWeapon = function () {
-  if (DEBUG_PLAYER) console.log(`Reload ${armory[selectedWeaponID].ammo} bullets left`);
-  if (DEBUG_PLAYER) console.log(`in ${armory[selectedWeaponID].name}`);
-  this.bulletCooldown = armory[selectedWeaponID].reloadTime;
-  if (armory[selectedWeaponID].ammo >= armory[selectedWeaponID].magazineSize) {
-    armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].magazineSize;
-    armory[selectedWeaponID].ammo -= armory[selectedWeaponID].magazineSize;
+  if (DEBUG_PLAYER) console.log(`Reload ${ARMORY[weaponID].ammo} bullets left`);
+  if (DEBUG_PLAYER) console.log(`in ${ARMORY[weaponID].name}`);
+  if (ARMORY[weaponID].magazineAmmo === ARMORY[weaponID].magazineSize ||
+  ARMORY[weaponID].ammo === 0) {
+    return;
+  }
+  this.bulletCooldown = ARMORY[weaponID].reloadTime;
+  //
+  if (ARMORY[weaponID].magazineAmmo !== 0) {
+    ARMORY[weaponID].ammo += ARMORY[weaponID].magazineAmmo;
+    ARMORY[weaponID].magazineAmmo = 0;
+  }
+  if (ARMORY[weaponID].ammo >= ARMORY[weaponID].magazineSize) {
+    ARMORY[weaponID].magazineAmmo = ARMORY[weaponID].magazineSize;
+    ARMORY[weaponID].ammo -= ARMORY[weaponID].magazineSize;
   } else {
-    armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].ammo;
-    armory[selectedWeaponID].ammo -= armory[selectedWeaponID].ammo;
+    ARMORY[weaponID].magazineAmmo = ARMORY[weaponID].ammo;
+    ARMORY[weaponID].ammo -= ARMORY[weaponID].ammo;
   }
 };
 
@@ -365,7 +378,7 @@ Player.prototype.reloadWeapon = function () {
 Player.prototype.fireBullet = function () {
   if (!g_mouse.isDown) return;
   if (this.bulletCooldown > 0) return;
-  this.bulletCooldown = armory[selectedWeaponID].fireRate;
+  this.bulletCooldown = ARMORY[weaponID].fireRate;
 
   // TODO: bind in JSON how long each bullet lives
   // until it fades away.
@@ -376,21 +389,26 @@ Player.prototype.fireBullet = function () {
   const dX = +Math.sin(angle);
   const dY = -Math.cos(angle);
 
-  const launchDist = this.getRadius() * 1.2;
+  const launchDist = this.getRadius();
 
   const relVel = Math.max(this.velX, this.velY);
 
-  const speed = armory[selectedWeaponID].bulletSpeed;
+  const speed = ARMORY[weaponID].bulletSpeed;
 
   const red = 0.01;
+  const rannn = Math.random() * (ARMORY[weaponID].accuracy) - ARMORY[weaponID].accuracy / 2;
 
-  const cx = this.cx + dX * launchDist;
-  const cy = this.cy + dY * launchDist;
+  const cx = this.cx + dX * launchDist + rannn;
+  const cy = this.cy + dY * launchDist + rannn;
 
   const velX = dX * speed;
   const velY = dY * speed;
 
   const rotation = this.rotation;
+
+  console.log(`rotation: ${rotation}`);
+
+  console.log('');
 
   // TODO: Do this a bit different.
   entityManager.fireBullet(
@@ -399,10 +417,11 @@ Player.prototype.fireBullet = function () {
     velX,
     velY,
     rotation,
-    armory[selectedWeaponID].damage,
-    armory[selectedWeaponID].through,
+    ARMORY[weaponID].damage,
+    ARMORY[weaponID].through,
+    ARMORY[weaponID].accuracy,
   );
-  armory[selectedWeaponID].magazineAmmo -= 1;
+  ARMORY[weaponID].magazineAmmo -= 1;
   this.updateKills();
 };
 
