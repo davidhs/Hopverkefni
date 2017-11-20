@@ -29,15 +29,15 @@ const audioManager = (function () {
   const audioCtx = new AudioContext();
 
 
-// Create a compressor node
-// totaly not stolen
-var compressor = audioCtx.createDynamicsCompressor();
-compressor.threshold.value = -50;
-compressor.knee.value = 40;
-compressor.ratio.value = 12;
-compressor.attack.value = 0;
-compressor.release.value = 0.25;
-compressor.connect(audioCtx.destination);
+  // Create a compressor node
+  // Totally not stolen code
+  const compressor = audioCtx.createDynamicsCompressor();
+  compressor.threshold.value = -50;
+  compressor.knee.value = 40;
+  compressor.ratio.value = 12;
+  compressor.attack.value = 0;
+  compressor.release.value = 0.25;
+  compressor.connect(audioCtx.destination);
 
   function mute() {
     if (muted) return;
@@ -87,7 +87,6 @@ compressor.connect(audioCtx.destination);
 
     const source = audioCtx.createBufferSource();
     source.buffer = buffer;
-    //source.connect(audioCtx.destination);
     source.connect(compressor);
     source.start();
 
@@ -99,6 +98,6 @@ compressor.connect(audioCtx.destination);
   return {
     play,
     debug: aa,
-    ctx: audioCtx
+    ctx: audioCtx,
   };
 }());
