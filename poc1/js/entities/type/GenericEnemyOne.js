@@ -36,6 +36,7 @@ GenericEnemyOne.prototype.maxHP = 100;
 // value will cause it to halt quicker.
 GenericEnemyOne.prototype.decay = 0.5;
 GenericEnemyOne.prototype.attackCooldown = 50;
+GenericEnemyOne.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
 GenericEnemyOne.prototype.update = function (du) {
   // Unregister from spatial manager.
@@ -74,10 +75,12 @@ GenericEnemyOne.prototype.update = function (du) {
 
   const _dx = player.cx - this.cx;
   const _dy = player.cy - this.cy;
-  const _dist = _dx ** 2 + _dy ** 2;
+  const _distSq = _dx ** 2 + _dy ** 2;
   const _thresh = (g_viewport.getIW() * 1.5) ** 2;
 
-  if (_dist > _thresh) {
+  this._distSqPlayer = 0;
+
+  if (_distSq > _thresh) {
     dx = 0;
     dy = 0;
   }
@@ -88,7 +91,7 @@ GenericEnemyOne.prototype.update = function (du) {
 
   const len = Math.sqrt(dx * dx + dy * dy);
 
-  if (len < 100) {
+  if (_distSq < 2 * this.getRadius() ** 2) {
     this.attack(du);
   }
 
@@ -111,19 +114,13 @@ GenericEnemyOne.prototype.update = function (du) {
 
   const EPS = 0.1;
 
-  if (this._soundRunning) {
-    const pr_x = Math.abs(this.velX) / this.maxSpeed;
-    const pr_y = Math.abs(this.velY) / this.maxSpeed;
-    const pr = Math.max(pr_x, pr_y);
-    this._soundRunning.playbackRate = pr;
-    this._soundRunning.volume = pr;
-  }
 
   if (Math.abs(this.velX) > EPS || Math.abs(this.velY) > EPS) {
     // In motion
     if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
     if (!this._soundRunning && len < 2 * g_viewport.getIW()) {
       this._soundRunning = audioManager.play(g_url.audio.running1, true);
+      if (this._soundRunning) this._soundRunning.volume = 0.1;
     }
   }
 
@@ -199,7 +196,11 @@ GenericEnemyOne.prototype.attack = function (du) {
 
   this.attackCooldown += 50;
 
-  audioManager.play(g_url.audio.clawing);
+  const handle = audioManager.play(g_url.audio.clawing);
+  if (handle) handle.volume = 0.1;
+
+  const player = entityManager.getPlayer();
+  player.takeDamage();
 };
 
 GenericEnemyOne.prototype.takeBulletHit = function () {

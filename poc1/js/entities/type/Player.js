@@ -414,6 +414,11 @@ Player.prototype.fireBullet = function () {
   armory[selectedWeaponID].magazineAmmo -= 1;
 };
 
+Player.prototype.takeDamage = function () {
+  console.log("health: ", this.health);
+  this.health -= 1;
+};
+
 
 Player.prototype.render = function (ctx, cfg) {
   // TODO: maybe we wan't the player to cast shadows,

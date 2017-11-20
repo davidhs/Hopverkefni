@@ -654,7 +654,7 @@
   <object id="5" type="light" x="-8" y="185" width="206" height="209">
    <ellipse/>
   </object>
-  <object id="9" type="spawnNPC" x="741" y="650">
+  <object id="9" name="GenericEnemyOne" type="spawnEntity" x="688" y="672">
    <ellipse/>
   </object>
   <object id="10" type="light" x="570" y="636">
@@ -674,6 +674,7 @@
    <properties>
     <property name="quantity" type="int" value="6"/>
     <property name="respawn" type="bool" value="true"/>
+    <property name="type" value="GenericEnemyOne"/>
    </properties>
   </object>
   <object id="24" type="light" x="1840" y="2004">

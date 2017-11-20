@@ -5,6 +5,10 @@ function TiledMap(cfg) {
   const tilesets = cfg.tilesets;
 
 
+  console.log(map);
+  console.log(tilesets);
+
+
   // Safety
   for (let i = 0; i < tilesets.length; i += 1) {
     if (typeof tilesets[i] === 'string') {
@@ -139,6 +143,41 @@ function TiledMap(cfg) {
     const insObj = {
       shape, name, type, x, y, width, height,
     };
+
+    if (object.property) {
+      object.properties = {
+        property: [object.property]
+      };
+    }
+
+    if (object.properties) {
+      const props = {};
+
+      const _props = object.properties.property;
+
+      
+      for (let j = 0; j < _props.length; j += 1) {
+        const attr = _props[j]['@attributes'];
+
+        let name = "";
+        let type = "string";
+        let value = "";
+
+        if (attr.name) name = attr.name;
+        if (attr.type) type = attr.type;
+        if (attr.value) value = attr.value;
+
+        if (type === 'int') value = parseInt(value, 10);
+        if (type === 'bool') {
+          if (value === 'true') value = true;
+          else if (value === 'false') value = false;
+        }
+
+        props[name] = value;
+      }
+
+      insObj.props = props;
+    }
 
     this.objects[type].push(insObj);
   }
