@@ -24,7 +24,6 @@
 // Construct a "sprite" from the given `image`,
 //
 function Sprite(cfg) {
-
   // Default values.
   this.state = 'unknown';
   this.states = {
