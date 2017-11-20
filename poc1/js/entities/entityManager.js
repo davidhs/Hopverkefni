@@ -20,11 +20,14 @@ const entityManager = (function () {
 
 
   const categories = {
+    muzzle: [],
+    medicpack: [],
     bullets: [],
     players: [],
     genericEnemiesOne: [],
     terrorist: [],
     explosions: [],
+    medicExplosion: [],
     terrexplotions: [],
     blood: [],
   };
@@ -54,6 +57,16 @@ const entityManager = (function () {
     categories.bullets.push(bullet);
   }
 
+  function generateMuzzle(cx, cy, rotation) {
+    const muzzle = new Muzzle({
+      cx,
+      cy,
+      rotation,
+    });
+    if (DEBUG) console.log(muzzle);
+    categories.muzzle.push(muzzle);
+  }
+
   function generatePlayer(descr) {
     categories.players.push(new Player(descr));
   }
@@ -69,9 +82,15 @@ const entityManager = (function () {
 
   // TODO: bind in JSON which type explosion,
   // and explosion rate.
+
   function generateExplosion(descr) {
     descr.sequence = g_asset.sequence.explosion3;
     categories.explosions.push(new AnimatedImage(descr));
+  }
+
+  function generateMedpackExpl(descr) {
+    descr.sequence = g_asset.sequence.explosionMedic;
+    categories.medicExplosion.push(new AnimatedImage(descr));
   }
 
   function generateTerrexplosion(descr) {
@@ -90,6 +109,10 @@ const entityManager = (function () {
 
   function generateTerrorist(cfg) {
     categories.terrorist.push(new Terrorist(cfg));
+  }
+
+  function generateMedicPack(cfg) {
+    categories.medicpack.push(new MedicPack(cfg));
   }
 
 
@@ -141,6 +164,18 @@ const entityManager = (function () {
             cx,
             cy,
             sprite: g_asset.sprite.terrorist,
+          });
+        }
+
+        for (let j = 0; j < spawnRegion.quantity; j += 1) {
+          const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+          const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+
+          generateMedicPack({
+            cx,
+            cy,
+            sprite: g_asset.sprite.medicpack,
           });
         }
       }
@@ -218,6 +253,17 @@ const entityManager = (function () {
         sprite: g_asset.sprite.donkey,
       });
     }
+
+    for (let i = 0; i < 0; i += 1) {
+      const cx = g_world.getWidth() * Math.random();
+      const cy = g_world.getHeight() * Math.random();
+
+      generateMedicPack({
+        cx,
+        cy,
+        sprite: g_asset.sprite.medicpack,
+      });
+    }
   }
 
   function getPlayer() {
@@ -232,12 +278,15 @@ const entityManager = (function () {
     update,
     render,
     fireBullet,
+    generateMedpackExpl,
+    generateMedicPack,
     generateExplosion,
     generateTerrexplosion,
     generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
     generateTerrorist,
+    generateMuzzle,
     OK,
     KILL_ME_NOW,
 
