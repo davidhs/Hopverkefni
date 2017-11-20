@@ -171,8 +171,8 @@ function snapshot(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
-
-function getScaledCanvas(sourceCanvas, maxWidth, maxHeight) {
+/*
+function getScaledCanvasOld(sourceCanvas, maxWidth, maxHeight) {
 
 
     const scalarW = maxWidth  / sourceCanvas.width;
@@ -196,7 +196,81 @@ function getScaledCanvas(sourceCanvas, maxWidth, maxHeight) {
     ctx.drawImage(sourceCanvas, 0, 0, canvas.width, canvas.height);
 
     return canvas;
+}*/
+
+
+function getScaledCanvas(sourceCanvas, scalar) {
+
+    const width = sourceCanvas.width;
+    const height = sourceCanvas.height;
+
+    const canvas = document.createElement('canvas');
+
+    canvas.width = scalar * width;
+    canvas.height = scalar * height;
+
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+
+    ctx.drawImage(sourceCanvas, 0, 0, canvas.width, canvas.height);
+
+    return canvas;
 }
+
+function getSquareCanvas(sourceCanvas) {
+
+    const w = sourceCanvas.width;
+    const h = sourceCanvas.height;
+
+    const s = Math.max(w, h);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = s;
+    canvas.height = s;
+
+
+    const xPad = (s - w) / 2;
+    const yPad = (s - h) / 2;
+
+
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    ctx.drawImage(sourceCanvas, xPad, yPad, w, h);
+
+    return canvas;
+}
+
+function getSquareUpscaledCanvas(sourceCanvas, size) {
+
+    const w = sourceCanvas.width;
+    const h = sourceCanvas.height;
+    const s = size;
+
+    if (s < w) throw Error();
+    if (s < h) throw Error();
+
+
+    if (s === w && s === h) {
+        return sourceCanvas;
+    } else {
+        const canvas = document.createElement('canvas');
+        canvas.width = s;
+        canvas.height = s;
+
+        const xPad = (s - w) / 2;
+        const yPad = (s - h) / 2;
+
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+
+        ctx.drawImage(sourceCanvas, xPad, yPad, w, h);
+
+        return canvas;
+    }
+}
+
 
 function doStuff() {
     const canvases = document.getElementById('canvases');
@@ -207,46 +281,29 @@ function doStuff() {
 
     let list = [];
 
-    const itw = document.getElementById('itw');
-    const ith = document.getElementById('ith');
+    // const itw = document.getElementById('itw');
+    // const ith = document.getElementById('ith');
 
-    console.log(itw);
+    const isf = document.getElementById('isf');
 
+    let scalar = 1.0;
 
+    if (isf.placeholder) {
+        scalar = parseFloat(isf.placeholder);
 
-
-
-
-    let tileWidth = settings.max.width;
-    let tileHeight = settings.max.height;
-
-    if (itw.placeholder) {
-        tileWidth = parseInt(itw.placeholder, 10);
-
-        if (itw.value) {
-            tileWidth = parseInt(itw.value, 10);
+        if (isf.value) {
+            scalar = parseFloat(isf.value);
         }
     }
-
-    if (ith.placeholder) {
-        tileHeight = parseInt(ith.placeholder, 10);
-
-        if (ith.value) {
-            tileHeight = parseInt(ith.value, 10);
-        }
-    }
-
 
     for (let i = 0; i < urls.length; i += 1) {
         const url = urls[i];
 
         const _canvas1 = objects[url].canvas;
+        const _canvas2 = getSquareCanvas(_canvas1);
+        const _canvasFinal = getScaledCanvas(_canvas2, scalar);
 
-        const _canvas2 = autocrop(_canvas1);
-
-        const _canvasFinal = getScaledCanvas(_canvas1, tileWidth, tileHeight);
-
-        // body.appendChild(_canvas2);
+        // body.appendChild(_canvasFinal);
 
         list.push({
             url, canvas: _canvasFinal
@@ -256,6 +313,8 @@ function doStuff() {
     list = list.sort((a, b) => {
         return compareAscendingLexicographic(a.url, b.url);
     });
+
+
 
     let maxWidth = 0;
     let maxHeight = 0;
@@ -267,6 +326,21 @@ function doStuff() {
         maxWidth = Math.max(maxWidth, width);
         maxHeight = Math.max(maxHeight, height);
     }
+
+    const maxSize = Math.max(maxWidth, maxHeight);
+
+    console.log(maxWidth, maxHeight);
+
+    for (let i = 0; i < list.length; i += 1) {
+        const canvas = list[i].canvas;
+        const _canvas1 = getSquareUpscaledCanvas(canvas, maxSize);
+
+        list[i].canvas = _canvas1;
+    }
+
+    const tileWidth = maxSize;
+    const tileHeight = maxSize;
+
 
     const n = list.length;
 
