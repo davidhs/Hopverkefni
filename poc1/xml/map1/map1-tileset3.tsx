@@ -4,6 +4,7 @@
  <tile id="88">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -11,6 +12,7 @@
  <tile id="89">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -18,6 +20,7 @@
  <tile id="90">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -25,6 +28,7 @@
  <tile id="120">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -32,6 +36,7 @@
  <tile id="122">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -39,6 +44,7 @@
  <tile id="152">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -46,6 +52,7 @@
  <tile id="153">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
@@ -53,6 +60,7 @@
  <tile id="154">
   <objectgroup draworder="index">
    <properties>
+    <property name="castShadow" type="bool" value="true"/>
     <property name="collision" type="bool" value="true"/>
    </properties>
   </objectgroup>
