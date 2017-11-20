@@ -402,7 +402,6 @@ Player.prototype.fireBullet = function () {
   const dY = -Math.cos(angle);
 
   const launchDist = this.getRadius();
-  console.log(launchDist);
 
   const relVel = Math.max(this.velX, this.velY);
 
