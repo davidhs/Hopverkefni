@@ -204,7 +204,7 @@ GenericEnemyOne.prototype.attack = function (du) {
   if (handle) handle.volume = 0.1;
 
   const player = entityManager.getPlayer();
-  player.takeDamage();
+  player.takeDamage(5);
 };
 
 GenericEnemyOne.prototype.takeBulletHit = function () {
