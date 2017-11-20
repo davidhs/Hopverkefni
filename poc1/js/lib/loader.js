@@ -87,7 +87,6 @@ const loader = (function () {
       {
         callback(buffer, 'audio', handle, url);
       });
-      
     };
     xhr.send();
   };
@@ -141,7 +140,6 @@ const loader = (function () {
    * @param {string} url
    */
   function assetTick(asset, type, handle, url) {
-
     if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Tick:`, asset, type, handle, url);
 
     for (let i = 0; i < bundles.length; i += 1) {
