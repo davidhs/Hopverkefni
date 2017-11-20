@@ -435,9 +435,9 @@ Player.prototype.fireBullet = function () {
   this.updateKills();
 };
 
-Player.prototype.takeDamage = function () {
+Player.prototype.takeDamage = function (hp) {
   console.log('Health >> ', this.health);
-  this.health -= 1;
+  this.health -= hp;
 };
 
 
