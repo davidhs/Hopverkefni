@@ -10,7 +10,11 @@ function Bullet(descr) {
 
   // TODO: bind in JSON.
   // audioManager.play(g_url.bulletFire);
-  audioManager.play(g_url.audio.gunsound1);
+  if (this.type === 'beam') {
+    audioManager.play(g_url.audio.beamFire);
+  } else {
+    audioManager.play(g_url.audio.gunsound1);
+  }
 }
 
 Bullet.prototype = new Entity();
@@ -23,6 +27,7 @@ Bullet.prototype.velX = 1;
 Bullet.prototype.velY = 1;
 Bullet.prototype.damage = 25;
 Bullet.prototype.through = 0;
+Bullet.prototype.type = 'bullet';
 
 // Convert times from milliseconds to "nominal" time units.
 
@@ -68,7 +73,7 @@ Bullet.prototype.update = function (du) {
       const entity = spatialManager.getEntity(spatialID);
       // TODO: Tarf ad laga! Tetta er fyrir haglabyssuna. Ef
       // (entity.damage === 20) kemur alltaf blood splatter
-      if (entity.damage === 20) {
+      if (entity.damage === Player.prototype.getArmory()[1].damage) {
         return;
       }
       // Check whether the entity has the method [takeBulletHit].
@@ -121,7 +126,12 @@ Bullet.prototype.render = function (ctx, cfg) {
   }
 
   // TODO: bind in JSON.
-  g_asset.sprite.bullet.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
+  if (this.type === 'beam') {
+    g_asset.sprite.beam.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
+  } else {
+    g_asset.sprite.bullet.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
+  }
+
 
   ctx.globalAlpha = 1;
 };
