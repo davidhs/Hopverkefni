@@ -244,6 +244,21 @@ const assetLoader = (function () {
     });
   }
 
+
+  function getItem(assets, path) {
+    let item = assets;
+
+    // Path object.
+    const po = path.trim().split(/[\s|\.]+/g);
+
+    for (let i = 0; i < po.length; i += 1) {
+      const name = po[i];
+      item = item[name];
+    }
+
+    return item;
+  }
+
   function addProcessor(name, constructor) {
     _types.push(name);
     processor[name] = generic(constructor);
@@ -253,6 +268,7 @@ const assetLoader = (function () {
   const returnObject = {};
   returnObject.load = load;
   returnObject.addProcessor = addProcessor;
+  returnObject.getItem = getItem;
 
   return returnObject;
 })();

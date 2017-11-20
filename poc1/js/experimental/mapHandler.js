@@ -48,37 +48,9 @@ const mapHandler = (function () {
     });
   }
 
-
-  function _loadAssets(assets, callback) {
-    if (assets) {
-      if (DEBUG) console.log(`${util.timestamp()}: Assets are in map?.json.`);
-      assetLoader.load(assets, callback);
-    } else {
-      if (DEBUG) console.log(`${util.timestamp()}: Assets are in assets.json.`);
-      loader.load({
-        json: {
-          assets: 'json/assets.json'
-        }
-      }, (response) => {
-        const assets = response.json.assets;
-        assetLoader.load(assets, callback);
-      });
-    }
-  }
-
   function openMap(mapName, callback) {
     if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Opening map [${mapName}].`);
-    getMap(mapName, (map) => {
-      if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: loading assets...`);
-      _loadAssets(map.assets, (response) => {
-        if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: sending response back.`);
-        callback({
-          map,
-          assets: response.assets,
-          urls: response.urls,
-        });
-      });
-    });
+    getMap(mapName, callback);
   }
 
   // EXPOSURE

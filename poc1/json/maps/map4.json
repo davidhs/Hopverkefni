@@ -1,10 +1,12 @@
 {
     "type": "map",
     "name": "Yet another test! (2)",
-    "cfg": {},
+    "cfg": {
+        "tiledMap": "tiledMap.tm1"
+    },
 
     "mouse": {
-        "image": "assets.raw.image.cursor",
+        "image": "raw.image.cursor",
         "cursorLock": false
     },
 
@@ -12,7 +14,7 @@
         "entities": {
             "player": {
                 "sprite": {
-                    "path": "assets.sprite.player"
+                    "path": "sprite.player"
                 }
             }
         }

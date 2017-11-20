@@ -15,15 +15,17 @@ let g_url = {}; // URLs are eventually placed here.
 let g_asset = {}; // Assets are loaded here.
 
 // Which map to open.
-let activeMap; // Defined in init.json
-let activeManifest;
-
-// Map information
-let g_master;
+let g_manifest;
 
 const screenManager = new UIFrame();
 
 let g_lights = [];
+
+let g_map;
+
+
+// BACKWARDS COMPATIBILITY, DON'T USE.
+let g_master;
 
 
 // Canvases (except g_canvas).
@@ -320,24 +322,20 @@ function renderSimulation(ctx) {
 }
 
 
-function setup(response) {
+function setup(_map) {
 
   console.log("Loading...");
 
-  // Init g_url.
-  g_url = response.urls;
+  g_map = _map;
 
-  // Init g_asset.
-  g_asset = response.assets;
-
-  // console.log('Setting up...');
-  // Unroll response.
-  const map = response.map;
-  const assets = response.assets;
+  // Backwards compatibility.
+  g_master = {
+    map: g_map,
+  };
 
   // --- Tiled Map ---
-
-  g_tm = g_asset.tiledMap.tm1;
+  
+  g_tm = assetLoader.getItem(g_asset, g_map.cfg.tiledMap);
 
   const width = g_tm.tileWidth * g_tm.widthInTiles;
   const height = g_tm.tileHeight * g_tm.heightInTiles;
@@ -346,7 +344,7 @@ function setup(response) {
   g_viewport.stickToWorld(true);
 
 
-  g_muted = activeManifest.cfg.activeManifest ? map.cfg.muted : false;
+  g_muted = g_manifest.cfg.activeManifest ? g_map.cfg.muted : false;
 
   // Setting world
   g_world.setWidth(width, 'px');
@@ -355,8 +353,8 @@ function setup(response) {
   g_world.setTileHeight(g_tm.tileHeight);
 
 
-  const viewportWidth = activeManifest.cfg.screen.width;
-  const viewportHeight = activeManifest.cfg.screen.height;
+  const viewportWidth = g_manifest.cfg.screen.width;
+  const viewportHeight = g_manifest.cfg.screen.height;
 
   // Set "rendering" canvas.
   g_canvas.width = viewportWidth;
@@ -371,8 +369,6 @@ function setup(response) {
   g_viewport.setOH(viewportHeight);
 
 
-  // Store response in g_master.
-  g_master = response;
 
   // Set canvas width and heights.
   g_background.width = g_canvas.width;
@@ -410,12 +406,12 @@ function setup(response) {
   // --- Mouse ---
 
   // Set mouse cursor image.
-  if (g_master.map.mouse.image) {
-    g_mouse.setImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
+  if (g_map.mouse.image) {
+    g_mouse.setImage(assetLoader.getItem(g_asset, g_map.mouse.image));
   }
 
   // Enable cursor lock, if applicable.
-  if (g_master.map.mouse.cursorLock) {
+  if (g_map.mouse.cursorLock) {
     g_mouse.enableCursorLock();
   }
 
@@ -428,13 +424,13 @@ function setup(response) {
     g_asset.raw.text.lights,
     g_asset.raw.text.shadowMap,
     g_asset.raw.text.shadowMask,
-    activeManifest.cfg.shadowSize ? map.cfg.shadowSize : 64,
+    g_manifest.cfg.shadowSize ? g_map.cfg.shadowSize : 64,
   );
 
   // --- Entity Manager ---
 
   const gpo = {
-    sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path),
+    sprite: assetLoader.getItem(g_asset, g_map.init.entities.player.sprite.path),
   };
 
   if (g_tm.objects && g_tm.objects.playerStart) {
@@ -516,6 +512,19 @@ function startGame() {
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
 
+  loader.load({
+    json: {
+      assets: 'json/assets.json'
+    }
+  }, (response) => {
+    const assets = response.json.assets;
+    assetLoader.load(assets, (response) => {
+      g_asset = response.assets;
+      g_url = response.urls;
+    });
+  });
+
+
   // Event handling
 
   // TODO this should be loaded first
@@ -580,7 +589,7 @@ function startGame() {
 
     const maps = manifest.maps;
 
-    activeManifest = manifest;
+    g_manifest = manifest;
 
     const w = manifest.cfg.screen.width;
     const h = manifest.cfg.screen.height;

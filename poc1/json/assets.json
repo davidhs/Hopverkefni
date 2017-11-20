@@ -295,6 +295,19 @@
                 "scale": 0.15,
                 "image": "raw.image.donkey"
             }
+        },
+        "blood": {
+            "dep": ["raw.image.blood"],
+            "cfg": {
+                "image": "raw.image.blood"
+            }
+        },
+        "terrorist": {
+          "dep": ["raw.image.terrorist"],
+          "cfg": {
+            "scale": 0.3,
+            "image": "raw.image.terrorist"
+          }
         }
     },
     "tiledMap": {
@@ -312,6 +325,24 @@
                     "tiledTileset.map1tileset2",
                     "tiledTileset.map1tileset3",
                     "tiledTileset.map1tileset1"
+                ]
+            }
+        },
+        "tm2": {
+            "dep": [
+                "raw.xml.pmap2",
+                "tiledTileset.map2tileset1",
+                "tiledTileset.map2tileset2",
+                "tiledTileset.map2tileset3",
+                "tiledTileset.map2tileset4"
+            ],
+            "cfg": {
+                "type": 1,
+                "map": "raw.xml.pmap2",
+                "tilesets": [
+                    "tiledTileset.map2tileset3",
+                    "tiledTileset.map2tileset2",
+                    "tiledTileset.map2tileset4"
                 ]
             }
         }
@@ -346,6 +377,69 @@
                 "textureAtlas": "textureAtlas.terrain_atlas",
                 "cfg": "raw.xml.pmap1tileset3"
             }
+        },
+
+
+
+        "map2tileset1": {
+            "dep": [
+                "raw.xml.pmap2tileset1",
+                "textureAtlas.dungeon"
+            ],
+            "cfg": {
+                "textureAtlas": "textureAtlas.dungeon",
+                "cfg": "raw.xml.pmap2tileset1"
+            }
+        },
+        "map2tileset2": {
+            "dep": [
+                "raw.xml.pmap2tileset2",
+                "textureAtlas.terrain_atlas"
+            ],
+            "cfg": {
+                "textureAtlas": "textureAtlas.terrain_atlas",
+                "cfg": "raw.xml.pmap2tileset2"
+            }
+        },
+        "map2tileset3": {
+            "dep": [
+                "raw.xml.pmap2tileset3",
+                "textureAtlas.tileset4"
+            ],
+            "cfg": {
+                "textureAtlas": "textureAtlas.tileset4",
+                "cfg": "raw.xml.pmap2tileset3"
+            }
+        },
+        "map2tileset4":{
+          "dep": [
+            "raw.xml.pmap2tileset4",
+            "textureAtlas.spritesheet1"
+          ],
+          "cfg": {
+            "textureAtlas": "textureAtlas.spritesheet1",
+            "cfg": "raw.xml.pmap2tileset4"
+          }
+        }
+
+    },
+    "fastImage": {
+        "cursor": {
+            "dep": ["raw.image.cursor"],
+            "cfg": {
+                "image": "raw.image.cursor"
+            }
+        },
+        "cursor2": {
+            "dep": ["raw.image.crosshair"],
+            "cfg": {
+                "scale": 0.05,
+                "bias": {
+                    "x": "-50%",
+                    "y": "-50%"
+                },
+                "image": "raw.image.crosshair"
+            }
         }
     },
     "raw": {
@@ -361,8 +455,10 @@
                 "crosshair": "crosshair.png",
                 "heart": "hp.png",
                 "Hbackground": "HUD.png",
-                "Line": "line.png"
-
+                "Line": "line.png",
+                "blood": "blood.png",
+                "minimap3": "minimap3.png",
+                "terrorist": "terrorist.png"
 
             }
         }, {
@@ -430,6 +526,15 @@
                 "pmap1tileset1": "map1-tileset1.tsx",
                 "pmap1tileset2": "map1-tileset2.tsx",
                 "pmap1tileset3": "map1-tileset3.tsx"
+            }
+        }, {
+            "prefix": "xml/map3/",
+            "paths": {
+                "pmap2": "map3.tmx",
+                "pmap2tileset1": "tiles1.tsx",
+                "pmap2tileset2": "tiles2.tsx",
+                "pmap2tileset3": "tiles3.tsx",
+                "pmap2tileset4": "tiles4.tsx"
             }
         }]
     }
