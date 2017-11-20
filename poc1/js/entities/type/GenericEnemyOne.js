@@ -38,6 +38,8 @@ GenericEnemyOne.prototype.decay = 0.5;
 GenericEnemyOne.prototype.attackCooldown = 50;
 GenericEnemyOne.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
+let killedGeneric = 0;
+
 GenericEnemyOne.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);
@@ -210,7 +212,12 @@ GenericEnemyOne.prototype.takeBulletHit = function () {
   if (this.hp <= 0) {
     audioManager.play(g_url.audio.dying);
     this.kill();
+    killedGeneric += 1;
   }
+};
+
+GenericEnemyOne.prototype.getKillCount = function () {
+  return killedGeneric;
 };
 
 GenericEnemyOne.prototype.getRadius = function () {

@@ -43,32 +43,38 @@ const HUD = (function () {
 
   // test key
   const KEY_HPTEST = keyCode('G');
-
+  let kills = 0;
 
   // toggle on or off weapon images
-  const Rifle = {
-    is: false,
-    has: true,
-  };
   const Handgun = {
+    id: 1,
     is: true,
     has: true,
   };
   const Shotgun = {
+    id: 2,
+    is: false,
+    has: true,
+  };
+  const Rifle = {
+    id: 3,
     is: false,
     has: true,
   };
   const Sniper = {
+    id: 4,
     is: false,
     has: true,
   };
   const Smg = {
+    id: 5,
     is: false,
     has: true,
   };
   const Raygun = {
+    id: 6,
     is: false,
-    has: true,
+    has: false,
   };
 
   weapons.push(Handgun);
@@ -102,12 +108,12 @@ const HUD = (function () {
     }
   }
 
-  // witch weapon should appear on the screen, collected by
-
   // id from Player.js
   function whichWeapon(id) {
-    resetweapons();
-    weapons[id].is = true;
+    if (weapons[id].has) {
+      resetweapons();
+      weapons[id].is = true;
+    }
   }
 
   // =================
@@ -115,7 +121,7 @@ const HUD = (function () {
   // =================
 
   function damage(Damage) {
-    if(hpLost < 1){
+    if (hpLost < 1) {
       hpLost += Damage;
     }
   }
@@ -161,7 +167,7 @@ const HUD = (function () {
   function drawWeapon(ctx, x, y) {
     for (let i = 0; i < weapons.length; i += 1) {
       if (weapons[i].is) {
-        ctx.drawImage(guns, g_sx, g_sy, g_sw, g_sh, x-20, y, 100, 40);
+        ctx.drawImage(guns, g_sx, g_sy, g_sw, g_sh, x - 20, y, 100, 40);
       }
       g_sx += g_sw;
     }
@@ -181,6 +187,13 @@ const HUD = (function () {
     ctx.font = '10px Georgia';
     ctx.fillStyle = '#00ff00';
     ctx.fillText(ammo, W_cx + 117, W_cy + 30);
+  }
+
+  function drawKillCount(ctx, counter) {
+    ctx.beginPath();
+    ctx.font = '16px Georgia';
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText('Kills: ' + counter, 50, W_cy + 30);
   }
 
 
@@ -215,11 +228,11 @@ const HUD = (function () {
     */
     const player = entityManager.getPlayer();
     const hpPercLost = 1.0 - player.health / 100;
-    if(hpPercLost < 1){
-    draw_healthbar(ctx, xHP, yHP, hpPercLost, widthHP, heightHP);
+    if (hpPercLost < 1) {
+      draw_healthbar(ctx, xHP, yHP, hpPercLost, widthHP, heightHP);
     }
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
-
+    drawKillCount(ctx, kills);
     drawWeapon(ctx, W_cx, W_cy);
     drawAmmo(ctx, ammo, magazineSize, magazineAmmo);
     drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);
@@ -266,6 +279,8 @@ const HUD = (function () {
     ammo = Player.prototype.getAmmoStatus();
     magazineAmmo = Player.prototype.getMagazineStatus();
     magazineSize = Player.prototype.getMagazineSize();
+    kills = GenericEnemyOne.prototype.getKillCount() +
+    Terrorist.prototype.getKillCount();
   }
 
   function render(ctx) {

@@ -38,10 +38,10 @@ Player.prototype.RELOAD = keyCode('R');
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
 Player.prototype.health = 100;
-Player.prototype.kills = 0;
 
 const armory = [];
 let selectedWeaponID = 1;
+let kills = 0;
 
 const pistol = {
   name: 'handgun',
@@ -335,6 +335,10 @@ Player.prototype.getBulletDamage = function () {
   return armory[selectedWeaponID].damage;
 };
 
+Player.prototype.getKillCount = function () {
+  return kills;
+};
+
 Player.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
@@ -397,7 +401,7 @@ Player.prototype.fireBullet = function () {
 };
 
 Player.prototype.takeDamage = function () {
-  console.log("health: ", this.health);
+  console.log('Health >> ', this.health);
   this.health -= 1;
 };
 
