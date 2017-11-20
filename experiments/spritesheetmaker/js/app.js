@@ -101,8 +101,12 @@ function autocrop(canvas) {
 
     const croppedCanvas = document.createElement('canvas');
 
-    const rangeX = Math.max(Math.abs(rightPad - leftPad), 0);
-    const rangeY = Math.max(Math.abs(bottomPad - topPad), 0);
+    let rangeX = Math.max(Math.abs(rightPad - leftPad + 1), 0);
+    let rangeY = Math.max(Math.abs(bottomPad - topPad + 1), 0);
+
+
+    rangeX = Math.min(rangeX, w);
+    rangeY = Math.min(rangeX, h);
 
     croppedCanvas.width = rangeX;
     croppedCanvas.height = rangeY;
