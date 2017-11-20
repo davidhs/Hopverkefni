@@ -1,11 +1,7 @@
-function main() {
 
-    const canvases = document.getElementById('canvases');
+const mainCanvas = document.createElement('canvas');
 
-    const canvas = document.createElement('canvas');
-    canvas.width = 500;
-    canvas.height = 500;
-}
+document.getElementById('canvases').appendChild(mainCanvas);
 
 const settings = {
     max: {
@@ -14,18 +10,7 @@ const settings = {
     }
 };
 
-
-main();
-
-const objects = {};
-let canvasList = {};
-
-
-const logList = [];
-
-function log(str) {
-    logList.push(str);
-}
+let objects = {};
 
 
 function getPixel(data, x, y, w, h) {
@@ -304,12 +289,14 @@ function doStuff() {
         ctx.drawImage(canvas, dx, dy, dw, dh);
     }
 
-    canvases.appendChild(spritesheet);
 
 
-    canvasList = list;
-    console.log(list);
-    console.log("Max dimensions: ", maxWidth, maxHeight);
+    mainCanvas.width = spritesheet.width;
+    mainCanvas.height = spritesheet.height;
+
+    const mctx = mainCanvas.getContext('2d');
+    mctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+    mctx.drawImage(spritesheet, 0, 0);
 
 }
 
@@ -351,6 +338,8 @@ function preDoStuff() {
 
 
 function changeHandler(evt) {
+
+    objects = {};
     masterDone = false;
     
     const files = event.target.files; //FileList object
