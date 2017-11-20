@@ -134,6 +134,8 @@ const entityManager = (function () {
       }
     }
 
+
+
     for (let i = 0; i < _spawnRegions.length; i += 1) {
       const spawnRegion = _spawnRegions[i];
 
@@ -214,10 +216,11 @@ const entityManager = (function () {
 
     if (g_tm && g_tm.objects && g_tm.objects.spawnRegion) {
       const spawnRegions = g_tm.objects.spawnRegion;
+      // console.log("LOOK AT ME:", spawnRegions);
 
       for (let i = 0; i < spawnRegions.length; i += 1) {
         const spawnRegion = spawnRegions[i];
-        console.log(spawnRegion);
+        // console.log(spawnRegion);
 
         const type = spawnRegion.props.type;
         const respawn = spawnRegion.props.respawn;
