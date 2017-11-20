@@ -31,17 +31,20 @@ function autocrop(canvas) {
     const w = canvas.width;
     const h = canvas.height;
 
+    console.log("<>");
+    console.log(w, h);
+
     const ctx = canvas.getContext('2d');
 
     const imageData = ctx.getImageData(0, 0, w, h);
 
     const data = imageData.data;
 
-    let leftPad = 0;
-    let rightPad = 0;
+    let x1 = 0;
+    let x2 = 0;
 
-    let topPad = 0;
-    let bottomPad = 0;
+    let y1 = 0;
+    let y2 = 0;
 
     // Left to right
     for (let x = 0; x < w; x += 1) {
@@ -49,7 +52,7 @@ function autocrop(canvas) {
         for (let y = 0; y < h; y += 1) {
             const pixel = getPixel(data, x, y, w, h);
             if (pixel.a !== 0) {
-                leftPad = x;
+                x1 = x;
                 // Breaking.
                 x = w;
                 y = h;
@@ -63,9 +66,9 @@ function autocrop(canvas) {
         for (let y = 0; y < h; y += 1) {
             const pixel = getPixel(data, x, y, w, h);
             if (pixel.a !== 0) {
-                rightPad = x;
+                x2 = x;
                 // Breaking.
-                x = 0;
+                x = -1;
                 y = h;
             }
         }
@@ -77,7 +80,7 @@ function autocrop(canvas) {
         for (let x = 0; x < w; x += 1) {
             const pixel = getPixel(data, x, y, w, h);
             if (pixel.a !== 0) {
-                topPad = y;
+                y1 = y;
                 // Breaking.
                 x = w;
                 y = h;
@@ -91,41 +94,50 @@ function autocrop(canvas) {
         for (let x = 0; x < w; x += 1) {
             const pixel = getPixel(data, x, y, w, h);
             if (pixel.a !== 0) {
-                bottomPad = y;
+                y2 = y;
                 // Breaking.
                 x = w;
-                y = 0;
+                y = -1;
             }
         }
     }
 
     const croppedCanvas = document.createElement('canvas');
 
-    let rangeX = Math.max(Math.abs(rightPad - leftPad + 1), 0);
-    let rangeY = Math.max(Math.abs(bottomPad - topPad + 1), 0);
+    // Add 1 pixel padding.
+
+    const padding = 1;
+
+    x1 = Math.max(x1 - padding, 0);
+    x2 = Math.min(x2 + padding, w);
+
+    y1 = Math.max(y1 - padding, 0);
+    y2 = Math.min(y2 - padding, h);
 
 
-    rangeX = Math.min(rangeX, w);
-    rangeY = Math.min(rangeX, h);
+    let w2 = Math.max(Math.abs(x2 - x1), 0);
+    let h2 = Math.max(Math.abs(y2 - y1), 0);
 
-    croppedCanvas.width = rangeX;
-    croppedCanvas.height = rangeY;
+    croppedCanvas.width = w2;
+    croppedCanvas.height = h2;
 
 
     const croppedCtx = croppedCanvas.getContext('2d');
 
-    const sx = leftPad;
-    const sy = topPad;
-    const sw = rangeX;
-    const sh = rangeY;
+    const sx = x1;
+    const sy = y1;
+    const sw = w2;
+    const sh = h2;
 
     const dx = 0;
     const dy = 0;
-    const dw = rangeX;
-    const dh = rangeY;
+    const dw = w2;
+    const dh = h2;
 
 
     croppedCtx.drawImage(canvas, sx, sy, sw, sh, dx, dy, dw, dh);
+
+
 
 
     return croppedCanvas;
@@ -232,7 +244,7 @@ function doStuff() {
 
         const _canvas2 = autocrop(_canvas1);
 
-        const _canvasFinal = getScaledCanvas(_canvas2, tileWidth, tileHeight);
+        const _canvasFinal = getScaledCanvas(_canvas1, tileWidth, tileHeight);
 
         // body.appendChild(_canvas2);
 
