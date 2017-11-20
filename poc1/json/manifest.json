@@ -19,6 +19,10 @@
             "name": "TEST MAP",
             "path": "map6.json"
 
+        },
+        "map4": {
+          "name": "sandbox",
+          "path": "sandbox.json"
         }
     },
     "keyBindings": {}

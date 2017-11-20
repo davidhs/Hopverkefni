@@ -233,13 +233,6 @@
                 "image": "raw.image.bullet"
             }
         },
-        "beam": {
-            "dep": ["raw.image.beam"],
-            "cfg": {
-                "scale": 0.5,
-                "image": "raw.image.beam"
-            }
-        },
         "player": {
             "dep": ["raw.image.rifle"],
             "cfg": {
@@ -303,7 +296,26 @@
                     "tiledTileset.map2tileset4"
                 ]
             }
+        },
+        "tm3": {
+            "dep": [
+                "raw.xml.pmap3",
+                "tiledTileset.map3tileset1",
+                "tiledTileset.map3tileset2",
+                "tiledTileset.map3tileset3",
+                "tiledTileset.map3tileset4"
+            ],
+            "cfg": {
+                "type": 1,
+                "map": "raw.xml.pmap3",
+                "tilesets": [
+                    "tiledTileset.map3tileset2",
+                    "tiledTileset.map3tileset3",
+                    "tiledTileset.map3tileset1"
+                ]
+            }
         }
+
     },
     "tiledTileset": {
         "map1tileset1": {
@@ -378,6 +390,48 @@
             "textureAtlas": "textureAtlas.spritesheet1",
             "cfg": "raw.xml.pmap2tileset4"
           }
+        },
+
+
+        "map3tileset1": {
+            "dep": [
+                "raw.xml.pmap3tileset1",
+                "textureAtlas.dungeon"
+            ],
+            "cfg": {
+                "textureAtlas": "textureAtlas.dungeon",
+                "cfg": "raw.xml.pmap3tileset1"
+            }
+        },
+        "map3tileset2": {
+            "dep": [
+                "raw.xml.pmap3tileset2",
+                "textureAtlas.terrain_atlas"
+            ],
+            "cfg": {
+                "textureAtlas": "textureAtlas.terrain_atlas",
+                "cfg": "raw.xml.pmap3tileset2"
+            }
+        },
+        "map3tileset3": {
+            "dep": [
+                "raw.xml.pmap3tileset3",
+                "textureAtlas.tileset4"
+            ],
+            "cfg": {
+                "textureAtlas": "textureAtlas.tileset4",
+                "cfg": "raw.xml.pmap3tileset3"
+            }
+        },
+        "map3tileset4":{
+          "dep": [
+            "raw.xml.pmap3tileset4",
+            "textureAtlas.spritesheet1"
+          ],
+          "cfg": {
+            "textureAtlas": "textureAtlas.spritesheet1",
+            "cfg": "raw.xml.pmap3tileset4"
+          }
         }
 
     },
@@ -407,7 +461,6 @@
                 "cursor": "cursor.png",
                 "rock": "rock.png",
                 "bullet": "bullet.png",
-                "beam": "beam.png",
                 "rifle": "survivor-shoot_rifle_0.png",
                 "blockMap": "block-map.png",
                 "donkey": "notdonkey.png",
@@ -457,7 +510,6 @@
             "prefix": "audio/",
             "paths": {
                 "bulletFire": "bulletFire.ogg",
-                "beamFire": "beamFire.ogg",
                 "bulletZapped": "bulletZapped.ogg",
                 "rockEvapoate": "rockEvaporate.ogg",
                 "rockSplit": "rockSplit.ogg",
@@ -498,6 +550,16 @@
                 "pmap2tileset3": "tiles3.tsx",
                 "pmap2tileset4": "tiles4.tsx"
             }
-        }]
+        }, {
+          "prefix": "xml/map4/",
+          "paths": {
+              "pmap3": "map4.tmx",
+              "pmap3tileset1": "tiles1.tsx",
+              "pmap3tileset2": "tiles2.tsx",
+              "pmap3tileset3": "tiles3.tsx",
+              "pmap3tileset4": "tiles4.tsx"
+          }
+
+          }]
     }
 }
