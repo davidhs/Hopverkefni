@@ -9,7 +9,6 @@ const HUD = (function () {
   let H_width = 0;
   let H_height = 0;
 
-
   // globals for health bar
   let xHP = 0;
   let yHP = 0;
@@ -30,7 +29,6 @@ const HUD = (function () {
   let g_sw = 0;
   let g_sh = 0;
 
-
   // globals for Numbers
   let n_sx = 0;
   let n_sy = 0;
@@ -40,10 +38,6 @@ const HUD = (function () {
   let n_dx = 0;
   let n_dw = 0;
   let n_dh = 0;
-
-  // test key
-  const KEY_HPTEST = keyCode('G');
-  let kills = 0;
 
   // create images
   let background = new Image();
@@ -190,12 +184,6 @@ const HUD = (function () {
   }
 
   function update(du) {
-    // test to see lifebar fades away
-    // press 'G' to see
-    if (eatKey(KEY_HPTEST)) {
-      hpLost += 0.01;
-    }
-
     // update HUDBAR
     H_cx = 0;
     H_cy = g_viewport.getIH() - 80;
