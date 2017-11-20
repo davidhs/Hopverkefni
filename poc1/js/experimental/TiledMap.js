@@ -108,6 +108,8 @@ function TiledMap(cfg) {
 
   this.objects = {};
 
+  // console.log(objectGroup);
+
   for (let i = 0; i < objectGroup.object.length; i += 1) {
     const object = objectGroup.object[i];
     const objectAttributes = object['@attributes'];

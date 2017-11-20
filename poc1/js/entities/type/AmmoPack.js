@@ -4,7 +4,7 @@
 /* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
 spatialManager entityManager g_world :true */
 
-function MedicPack(cfg) {
+function AmmoPack(cfg) {
   // Common inherited setup logic from Entity
   this.setup(cfg);
 
@@ -16,17 +16,17 @@ function MedicPack(cfg) {
 }
 
 // Inherit from Entity
-MedicPack.prototype = new Entity();
+AmmoPack.prototype = new Entity();
 
-MedicPack.prototype.rotation = 0;
-MedicPack.prototype.cx = 200;
-MedicPack.prototype.cy = 200;
-MedicPack.prototype.hp = 1;
-MedicPack.prototype.maxHP = 1;
+AmmoPack.prototype.rotation = 0;
+AmmoPack.prototype.cx = 200;
+AmmoPack.prototype.cy = 200;
+AmmoPack.prototype.hp = 1;
+AmmoPack.prototype.maxHP = 1;
 
-MedicPack.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
+AmmoPack.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
-MedicPack.prototype.update = function (du) {
+AmmoPack.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);
 
@@ -140,25 +140,25 @@ MedicPack.prototype.update = function (du) {
   return 0;
 };
 
-MedicPack.prototype.attack = function (du) {
+AmmoPack.prototype.attack = function (du) {
   entityManager.generateMedpackExpl({
     cx: this.cx,
     cy: this.cy,
   });
   const player = entityManager.getPlayer();
-  player.pickupLife(30);
+  player.pickupAmmo();
   this.kill();
 };
 
-MedicPack.prototype.takeBulletHit = function () {
+AmmoPack.prototype.takeBulletHit = function () {
   this.kill();
 };
 
-MedicPack.prototype.getRadius = function () {
+AmmoPack.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
-MedicPack.prototype.render = function (ctx, cfg) {
+AmmoPack.prototype.render = function (ctx, cfg) {
   const origScale = this.sprite.scale;
   this.sprite.scale = this._scale;
   this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);

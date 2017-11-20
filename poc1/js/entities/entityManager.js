@@ -22,6 +22,7 @@ const entityManager = (function () {
   const categories = {
     muzzle: [],
     medicpack: [],
+    ammopack: [],
     bullets: [],
     players: [],
     genericEnemiesOne: [],
@@ -115,6 +116,10 @@ const entityManager = (function () {
     categories.medicpack.push(new MedicPack(cfg));
   }
 
+  function generateAmmoPack(cfg) {
+    categories.ammopack.push(new AmmoPack(cfg));
+  }
+
 
   function update(du) {
     for (let i = 0; i < categoryNames.length; i += 1) {
@@ -133,6 +138,8 @@ const entityManager = (function () {
         }
       }
     }
+
+
 
     for (let i = 0; i < _spawnRegions.length; i += 1) {
       const spawnRegion = _spawnRegions[i];
@@ -178,6 +185,18 @@ const entityManager = (function () {
             sprite: g_asset.sprite.medicpack,
           });
         }
+
+        for (let j = 0; j < spawnRegion.quantity; j += 1) {
+          const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+          const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+
+          generateAmmoPack({
+            cx,
+            cy,
+            sprite: g_asset.sprite.ammopack,
+          });
+        }
       }
     }
   }
@@ -214,10 +233,11 @@ const entityManager = (function () {
 
     if (g_tm && g_tm.objects && g_tm.objects.spawnRegion) {
       const spawnRegions = g_tm.objects.spawnRegion;
+      // console.log("LOOK AT ME:", spawnRegions);
 
       for (let i = 0; i < spawnRegions.length; i += 1) {
         const spawnRegion = spawnRegions[i];
-        console.log(spawnRegion);
+        // console.log(spawnRegion);
 
         const type = spawnRegion.props.type;
         const respawn = spawnRegion.props.respawn;
@@ -264,6 +284,17 @@ const entityManager = (function () {
         sprite: g_asset.sprite.medicpack,
       });
     }
+
+    for (let i = 0; i < 0; i += 1) {
+      const cx = g_world.getWidth() * Math.random();
+      const cy = g_world.getHeight() * Math.random();
+
+      generateAmmoPack({
+        cx,
+        cy,
+        sprite: g_asset.sprite.ammopack,
+      });
+    }
   }
 
   function getPlayer() {
@@ -280,6 +311,7 @@ const entityManager = (function () {
     fireBullet,
     generateMedpackExpl,
     generateMedicPack,
+    generateAmmoPack,
     generateExplosion,
     generateTerrexplosion,
     generateBlood,
