@@ -1,0 +1,16 @@
+body{
+    font-family: 'Segoe UI';
+    font-size: 12pt;
+    background-image: url("background.png");
+}
+
+header h1{
+    font-size:12pt;
+    color: #fff;
+    background-color: #1BA1E2;
+    padding: 20px;
+}
+
+canvas {
+    border: 1px solid red;
+}

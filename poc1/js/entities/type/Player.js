@@ -230,11 +230,6 @@ Player.prototype.update = function (du) {
   // AUDIO
   // =====
 
-  if (this._soundRunning) {
-    const pr = Math.max(Math.abs(this.velX) / this.maxSpeed, Math.abs(this.velY) / this.maxSpeed);
-    this._soundRunning.playbackRate = pr;
-  }
-
   if (Math.abs(this.velX) > EPS || Math.abs(this.velY) > EPS) {
     // In motion
     if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
@@ -256,7 +251,7 @@ Player.prototype.update = function (du) {
   if (g_mouse.isDown) {
     if (armory[selectedWeaponID].magazineAmmo > 0) {
       this.fireBullet();
-      console.log(Player.prototype.kills);
+      if (DEBUG_PLAYER) console.log(`Left in clip: ${armory[selectedWeaponID].magazineAmmo}`);
       if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
       }
@@ -276,7 +271,7 @@ Player.prototype.update = function (du) {
   this.cx = newX;
   this.cy = newY;
 
-  //redraw player position on minimap
+  // redraw player position on minimap
   Minimap.playerPosition(this.cx, this.cy);
 
 
@@ -306,11 +301,12 @@ Player.prototype.update = function (du) {
       if (spatialID !== spatialManager.NO_CONFLICT) {
         this.cx = oldX;
         this.cy = oldY;
-        spatialID = spatialManager.register(this);
+        spatialManager.register(this);
       }
     }
 
     if (!spatialManager.isRegistered(this)) {
+      // Last attempt
       spatialManager.register(this);
       if (!spatialManager.isRegistered(this)) {
         throw Error();
@@ -344,6 +340,8 @@ Player.prototype.getRadius = function () {
 };
 
 Player.prototype.reloadWeapon = function () {
+  if (DEBUG_PLAYER) console.log(`Reload ${armory[selectedWeaponID].ammo} bullets left`);
+  if (DEBUG_PLAYER) console.log(`in ${armory[selectedWeaponID].name}`);
   this.bulletCooldown = armory[selectedWeaponID].reloadTime;
   if (armory[selectedWeaponID].ammo >= armory[selectedWeaponID].magazineSize) {
     armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].magazineSize;
@@ -396,6 +394,11 @@ Player.prototype.fireBullet = function () {
     armory[selectedWeaponID].through,
   );
   armory[selectedWeaponID].magazineAmmo -= 1;
+};
+
+Player.prototype.takeDamage = function () {
+  console.log("health: ", this.health);
+  this.health -= 1;
 };
 
 

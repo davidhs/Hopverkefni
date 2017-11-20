@@ -1,14 +1,11 @@
 'use strict';
 
 /**
- * 
- * @param {number} width 
- * @param {number} height 
+ *
+ * @param {number} width
+ * @param {number} height
  */
 function Grid(width, height) {
-
-  
-
   this._stuff = {};
 
 
@@ -22,7 +19,7 @@ function Grid(width, height) {
     for (let j = 0; j < this.width; j += 1) {
       const obj = {
         ids: new QuickList(),
-        count: 0
+        count: 0,
       };
       row.push(obj);
     }
@@ -40,14 +37,13 @@ function Grid(width, height) {
   this._callbacks = [];
 
 
-
   this._elapsedTime = 0;
 
   const self = this;
 
 
   this._carver = new Worker('js/lib/carver.js');
-  this._carver.onmessage = evt => {
+  this._carver.onmessage = (evt) => {
     self.mailbox(evt);
   };
   this._carver.postMessage(['init', width, height]);
@@ -55,12 +51,11 @@ function Grid(width, height) {
 
 
 /**
- * 
- * @param {*} du 
+ *
+ * @param {*} du
  */
-Grid.prototype.update = function (du) {
+Grid.prototype.update = function (du, force) {
   this._elapsedTime += du;
-  
 
   if (this._elapsedTime < 10) return;
 
@@ -68,7 +63,11 @@ Grid.prototype.update = function (du) {
 
   if (this._lastX === this._x && this._lastY === this._y) return;
 
-  
+  this._update();
+};
+
+
+Grid.prototype._update = function () {
   this._carver.postMessage(['carve', this._x, this._y]);
 
   this._lastX = this._x;
@@ -77,8 +76,8 @@ Grid.prototype.update = function (du) {
 
 
 /**
- * 
- * @param {*} callbacks 
+ *
+ * @param {*} callbacks
  */
 Grid.prototype.onready = function (callbacks) {
   this._callbacks.push(callbacks);
@@ -86,11 +85,10 @@ Grid.prototype.onready = function (callbacks) {
 
 
 /**
- * 
- * @param {*} evt 
+ *
+ * @param {*} evt
  */
 Grid.prototype.mailbox = function (evt) {
-
   const data = evt.data;
 
   if (this._firstTime) {
@@ -108,10 +106,10 @@ Grid.prototype.mailbox = function (evt) {
 
 
 /**
- * 
- * @param {*} x 
- * @param {*} y 
- * @param {*} value 
+ *
+ * @param {*} x
+ * @param {*} y
+ * @param {*} value
  */
 Grid.prototype.set = function (x, y, value) {
   if (x < 0 || x >= this.width) throw Error();
@@ -119,11 +117,15 @@ Grid.prototype.set = function (x, y, value) {
   this._grid[y][x] = value;
 };
 
+Grid.prototype.forceRecompute = function () {
+  this._update();
+};
+
 
 /**
- * 
- * @param {*} x 
- * @param {*} y 
+ *
+ * @param {*} x
+ * @param {*} y
  */
 Grid.prototype.get = function (x, y) {
   if (x < 0 || x >= this.width) throw Error();
@@ -136,29 +138,29 @@ Grid.prototype.getCI = function (x, y) {
   if (x < 0 || x >= this.width) throw Error();
   if (y < 0 || y >= this.height) throw Error();
 
-  if (!this._stuff.data) return;
+  if (!this._stuff.data) return null;
 
   const idx = 2 * (x + this.width * y);
 
   const xV = this._stuff.data[idx];
   const yV = this._stuff.data[idx + 1];
 
-  return {x: xV, y: yV};
+  return { x: xV, y: yV };
 };
 
 Grid.prototype.addObstruction = function (x, y) {
   this._carver.postMessage(['obstruction', x, y]);
 };
 
-// Carve shortest path from x to y
-Grid.prototype.carveShortestPath = function (x, y) {
 
+// Carve shortest path from x to y
+Grid.prototype.setSource = function (x, y) {
   this._x = x;
   this._y = y;
 
   if (this._firstTime) {
-    this._carver.postMessage(['carve', this._x, this._y]);
     this._lastX = this._x;
     this._lastY = this._y;
+    this._update();
   }
 };

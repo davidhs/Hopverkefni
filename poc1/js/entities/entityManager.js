@@ -18,27 +18,22 @@ const entityManager = (function () {
   // to request the blessed release of death!
   const KILL_ME_NOW = -1;
 
-  const _bullets = [];
-  const _players = [];
-  const _explosions = [];
-  const _blood = [];
-  const _genericEnemiesOne = [];
 
-  const _categories = [
-    _bullets,
-    _players,
-    _genericEnemiesOne,
-    _explosions,
-    _blood,
-  ];
+  const categories = {
+    bullets: [],
+    players: [],
+    genericEnemiesOne: [],
+    terrorist: [],
+    explosions: [],
+    terrexplotions: [],
+    blood: [],
+  };
 
-  // "PRIVATE" METHODS
+  const categoryNames = Object.keys(categories);
 
-  function _forEachOf(aCategory, fn) {
-    for (let i = 0; i < aCategory.length; i += 1) {
-      fn.call(aCategory[i]);
-    }
-  }
+
+  let _spawnRegions = [];
+
 
   // PUBLIC METHODS
 
@@ -55,15 +50,15 @@ const entityManager = (function () {
       through,
     });
     if (DEBUG) console.log(bullet);
-    _bullets.push(bullet);
+    categories.bullets.push(bullet);
   }
 
   function generatePlayer(descr) {
-    _players.push(new Player(descr));
+    categories.players.push(new Player(descr));
   }
 
   function generateItems(descr) {
-    _items.push(new Items(descr));
+    categories.items.push(new Items(descr));
   }
 
   // function generateWeapon(descr) {
@@ -75,78 +70,183 @@ const entityManager = (function () {
   // and explosion rate.
   function generateExplosion(descr) {
     descr.sequence = g_asset.sequence.explosion3;
-    _explosions.push(new AnimatedImage(descr));
+    categories.explosions.push(new AnimatedImage(descr));
+  }
+
+  function generateTerrexplosion(descr){
+    descr.sequence = g_asset.sequence.terrorExplosion;
+    categories.terrexplotions.push(new AnimatedImage(descr));
   }
 
   function generateBlood(descr) {
     descr.sequence = g_asset.sequence.blood3;
-    _blood.push(new AnimatedImage(descr));
+    categories.blood.push(new AnimatedImage(descr));
   }
 
   function generateGenericEnemyOne(cfg) {
-    _genericEnemiesOne.push(new GenericEnemyOne(cfg));
+    categories.genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
 
+  function generateTerrorist(cfg){
+    categories.terrorist.push(new Terrorist(cfg));
+  }
+
+
   function update(du) {
-    for (let c = 0; c < _categories.length; c += 1) {
-      const aCategory = _categories[c];
-      let i = 0;
 
-      while (i < aCategory.length) {
-        const status = aCategory[i].update(du);
+    for (let i = 0; i < categoryNames.length; i += 1) {
+      const categoryName = categoryNames[i];
 
+      const items = categories[categoryName];
+
+      for (let j = 0; j < items.length; j += 1) {
+        const item = items[j];
+
+        const status = item.update(du);
 
         if (status === KILL_ME_NOW) {
-          // Probably superfluous
-          delete aCategory[i];
-
-          // remove the dead guy, and shuffle the others down to
-          // prevent a confusing gap from appearing in the array
-          aCategory.splice(i, 1);
-        } else {
-          i += 1;
+          delete items[j];
+          items.splice(j, 1);
         }
       }
+    }
+
+    for (let i = 0; i < _spawnRegions.length; i += 1) {
+      const spawnRegion = _spawnRegions[i];
+
+      spawnRegion.duration += du;
+
+      if (spawnRegion.duration >= spawnRegion.rate || !spawnRegion.init) {
+        spawnRegion.init = true;
+        spawnRegion.duration = 0;
+
+        console.log(du);
+
+
+
+
+        for (let j = 0; j < spawnRegion.quantity; j += 1) {
+
+
+          const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+          const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+
+          generateGenericEnemyOne({
+            cx, cy,
+            sprite: g_asset.sprite.donkey
+           });
+          }
+
+          for (let j = 0; j < spawnRegion.quantity; j += 1) {
+
+
+            const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+            const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+
+            generateTerrorist({
+              cx, cy,
+              sprite: g_asset.sprite.terrorist
+             });
+            }
+        }
     }
   }
 
   function render(ctx, cfg) {
-    for (let c = 0; c < _categories.length; c += 1) {
-      const aCategory = _categories[c];
+    for (let i = 0; i < categoryNames.length; i += 1) {
+      const categoryName = categoryNames[i];
 
-      for (let i = 0; i < aCategory.length; i += 1) {
-        aCategory[i].render(ctx, cfg);
+      // If the configuration has a blacklist for the categories
+      // and this category name is in it, then do not render.
+      if (cfg.categoryBlacklist && cfg.categoryBlacklist.has(categoryName)) {
+        continue;
       }
-    }
+
+      // If the configuration has a whitelist for the categories
+      // and this category is not found in the whitelist, then do not render.
+      if (cfg.categoryWhitelist && !cfg.categoryWhitelist.has(categoryName)) {
+        continue;
+      }
+
+      /*if(categories.terrorist.length < 10){
+        for(var k = 0; k<10; k++){
+          const cx = (Math.random() * g_world.getWidth());
+          const cy = (Math.random() * g_world.getHeight());
+          generateTerrorist({
+            cx,
+            cy,
+            sprite: g_asset.raw.image.terrorist,
+          });
+        }
+      }*/
 
 
-    if (_genericEnemiesOne.length < 10) {
-      for (let i = 0; i < 10; i += 1) {
-        const cx = Math.random() * g_world.getWidth();
-        const cy = Math.random() * g_world.getHeight();
-        generateGenericEnemyOne({
-          cx,
-          cy,
-          sprite: g_asset.sprite.donkey,
-        });
+
+      const items = categories[categoryName];
+
+      for (let j = 0; j < items.length; j += 1) {
+        const item = items[j];
+
+        item.render(ctx, cfg);
       }
     }
   }
 
   function init() {
-    for (let i = 0; i < 1000; i += 1) {
-      const cx = Math.random() * g_world.getWidth();
-      const cy = Math.random() * g_world.getHeight();
-      generateGenericEnemyOne({
-        cx,
-        cy,
-        sprite: g_asset.sprite.donkey,
-      });
+
+    console.log(g_tm);
+
+    // spawn regions
+
+    if (g_tm && g_tm.objects && g_tm.objects.spawnRegion) {
+      const spawnRegions = g_tm.objects.spawnRegion;
+
+      for (let i = 0; i < spawnRegions.length; i += 1) {
+        const spawnRegion = spawnRegions[i];
+        console.log(spawnRegion);
+
+        const type = spawnRegion.props.type;
+        const respawn = spawnRegion.props.respawn;
+        const quantity = spawnRegion.props.quantity;
+        const x = spawnRegion.x;
+        const y = spawnRegion.y;
+        const w = spawnRegion.width;
+        const h = spawnRegion.height;
+        const rate = 1000;
+        const init = false;
+        const duration = 0;
+
+        _spawnRegions.push({
+          type, respawn, quantity, x, y, w, h, rate, init, duration,
+        });
+      }
     }
+
+    // spawn entities
+
+    if (g_tm && g_tm.objects && g_tm.objects.spawnEntity) {
+      const spawnEntities = g_tm.objects.spawnEntity;
+    }
+
+
+    for (let i = 0; i < 0; i += 1) {
+      const cx = g_world.getWidth() * Math.random();
+      const cy = g_world.getHeight() * Math.random();
+
+      generateGenericEnemyOne({
+        cx, cy,
+        sprite: g_asset.sprite.donkey
+       });
+    }
+
   }
 
   function getPlayer() {
-    if (_players.length > 0) return _players[0];
+    if (categories.players.length > 0) {
+      return categories.players[0];
+    }
     return null;
   }
 
@@ -156,11 +256,14 @@ const entityManager = (function () {
     render,
     fireBullet,
     generateExplosion,
+    generateTerrexplosion,
     generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
+    generateTerrorist,
     OK,
     KILL_ME_NOW,
+
 
     getPos: getPlayer,
     getPlayer,

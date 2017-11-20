@@ -20,6 +20,66 @@
 function TextureAtlas(cfg) {
   // If cfg.image is Image, convert to canvas
 
+
+  const self = this;
+
+
+  if (cfg.paths) {
+    let paths = cfg.paths;
+
+    
+    if (paths.eval) {
+      // This is intentional.
+      paths = eval(paths.eval);
+    }
+
+    if (cfg.pathPrefix) {
+      for (let i = 0; i < paths.length; i += 1) {
+        paths[i] = cfg.pathPrefix + paths[i];
+      }
+    }
+
+    const lobj = {
+      image: [],
+    };
+
+    for (let i = 0; i < paths.length; i += 1) {
+      lobj.image[i] = paths[i];
+    }
+
+
+    loader.load(lobj, (assets) => {
+      const images = assets.image;
+      cfg.image = TextureAtlas.createTextureAtlas(images);
+
+      self._init(cfg);
+    });
+  } else {
+    this._init(cfg);
+  }
+}
+
+
+TextureAtlas.createTextureAtlas = function (images) {
+
+  const canvas = document.createElement('canvas');
+
+  let maxWidth = 0;
+  let maxHeight = 0;
+
+  for (let i = 0; i < images.length; i += 1) {
+    const image = images[i];
+
+    if (image.width > maxWidth) maxWidth = image.width;
+    if (image.height > maxHeight) maxHeight = image.height;
+  }
+
+  console.log("Max width and height: ", maxWidth, maxHeight);
+
+  return canvas;
+};
+
+TextureAtlas.prototype._init = function (cfg) {
   const img = cfg.image;
 
   if (img instanceof Image) {
@@ -32,7 +92,6 @@ function TextureAtlas(cfg) {
   } else {
     this.image = img;
   }
-
 
 
   const data = this.image.getContext('2d').getImageData(0, 0, this.image.width, this.image.height).data;
@@ -84,7 +143,11 @@ function TextureAtlas(cfg) {
   this.rows = Math.ceil(this.image.height / this.tileHeight);
   this.cols = Math.ceil(this.image.width / this.tileWidth);
   this.nrOfTiles = util.value(cfg.nrOfTiles, this.rows * this.cols);
-}
+
+  this.ready = true;
+};
+
+TextureAtlas.prototype.ready = false;
 
 /**
  * rowFirst
@@ -233,6 +296,4 @@ TextureAtlas.prototype.renderTile = function (ctx, tx, ty, x, y, w, h, cfg) {
   } else {
     ctx.drawImage(this.image, sx, sy, sw, sh, dx, dy, dw, dh);
   }
-
-
 };

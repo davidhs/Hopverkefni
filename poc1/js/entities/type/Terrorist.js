@@ -4,7 +4,7 @@
 /* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
 spatialManager entityManager g_world :true */
 
-function GenericEnemyOne(cfg) {
+function Terrorist(cfg) {
   // Common inherited setup logic from Entity
   this.setup(cfg);
 
@@ -16,17 +16,17 @@ function GenericEnemyOne(cfg) {
 }
 
 // Inherit from Entity
-GenericEnemyOne.prototype = new Entity();
+Terrorist.prototype = new Entity();
 
-GenericEnemyOne.prototype.rotation = 0;
-GenericEnemyOne.prototype.cx = 200;
-GenericEnemyOne.prototype.cy = 200;
-GenericEnemyOne.prototype.velX = 0;
-GenericEnemyOne.prototype.velY = 0;
-GenericEnemyOne.prototype.acceleration = 0.3;
-GenericEnemyOne.prototype.maxSpeed = 4;
-GenericEnemyOne.prototype.hp = 100;
-GenericEnemyOne.prototype.maxHP = 100;
+Terrorist.prototype.rotation = 0;
+Terrorist.prototype.cx = 200;
+Terrorist.prototype.cy = 200;
+Terrorist.prototype.velX = 0;
+Terrorist.prototype.velY = 0;
+Terrorist.prototype.acceleration = 0.3;
+Terrorist.prototype.maxSpeed = 2;
+Terrorist.prototype.hp = 100;
+Terrorist.prototype.maxHP = 100;
 
 
 // When the player stops accelerating then this
@@ -34,11 +34,11 @@ GenericEnemyOne.prototype.maxHP = 100;
 // value it'll take a while to come to a halt,
 // like slowing down when ice skating, and a higher
 // value will cause it to halt quicker.
-GenericEnemyOne.prototype.decay = 0.5;
-GenericEnemyOne.prototype.attackCooldown = 50;
-GenericEnemyOne.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
+Terrorist.prototype.decay = 0.5;
+Terrorist.prototype.attackCooldown = 50;
+Terrorist.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
-GenericEnemyOne.prototype.update = function (du) {
+Terrorist.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);
 
@@ -189,35 +189,30 @@ GenericEnemyOne.prototype.update = function (du) {
   return 0;
 };
 
-GenericEnemyOne.prototype.attack = function (du) {
-  this.attackCooldown -= 1.0 * du;
-
-  if (this.attackCooldown > 0) return;
-
-  this.attackCooldown += 50;
-
-  const handle = audioManager.play(g_url.audio.clawing);
-  if (handle) handle.volume = 0.1;
-
+Terrorist.prototype.attack = function (du) {
+  entityManager.generateTerrexplosion({
+    cx: this.cx,
+    cy: this.cy,
+  });
   const player = entityManager.getPlayer();
   player.takeDamage();
+  this.kill();
 };
 
-GenericEnemyOne.prototype.takeBulletHit = function () {
-  this.hp -= Player.prototype.getBulletDamage();
-  audioManager.play(g_url.audio.impact1);
-
-  if (this.hp <= 0) {
-    audioManager.play(g_url.audio.dying);
+Terrorist.prototype.takeBulletHit = function () {
+  entityManager.generateTerrexplosion({
+    cx: this.cx,
+    cy: this.cy,
+  });
     this.kill();
-  }
+
 };
 
-GenericEnemyOne.prototype.getRadius = function () {
+Terrorist.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
-GenericEnemyOne.prototype.render = function (ctx, cfg) {
+Terrorist.prototype.render = function (ctx, cfg) {
   // TODO: maybe we wan't the player to cast shadows,
   // sometimes.
 

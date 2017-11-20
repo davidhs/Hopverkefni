@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <meta charset="UTF-8">
+        <title>Sprite sheet maker</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div id="main" style="background: white">
+            <div>
+                <!--
+                Max. tile width in pixels:<br>
+                <input type="text" id="itw" placeholder="64">
+                <br>
+                Max. tile height in pixels:<br>
+                <input type="text" id="ith" placeholder="64">
+                <br>-->
+                Scale factor:<br>
+                <input type="text" id="isf" placeholder="1.0">
+            </div>
+            <article>
+                <label for="files">Select multiple files: </label>
+                <input id="files" type="file" multiple/>
+                <output id="result" />
+            </article>
+        </div>
+
+        <div id="canvases">
+        </div>
+
+        <script src="js/app.js"></script>
+    </body>
+</html>

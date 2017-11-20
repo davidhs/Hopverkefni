@@ -39,6 +39,11 @@ AnimatedImage.prototype.render = function (ctx, cfg) {
 
   const idx = Math.floor(this.dt * this.rate);
 
+  if (!this.sequence.sequence) {
+    console.log(this);
+    throw Error();
+  }
+
   if (idx >= this.sequence.sequence.length) {
     this.done = true;
     return;

@@ -17,9 +17,7 @@ const util = (function () {
     }
   };
 
-  util.snapshot = (obj) => {
-    return JSON.parse(JSON.stringify(obj));
-  };
+  util.snapshot = obj => JSON.parse(JSON.stringify(obj));
 
 
   util.createPicker = comparator => function (...args) {
@@ -124,13 +122,42 @@ const util = (function () {
     return value;
   };
 
-  util.isBetween = (value, lowBound, highBound) => {
-    if (value < lowBound) { return false; }
-    if (value > highBound) { return false; }
-    return true;
-  };
+  /**
+   *
+   * @param {number} value
+   * @param {number} lowBound
+   * @param {number} highBound
+   * @returns {boolean}
+   */
+  util.isBetween = (value, lowBound, highBound) => !(value < lowBound || value > highBound);
 
   util.randRange = (min, max) => (min + Math.random() * (max - min));
+
+
+  util.getCanvas = (image) => {
+    if (image instanceof HTMLCanvasElement) {
+      return image;
+    } else if (image instanceof Image) {
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0);
+      return canvas;
+    } else {
+      throw Error();
+    }
+
+    return null;
+  };
+
+  util.range = (a, b) => {
+    const l = [];
+    for (let i = a; i < b; i += 1) {
+      l.push(i);
+    }
+    return l;
+  };
 
   util.square = x => (x * x);
 
@@ -138,9 +165,7 @@ const util = (function () {
 
   util.distSq = (x1, y1, x2, y2) => (util.square(x2 - x1) + util.square(y2 - y1));
 
-  util.dist = (x1, y1, x2, y2) => {
-    return Math.sqrt(util.distSq(x1, y1, x2, y2));
-  };
+  util.dist = (x1, y1, x2, y2) => Math.sqrt(util.distSq(x1, y1, x2, y2));
 
   util.wrappedDistSq = (x1, y1, x2, y2, xWrap, yWrap) => {
     let dx = Math.abs(x2 - x1);
@@ -157,23 +182,33 @@ const util = (function () {
   };
 
   util.booleanANDArray = (arr) => {
-    for (let i = 0; i < arr.length; i += 1) {
-      if (!arr[i]) {
-        return false;
-      }
-    }
+    for (let i = 0; i < arr.length; i += 1) if (!arr[i]) return false;
 
     return true;
   };
 
   util.booleanORArray = (arr) => {
-    for (let i = 0; i < arr.length; i += 1) {
-      if (arr[i]) {
-        return true;
-      }
-    }
+    for (let i = 0; i < arr.length; i += 1) if (arr[i]) return true;
 
     return false;
+  };
+
+  util.timestamp = () => {
+    const d = new Date();
+
+    const year = d.getFullYear();
+    const month = d.getMonth();
+    const day = d.getDate();
+
+    const hour = d.getHours();
+    const minute = d.getMinutes();
+    const second = d.getSeconds();
+
+    const ms = d.getMilliseconds();
+
+    const str = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + "." + ms;
+
+    return str;
   };
 
   function objectStringReplacement(obj, stringTarget, replacement) {
@@ -312,6 +347,11 @@ const util = (function () {
     dst.height = h * s;
   };
 
+  /**
+   * @param {HTMLCanvasElement} canvas
+   * @param {function} pixelFunction
+   * @returns {HTMLCanvasElement}
+   */
   util.forAllPixels = (canvas, pixelFunction) => {
     const w = canvas.width;
     const h = canvas.height;
@@ -335,14 +375,14 @@ const util = (function () {
     const data2 = imageData.data;
 
     for (let i = 0; i < data.length; i += 4) {
-      rgba1.r = data[i + 0];
+      rgba1.r = data[i];
       rgba1.g = data[i + 1];
       rgba1.b = data[i + 2];
       rgba1.a = data[i + 3];
 
       pixelFunction(rgba1, rgba2);
 
-      data2[i + 0] = rgba2.r;
+      data2[i] = rgba2.r;
       data2[i + 1] = rgba2.g;
       data2[i + 2] = rgba2.b;
       data2[i + 3] = rgba2.a;
@@ -363,6 +403,12 @@ const util = (function () {
     return l;
   };
 
+  /**
+   *
+   * @param {*} value
+   * @param {*} defaultValue
+   * @returns {*}
+   */
   util.value = (value, defaultValue) => {
     if (typeof value !== 'undefined') {
       return value;
@@ -370,7 +416,12 @@ const util = (function () {
     return defaultValue;
   };
 
-  function xml2json(xml, cfg) {
+  /**
+   *
+   * @param {XMLDocument} xml
+   * @returns *
+   */
+  function xml2json(xml) {
     let obj = {};
 
 

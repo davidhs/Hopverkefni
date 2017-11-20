@@ -15,13 +15,17 @@ let g_url = {}; // URLs are eventually placed here.
 let g_asset = {}; // Assets are loaded here.
 
 // Which map to open.
-let activeMap; // Defined in init.json
-let activeManifest;
-
-// Map information
-let g_master;
+let g_manifest;
 
 const screenManager = new UIFrame();
+
+let g_lights = [];
+
+let g_map;
+
+
+// BACKWARDS COMPATIBILITY, DON'T USE.
+let g_master;
 
 
 // Canvases (except g_canvas).
@@ -84,6 +88,12 @@ function updateSimulation(du) {
   // Set viewport to follow player.
   g_viewport.setOCX(entityManager.getPos().cx);
   g_viewport.setOCY(entityManager.getPos().cy);
+
+
+  const player = entityManager.getPlayer();
+
+  g_lights[0].x = player.cx;
+  g_lights[0].y = player.cy;
 }
 
 // =================
@@ -133,7 +143,6 @@ function renderSimulation(ctx) {
   const w = g_canvas.width;
   const h = g_canvas.height;
 
-  const player = entityManager.getPlayer();
 
   // Clear canvases.
   ctx.clearRect(0, 0, w, h);
@@ -167,7 +176,9 @@ function renderSimulation(ctx) {
   // --- MIDGROUND ----
 
   // Draw entities to midground.
-  entityManager.render(ctxm);
+  entityManager.render(ctxm, {
+    categoryBlacklist: new Set(['explosions']),
+  });
 
   g_tm.renderTop(ctxt);
 
@@ -197,54 +208,17 @@ function renderSimulation(ctx) {
 
   // === HUDBAR ===
 
-  HUD.render(ctxh);
+  HUD.render(ctxhb);
 
 
   // === SHADOWS ===
 
-  const pcx = g_viewport.mapO2IX(player.cx);
-  const pcy = g_viewport.mapO2IY(player.cy);
-
 
   // Lights!
 
-  const lights = [{
-    x: player.cx,
-    y: player.cy,
-    color: {
-      r: 255,
-      g: 255,
-      b: 255,
-    },
-  }, {
-    x: 78,
-    y: 317,
-    color: {
-      r: 255,
-      g: 255,
-      b: 255,
-    },
-  }, {
-    x: 570,
-    y: 636,
-    color: {
-      r: 255,
-      g: 255,
-      b: 255,
-    },
-  }];
+  // TODO g_tm has light info
 
-  if (false) {
-    lights.push({
-      x: g_viewport.mapI2OX(g_mouse.x),
-      y: g_viewport.mapI2OY(g_mouse.y),
-      color: {
-        r: 100,
-        g: 27,
-        b: 250,
-      },
-    });
-  }
+  const lights = g_lights;
 
   for (let i = 0; i < lights.length; i += 1) {
     const light = lights[i];
@@ -265,7 +239,6 @@ function renderSimulation(ctx) {
   // ctxs.filter = 'drop-shadow(0 0 100 20)';
 
 
-
   // Subtract occluders from shadow
 
   ctxs.drawImage(g_occlusion, 0, 0);
@@ -276,8 +249,6 @@ function renderSimulation(ctx) {
   if (g_mouse.getImage()) {
     g_mouse.render(ctxh);
   }
-
-
 
 
   // === DRAW TO BACK-RENDERING CANVAS ===
@@ -304,14 +275,15 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_shadows, 0, 0, w, h);
 
 
-
-    ctxp.globalCompositeOperation = 'source-over';
-    ctxp.drawImage(g_top, 0, 0);
-    ctxp.globalAlpha = 1.0;
-
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_top, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
 
-
+  // Draw explosions
+  entityManager.render(ctxp, {
+    categoryWhitelist: new Set(['explosions']),
+  });
 
   // --- DRAW HUD ---
   ctxp.globalCompositeOperation = 'source-over';
@@ -323,13 +295,16 @@ function renderSimulation(ctx) {
   ctxp.drawImage(g_radar, 0, 0);
   ctxp.globalAlpha = 1.0;
 
+  // --- DRAW HUDBAR ---
+  ctxp.globalCompositeOperation = 'source-over';
+  ctxp.drawImage(g_hudbar, 0, 0);
+  ctxp.globalAlpha = 1.0;
 
   // === DRAW TO RENDERING CANVAS ===
 
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, w, h);
   ctx.drawImage(g_pre, 0, 0);
-
 
 
   /*
@@ -347,27 +322,39 @@ function renderSimulation(ctx) {
 }
 
 
-function setup(response) {
-  // console.log('Setting up...');
-  // Unroll response.
-  const map = response.map;
-  const assets = response.assets;
+function setup(_map) {
+
+  console.log("Loading...");
+
+  g_map = _map;
+
+  // Backwards compatibility.
+  g_master = {
+    map: g_map,
+  };
+
+  // --- Tiled Map ---
+  
+  g_tm = assetLoader.getItem(g_asset, g_map.cfg.tiledMap);
+
+  const width = g_tm.tileWidth * g_tm.widthInTiles;
+  const height = g_tm.tileHeight * g_tm.heightInTiles;
 
 
   g_viewport.stickToWorld(true);
 
 
-  g_muted = map.cfg.muted ? map.cfg.muted : false;
+  g_muted = g_manifest.cfg.activeManifest ? g_map.cfg.muted : false;
 
   // Setting world
-  g_world.setWidth(map.cfg.world.height, map.cfg.world.unit);
-  g_world.setHeight(map.cfg.world.width, map.cfg.world.unit);
-  g_world.setTileWidth(map.cfg.tile.width);
-  g_world.setTileHeight(map.cfg.tile.height);
+  g_world.setWidth(width, 'px');
+  g_world.setHeight(height, 'px');
+  g_world.setTileWidth(g_tm.tileWidth);
+  g_world.setTileHeight(g_tm.tileHeight);
 
 
-  const viewportWidth = activeManifest.cfg.screen.width;
-  const viewportHeight = activeManifest.cfg.screen.height;
+  const viewportWidth = g_manifest.cfg.screen.width;
+  const viewportHeight = g_manifest.cfg.screen.height;
 
   // Set "rendering" canvas.
   g_canvas.width = viewportWidth;
@@ -382,8 +369,6 @@ function setup(response) {
   g_viewport.setOH(viewportHeight);
 
 
-  // Store response in g_master.
-  g_master = response;
 
   // Set canvas width and heights.
   g_background.width = g_canvas.width;
@@ -413,33 +398,23 @@ function setup(response) {
   g_radar.width = g_canvas.width;
   g_radar.height = g_canvas.height;
 
-  // Init g_url.
-  g_url = response.urls;
+  g_hudbar.width = g_canvas.width;
+  g_hudbar.height = g_canvas.height;
 
-  // Init g_asset.
-  g_asset = response.assets;
+
 
   // --- Mouse ---
 
   // Set mouse cursor image.
-  if (g_master.map.mouse.image) {
-    g_mouse.setImage(mapHandler.getItem(g_master, g_master.map.mouse.image));
+  if (g_map.mouse.image) {
+    g_mouse.setImage(assetLoader.getItem(g_asset, g_map.mouse.image));
   }
 
   // Enable cursor lock, if applicable.
-  if (g_master.map.mouse.cursorLock) {
+  if (g_map.mouse.cursorLock) {
     g_mouse.enableCursorLock();
   }
 
-  // --- Entity Manager ---
-
-  // Assign a player a sprite image.
-  entityManager.generatePlayer({
-    sprite: mapHandler.getItem(g_master, map.init.entities.player.sprite.path),
-  });
-
-  // Initialize entity manager.
-  entityManager.init();
 
   // --- Shadows ---
 
@@ -449,13 +424,26 @@ function setup(response) {
     g_asset.raw.text.lights,
     g_asset.raw.text.shadowMap,
     g_asset.raw.text.shadowMask,
-    map.cfg.shadowSize ? map.cfg.shadowSize : 64,
+    g_manifest.cfg.shadowSize ? g_map.cfg.shadowSize : 64,
   );
 
+  // --- Entity Manager ---
 
-  // Experimental
-  g_tm = g_asset.tiledMap.tm1;
-  // console.log(g_asset);
+  const gpo = {
+    sprite: assetLoader.getItem(g_asset, g_map.init.entities.player.sprite.path),
+  };
+
+  if (g_tm.objects && g_tm.objects.playerStart) {
+    gpo.cx = g_tm.objects.playerStart[0].x + g_tm.objects.playerStart[0].width / 2;
+    gpo.cy = g_tm.objects.playerStart[0].y + g_tm.objects.playerStart[0].height / 2;
+  }
+
+  // Assign a player a sprite image.
+  entityManager.generatePlayer(gpo);
+
+  // Initialize entity manager.
+  entityManager.init();
+
 
   // --- Spatial Manager ---
 
@@ -468,8 +456,39 @@ function setup(response) {
   });
 
 
-  // Temporary occlusion map from spatial manager.  TODO: remove later.
-  // g_testWOM = spatialManager.getWallOcclusionMap();
+  g_lights = [];
+
+  // index 0 = player light
+  g_lights.push({
+    x: -1,
+    y: -1,
+    color: {
+      r: 255,
+      g: 255,
+      b: 255,
+    },
+  });
+
+  const tmLights = g_tm.objects.light;
+
+  if (tmLights) {
+    for (let i = 0; i < tmLights.length; i += 1) {
+      const light = tmLights[i];
+
+      const po = {
+        x: light.x + light.width / 2,
+        y: light.y + light.height / 2,
+        color: {
+          r: 255,
+          g: 255,
+          b: 255,
+        },
+      };
+
+      g_lights.push(po);
+    }
+  }
+
 
   // --- Start Game ---
 
@@ -492,70 +511,85 @@ function startGame() {
   assetLoader.addProcessor('tiledMap', TiledMap);
   assetLoader.addProcessor('tiledTileset', TiledTileset);
 
-  const canvas = g_canvas;
 
-  // NNEEDS NOT BE HARDCODED!
-  // screenManager.setDimensions(640, 480);
-
-  screenManager.setDimensions(800, 600);
-
-  g_canvas.width = screenManager.getWidth();
-  g_canvas.height = screenManager.getHeight();
-
-  const mel = (evt) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = evt.clientX - rect.left;
-    const y = evt.clientY - rect.top;
-
-    screenManager.press(x, y);
-  };
-
-
-  canvas.addEventListener('mousedown', mel);
-
-  const ctx = canvas.getContext('2d');
-
-  const startScreen = new UIContainer();
-
-  const list1 = new UIList();
-
-  const button1 = new UIButton('Select Map');
-  const button2 = new UIButton('About');
-  const button3 = new UIButton('Exit');
-
-  button1.setWidth(300);
-
-  button1.addEventListener('press', (evt) => {
-    screenManager.selectCard(1);
-    screenManager.render(ctx);
+  loader.load({
+    json: {
+      assets: 'json/assets.json'
+    }
+  }, (response) => {
+    const assets = response.json.assets;
+    assetLoader.load(assets, (response) => {
+      g_asset = response.assets;
+      g_url = response.urls;
+    });
   });
 
-  list1.addChild(button1);
-  list1.addChild(button2);
-  list1.addChild(new UIBlank());
-  list1.addChild(button3);
-
-  startScreen.addChild(list1);
-
-  const mapSelectionScreen = new UIContainer();
-  const list2 = new UIList();
-
-  mapSelectionScreen.addChild(list2);
-
-  screenManager.setLayout('card');
-  screenManager.addChild(startScreen, 0);
-  screenManager.addChild(mapSelectionScreen, 1);
-
-  screenManager.setBackgroundColor('#f0f0f0');
-  screenManager.selectCard(0);
 
   // Event handling
 
   // TODO this should be loaded first
   mapHandler.getManifest((manifest) => {
+    const canvas = g_canvas;
+
+    // NNEEDS NOT BE HARDCODED!
+    // screenManager.setDimensions(640, 480);
+
+    screenManager.setDimensions(manifest.cfg.screen.width, manifest.cfg.screen.height);
+
+    g_canvas.width = screenManager.getWidth();
+    g_canvas.height = screenManager.getHeight();
+
+    const mel = (evt) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top;
+
+      screenManager.press(x, y);
+    };
+
+
+    canvas.addEventListener('mousedown', mel);
+
+    const ctx = canvas.getContext('2d');
+
+    const startScreen = new UIContainer();
+
+    const list1 = new UIList();
+
+    const button1 = new UIButton('Select Map');
+    const button2 = new UIButton('About');
+    const button3 = new UIButton('Exit');
+
+    button1.setWidth(300);
+
+    button1.addEventListener('press', (evt) => {
+      screenManager.selectCard(1);
+      screenManager.render(ctx);
+    });
+
+    list1.addChild(button1);
+    list1.addChild(button2);
+    list1.addChild(new UIBlank());
+    list1.addChild(button3);
+
+    startScreen.addChild(list1);
+
+    const mapSelectionScreen = new UIContainer();
+    const list2 = new UIList();
+
+    mapSelectionScreen.addChild(list2);
+
+    screenManager.setLayout('card');
+    screenManager.addChild(startScreen, 0);
+    screenManager.addChild(mapSelectionScreen, 1);
+
+    screenManager.setBackgroundColor('#f0f0f0');
+    screenManager.selectCard(0);
+
+
     const maps = manifest.maps;
 
-    activeManifest = manifest;
+    g_manifest = manifest;
 
     const w = manifest.cfg.screen.width;
     const h = manifest.cfg.screen.height;
@@ -576,6 +610,7 @@ function startGame() {
 
       // Except that I do want to create a bunch of functions!
       btn.addEventListener('press', (evt) => {
+        console.log('Loading: ' + mapKey);
         canvas.removeEventListener('mousedown', mel);
         mapHandler.openMap(mapKey, setup);
       });
@@ -610,29 +645,3 @@ startGame();
 // =========================
 // DEBUG STUFF, REMOVE LATER
 // =========================
-
-// Eughh...
-const fOcclusionMap = function (canvas) {
-  function occluder(rgba1, rgba2) {
-    const rgbaInit = [rgba1.r, rgba1.g, rgba1.b, rgba1.a];
-    const [r, g, b, a] = rgbaInit;
-
-    const threshold = 1;
-
-    let brightness = 255;
-
-    if (r <= threshold || g <= threshold || b <= threshold) {
-      brightness = 0;
-    }
-
-    const tRgba = [0, 0, 0, brightness];
-    const [tr, tg, tb, ta] = tRgba;
-
-    rgba2.r = tr;
-    rgba2.g = tg;
-    rgba2.b = tb;
-    rgba2.a = ta;
-  }
-
-  return util.forAllPixels(canvas, occluder);
-};

@@ -12,6 +12,10 @@ const mapHandler = (function () {
   // PUBLIC FUNCTIONS
   // ================
 
+
+  const DEBUG = true;
+  const FILENAME = 'assetLoader.js';
+
   function getManifest(callback) {
     loader.load(
       { json: { manifest: 'json/manifest.json' } },
@@ -45,15 +49,8 @@ const mapHandler = (function () {
   }
 
   function openMap(mapName, callback) {
-    getMap(mapName, (map) => {
-      assetLoader.load(map.assets, (response) => {
-        callback({
-          map,
-          assets: response.assets,
-          urls: response.urls,
-        });
-      });
-    });
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Opening map [${mapName}].`);
+    getMap(mapName, callback);
   }
 
   // EXPOSURE
