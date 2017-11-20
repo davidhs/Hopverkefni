@@ -39,7 +39,7 @@ const entityManager = (function () {
 
   // TODO: maybe we want to fire different types of bullets.
   // figure out how to do that.
-  function fireBullet(cx, cy, velX, velY, rotation, damage, through) {
+  function fireBullet(cx, cy, velX, velY, rotation, damage, through, accuracy) {
     const bullet = new Bullet({
       cx,
       cy,
@@ -48,6 +48,7 @@ const entityManager = (function () {
       rotation,
       damage,
       through,
+      accuracy,
     });
     if (DEBUG) console.log(bullet);
     categories.bullets.push(bullet);
