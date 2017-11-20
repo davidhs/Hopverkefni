@@ -12,6 +12,10 @@ const mapHandler = (function () {
   // PUBLIC FUNCTIONS
   // ================
 
+
+  const DEBUG = true;
+  const FILENAME = 'assetLoader.js';
+
   function getManifest(callback) {
     loader.load(
       { json: { manifest: 'json/manifest.json' } },
@@ -44,32 +48,9 @@ const mapHandler = (function () {
     });
   }
 
-
-  function _loadAssets(assets, callback) {
-    if (assets) {
-      assetLoader.load(assets, callback);
-    } else {
-      loader.load({
-        json: {
-          assets: 'json/assets.json'
-        }
-      }, (response) => {
-        const assets = response.json.assets;
-        assetLoader.load(assets, callback);
-      });
-    }
-  }
-
   function openMap(mapName, callback) {
-    getMap(mapName, (map) => {
-      _loadAssets(map.assets, (response) => {
-        callback({
-          map,
-          assets: response.assets,
-          urls: response.urls,
-        });
-      });
-    });
+    if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Opening map [${mapName}].`);
+    getMap(mapName, callback);
   }
 
   // EXPOSURE

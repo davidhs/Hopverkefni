@@ -14,10 +14,6 @@
             "name": "Debug map 1",
             "path": "map4.json"
         },
-        "map2": {
-            "name": "Debug map 2",
-            "path": "map5.json"
-        },
         "map3": {
 
             "name": "TEST MAP",
