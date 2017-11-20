@@ -28,6 +28,121 @@ function log(str) {
 }
 
 
+function getPixel(data, x, y, w, h) {
+
+    const idx = 4 * (x + y * w);
+
+    const r = data[idx];
+    const g = data[idx + 1];
+    const b = data[idx + 2];
+    const a = data[idx + 3];
+
+    return { r, g, b, a };
+}
+
+
+function autocrop(canvas) {
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    const ctx = canvas.getContext('2d');
+
+    const imageData = ctx.getImageData(0, 0, w, h);
+
+    const data = imageData.data;
+
+    let leftPad = 0;
+    let rightPad = 0;
+
+    let topPad = 0;
+    let bottomPad = 0;
+
+    // Left to right
+    for (let x = 0; x < w; x += 1) {
+        // Scan from top to bottom
+        for (let y = 0; y < h; y += 1) {
+            const pixel = getPixel(data, x, y, w, h);
+            if (pixel.a !== 0) {
+                leftPad = x;
+                // Breaking.
+                x = w;
+                y = h;
+            }
+        }
+    }
+
+    // Right to left
+    for (let x = w - 1; x >= 0; x -= 1) {
+        // Scan from top to bottom
+        for (let y = 0; y < h; y += 1) {
+            const pixel = getPixel(data, x, y, w, h);
+            if (pixel.a !== 0) {
+                rightPad = x;
+                // Breaking.
+                x = 0;
+                y = h;
+            }
+        }
+    }
+
+    // Top to bottom
+    for (let y = 0; y < h; y += 1) {
+        // Scan from left to right
+        for (let x = 0; x < w; x += 1) {
+            const pixel = getPixel(data, x, y, w, h);
+            if (pixel.a !== 0) {
+                topPad = y;
+                // Breaking.
+                x = w;
+                y = h;
+            }
+        }
+    }
+
+    // Bottom to top
+    for (let y = h - 1; y >= 0; y -= 1) {
+        // Scan from left to right
+        for (let x = 0; x < w; x += 1) {
+            const pixel = getPixel(data, x, y, w, h);
+            if (pixel.a !== 0) {
+                bottomPad = y;
+                // Breaking.
+                x = w;
+                y = 0;
+            }
+        }
+    }
+
+    const croppedCanvas = document.createElement('canvas');
+
+    const rangeX = Math.max(Math.abs(rightPad - leftPad), 0);
+    const rangeY = Math.max(Math.abs(bottomPad - topPad), 0);
+
+    croppedCanvas.width = rangeX;
+    croppedCanvas.height = rangeY;
+
+
+    const croppedCtx = croppedCanvas.getContext('2d');
+
+    const sx = leftPad;
+    const sy = topPad;
+    const sw = rangeX;
+    const sh = rangeY;
+
+    const dx = 0;
+    const dy = 0;
+    const dw = rangeX;
+    const dh = rangeY;
+
+
+    croppedCtx.drawImage(canvas, sx, sy, sw, sh, dx, dy, dw, dh);
+
+
+    return croppedCanvas;
+}
+
+
 function dataURL2Canvas(cfg) {
 
     const url = cfg.url;
@@ -123,12 +238,17 @@ function doStuff() {
 
     for (let i = 0; i < urls.length; i += 1) {
         const url = urls[i];
-        const canvas = getScaledCanvas(objects[url].canvas, tileWidth, tileHeight);
 
-        // body.appendChild(canvas);
+        const _canvas1 = objects[url].canvas;
+
+        const _canvas2 = autocrop(_canvas1);
+
+        const _canvasFinal = getScaledCanvas(_canvas2, tileWidth, tileHeight);
+
+        // body.appendChild(_canvas2);
 
         list.push({
-            url, canvas
+            url, canvas: _canvasFinal
         });
     }
 
