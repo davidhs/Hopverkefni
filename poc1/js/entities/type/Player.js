@@ -391,6 +391,7 @@ Player.prototype.reloadWeapon = function () {
 Player.prototype.fireBullet = function () {
   if (!g_mouse.isDown) return;
   if (this.bulletCooldown > 0) return;
+
   this.bulletCooldown = ARMORY[weaponID].fireRate;
 
   // TODO: bind in JSON how long each bullet lives
@@ -422,6 +423,7 @@ Player.prototype.fireBullet = function () {
 
     const velX = dX * speed + weaponAccuracy;
     const velY = dY * speed + weaponAccuracy;
+
     entityManager.fireBullet(
       cx,
       cy,
@@ -438,10 +440,16 @@ Player.prototype.fireBullet = function () {
 };
 
 Player.prototype.takeDamage = function (hp) {
-  console.log('Health >> ', this.health);
   this.health -= hp;
 };
 
+Player.prototype.takeLife = function (hp) {
+  if (this.health + hp >= 100) {
+    this.health += hp;
+  } else {
+    this.health = 100;
+  }
+};
 
 Player.prototype.render = function (ctx, cfg) {
   // TODO: maybe we wan't the player to cast shadows,
