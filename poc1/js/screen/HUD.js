@@ -193,7 +193,7 @@ const HUD = (function () {
     ctx.beginPath();
     ctx.font = '16px Georgia';
     ctx.fillStyle = '#00ff00';
-    ctx.fillText('Kills: ' + counter, 50, W_cy + 30);
+    ctx.fillText(`Kills: ${counter}`, 50, W_cy + 30);
   }
 
 
@@ -279,8 +279,7 @@ const HUD = (function () {
     ammo = Player.prototype.getAmmoStatus();
     magazineAmmo = Player.prototype.getMagazineStatus();
     magazineSize = Player.prototype.getMagazineSize();
-    kills = GenericEnemyOne.prototype.getKillCount() +
-    Terrorist.prototype.getKillCount();
+    kills = Player.prototype.getKillCount();
   }
 
   function render(ctx) {

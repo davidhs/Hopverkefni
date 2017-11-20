@@ -73,7 +73,7 @@ const entityManager = (function () {
     categories.explosions.push(new AnimatedImage(descr));
   }
 
-  function generateTerrexplosion(descr){
+  function generateTerrexplosion(descr) {
     descr.sequence = g_asset.sequence.terrorExplosion;
     categories.terrexplotions.push(new AnimatedImage(descr));
   }
@@ -87,13 +87,12 @@ const entityManager = (function () {
     categories.genericEnemiesOne.push(new GenericEnemyOne(cfg));
   }
 
-  function generateTerrorist(cfg){
+  function generateTerrorist(cfg) {
     categories.terrorist.push(new Terrorist(cfg));
   }
 
 
   function update(du) {
-
     for (let i = 0; i < categoryNames.length; i += 1) {
       const categoryName = categoryNames[i];
 
@@ -120,37 +119,30 @@ const entityManager = (function () {
         spawnRegion.init = true;
         spawnRegion.duration = 0;
 
-        console.log(du);
-
-
-
-
         for (let j = 0; j < spawnRegion.quantity; j += 1) {
-
-
           const cx = spawnRegion.x + Math.random() * spawnRegion.w;
           const cy = spawnRegion.y + Math.random() * spawnRegion.h;
 
 
           generateGenericEnemyOne({
-            cx, cy,
-            sprite: g_asset.sprite.donkey
-           });
-          }
-
-          for (let j = 0; j < spawnRegion.quantity; j += 1) {
-
-
-            const cx = spawnRegion.x + Math.random() * spawnRegion.w;
-            const cy = spawnRegion.y + Math.random() * spawnRegion.h;
-
-
-            generateTerrorist({
-              cx, cy,
-              sprite: g_asset.sprite.terrorist
-             });
-            }
+            cx,
+            cy,
+            sprite: g_asset.sprite.donkey,
+          });
         }
+
+        for (let j = 0; j < spawnRegion.quantity; j += 1) {
+          const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+          const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+
+          generateTerrorist({
+            cx,
+            cy,
+            sprite: g_asset.sprite.terrorist,
+          });
+        }
+      }
     }
   }
 
@@ -169,21 +161,6 @@ const entityManager = (function () {
       if (cfg.categoryWhitelist && !cfg.categoryWhitelist.has(categoryName)) {
         continue;
       }
-
-      /*if(categories.terrorist.length < 10){
-        for(var k = 0; k<10; k++){
-          const cx = (Math.random() * g_world.getWidth());
-          const cy = (Math.random() * g_world.getHeight());
-          generateTerrorist({
-            cx,
-            cy,
-            sprite: g_asset.raw.image.terrorist,
-          });
-        }
-      }*/
-
-
-
       const items = categories[categoryName];
 
       for (let j = 0; j < items.length; j += 1) {
@@ -195,7 +172,6 @@ const entityManager = (function () {
   }
 
   function init() {
-
     console.log(g_tm);
 
     // spawn regions
@@ -236,11 +212,11 @@ const entityManager = (function () {
       const cy = g_world.getHeight() * Math.random();
 
       generateGenericEnemyOne({
-        cx, cy,
-        sprite: g_asset.sprite.donkey
-       });
+        cx,
+        cy,
+        sprite: g_asset.sprite.donkey,
+      });
     }
-
   }
 
   function getPlayer() {

@@ -144,11 +144,9 @@ const util = (function () {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(image, 0, 0);
       return canvas;
-    } else {
-      throw Error();
     }
 
-    return null;
+    throw Error();
   };
 
   util.range = (a, b) => {
@@ -206,7 +204,7 @@ const util = (function () {
 
     const ms = d.getMilliseconds();
 
-    const str = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + "." + ms;
+    const str = `${year} - ${month} - ${day} ${hour} : ${minute} : ${second} . ${ms}`;
 
     return str;
   };

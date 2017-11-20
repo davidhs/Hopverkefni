@@ -549,8 +549,6 @@ const spatialManager = (function () {
       const portalSource = g_tm.objects.portalSource;
       const portalTarget = g_tm.objects.portalTarget;
     }
-
-    
   }
 
 

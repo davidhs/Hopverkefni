@@ -146,7 +146,7 @@ function TiledMap(cfg) {
 
     if (object.property) {
       object.properties = {
-        property: [object.property]
+        property: [object.property],
       };
     }
 
@@ -155,13 +155,12 @@ function TiledMap(cfg) {
 
       const _props = object.properties.property;
 
-      
       for (let j = 0; j < _props.length; j += 1) {
         const attr = _props[j]['@attributes'];
 
-        let name = "";
-        let type = "string";
-        let value = "";
+        let name = '';
+        let type = 'string';
+        let value = '';
 
         if (attr.name) name = attr.name;
         if (attr.type) type = attr.type;

@@ -27,7 +27,6 @@ function TextureAtlas(cfg) {
   if (cfg.paths) {
     let paths = cfg.paths;
 
-    
     if (paths.eval) {
       // This is intentional.
       paths = eval(paths.eval);
@@ -61,7 +60,6 @@ function TextureAtlas(cfg) {
 
 
 TextureAtlas.createTextureAtlas = function (images) {
-
   const canvas = document.createElement('canvas');
 
   let maxWidth = 0;
@@ -74,7 +72,7 @@ TextureAtlas.createTextureAtlas = function (images) {
     if (image.height > maxHeight) maxHeight = image.height;
   }
 
-  console.log("Max width and height: ", maxWidth, maxHeight);
+  console.log('Max width and height: ', maxWidth, maxHeight);
 
   return canvas;
 };

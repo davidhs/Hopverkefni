@@ -343,6 +343,11 @@ Player.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
+Player.prototype.updateKills = function () {
+  kills = GenericEnemyOne.prototype.getKillCount() +
+  Terrorist.prototype.getKillCount();
+};
+
 Player.prototype.reloadWeapon = function () {
   if (DEBUG_PLAYER) console.log(`Reload ${armory[selectedWeaponID].ammo} bullets left`);
   if (DEBUG_PLAYER) console.log(`in ${armory[selectedWeaponID].name}`);
@@ -398,6 +403,7 @@ Player.prototype.fireBullet = function () {
     armory[selectedWeaponID].through,
   );
   armory[selectedWeaponID].magazineAmmo -= 1;
+  this.updateKills();
 };
 
 Player.prototype.takeDamage = function () {
