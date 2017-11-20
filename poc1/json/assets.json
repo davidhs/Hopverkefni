@@ -233,6 +233,13 @@
                 "image": "raw.image.bullet"
             }
         },
+        "beam": {
+            "dep": ["raw.image.beam"],
+            "cfg": {
+                "scale": 0.5,
+                "image": "raw.image.beam"
+            }
+        },
         "player": {
             "dep": ["raw.image.rifle"],
             "cfg": {
@@ -400,6 +407,7 @@
                 "cursor": "cursor.png",
                 "rock": "rock.png",
                 "bullet": "bullet.png",
+                "beam": "beam.png",
                 "rifle": "survivor-shoot_rifle_0.png",
                 "blockMap": "block-map.png",
                 "donkey": "notdonkey.png",
@@ -448,6 +456,7 @@
             "prefix": "audio/",
             "paths": {
                 "bulletFire": "bulletFire.ogg",
+                "beamFire": "beamFire.ogg",
                 "bulletZapped": "bulletZapped.ogg",
                 "rockEvapoate": "rockEvaporate.ogg",
                 "rockSplit": "rockSplit.ogg",
