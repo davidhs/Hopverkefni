@@ -433,6 +433,8 @@ function setup(_map) {
   if (g_tm.objects && g_tm.objects.playerStart) {
     gpo.cx = g_tm.objects.playerStart[0].x + g_tm.objects.playerStart[0].width / 2;
     gpo.cy = g_tm.objects.playerStart[0].y + g_tm.objects.playerStart[0].height / 2;
+    gpo.originalX = gpo.cx;
+    gpo.originalY = gpo.cy;
   }
 
   // Assign a player a sprite image.

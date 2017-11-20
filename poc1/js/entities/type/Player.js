@@ -17,8 +17,17 @@ function Player(descriptor) {
   this._soundRunning.loop = true;
 }
 
+
 // Inherit from Entity
 Player.prototype = new Entity();
+
+
+Player.prototype._reset = function () {
+  this.cx = this.originalX;
+  this.cy = this.originalY;
+  this.health = 100;
+  kills = 0;
+};
 
 // Movements
 Player.prototype.KEY_UP = keyCode('W');
@@ -30,6 +39,8 @@ Player.prototype.KEY_RIGHT = keyCode('D');
 Player.prototype.rotation = 0;
 Player.prototype.cx = 180;
 Player.prototype.cy = 180;
+Player.prototype.originalX = 180;
+Player.prototype.originalY = 180;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -441,6 +452,7 @@ Player.prototype.fireBullet = function () {
 
 Player.prototype.takeDamage = function (hp) {
   this.health -= hp;
+  if (this.health < 0) this._reset();
 };
 
 Player.prototype.takeLife = function (hp) {
