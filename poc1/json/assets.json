@@ -110,8 +110,8 @@
             "dep": ["raw.image.terroristExplosion"],
             "cfg": {
                 "image": "raw.image.terroristExplosion",
-                "tileWidth": 100,
-                "tileHeight": 100,
+                "tileWidth": 96,
+                "tileHeight": 96,
                 "nrOfTiles": 15,
                 "primaryDirection": "right",
                 "secondaryDirection": "down"
