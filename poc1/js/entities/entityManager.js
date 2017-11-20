@@ -196,6 +196,18 @@ const entityManager = (function () {
     if (g_tm && g_tm.objects && g_tm.objects.spawnEntity) {
       const spawnEntities = g_tm.objects.spawnEntity;
     }
+
+
+    for (let i = 0; i < 0; i += 1) {
+      const cx = g_world.getWidth() * Math.random();
+      const cy = g_world.getHeight() * Math.random();
+  
+      generateGenericEnemyOne({
+        cx, cy,
+        sprite: g_asset.sprite.donkey
+       });
+    }
+
   }
 
   function getPlayer() {
