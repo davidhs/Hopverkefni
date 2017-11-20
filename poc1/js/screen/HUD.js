@@ -98,7 +98,7 @@ const HUD = (function () {
 
   function resetweapons() {
     for (let i = 0; i < weapons.length; i += 1) {
-      weapons[i].is = false;
+      weapons[i].active = false;
     }
   }
 
@@ -107,11 +107,7 @@ const HUD = (function () {
   // id from Player.js
   function whichWeapon(id) {
     resetweapons();
-    if (id === 0) {
-      weapons[6].is = true;
-    } else {
-      weapons[id - 1].is = true;
-    }
+    weapons[id].active = true;
   }
 
   // =================
@@ -161,6 +157,13 @@ const HUD = (function () {
     ctx.drawImage(heart, x, y, width, size);
   }
 
+  function drawKills(ctx, x, y) {
+    ctx.beginPath();
+    ctx.font = '12px Georgia';
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText("Kills", x, y);
+  }
+
   // draw gun
   function drawWeapon(ctx, x, y) {
     for (let i = 0; i < weapons.length; i += 1) {
@@ -190,7 +193,7 @@ const HUD = (function () {
 
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
     for (let i = 0; i < weapons.length; i += 1) {
-      if (weapons[i].is) {
+      if (weapons[i].active) {
         ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
       } else if (weapons[i].has) {
         ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
@@ -223,7 +226,7 @@ const HUD = (function () {
     draw_healthbar(ctx, xHP, yHP, hpPercLost, widthHP, heightHP);
     }
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
-
+    drawKills(ctx, 50, W_cy + 20);
     drawWeapon(ctx, W_cx, W_cy);
     drawAmmo(ctx, ammo, magazineSize, magazineAmmo);
     drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);

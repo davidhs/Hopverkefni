@@ -81,6 +81,7 @@ Bullet.prototype.update = function (du) {
         cy: this.cy,
       });
       if (this.through === 0) {
+        Player.prototype.kills += 1;
         return entityManager.KILL_ME_NOW;
       }
       this.through -= 1;
