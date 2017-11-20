@@ -80,6 +80,8 @@ GenericEnemyOne.prototype.update = function (du) {
   const _distSq = _dx ** 2 + _dy ** 2;
   const _thresh = (g_viewport.getIW() * 1.5) ** 2;
 
+  this.rotation = Math.atan2(_dy, _dx);
+
   this._distSqPlayer = 0;
 
   if (_distSq > _thresh) {

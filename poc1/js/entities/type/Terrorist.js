@@ -86,6 +86,8 @@ Terrorist.prototype.update = function (du) {
 
 
   this.rotation = Math.atan2(_dy, _dx);
+  console.log(this.rotation);
+
   this._distSqPlayer = 0;
 
   if (_distSq > _thresh) {
