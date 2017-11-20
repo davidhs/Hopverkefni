@@ -38,6 +38,8 @@ Terrorist.prototype.decay = 0.5;
 Terrorist.prototype.attackCooldown = 50;
 Terrorist.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
+let killedTerror = 0;
+
 Terrorist.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);
@@ -204,8 +206,12 @@ Terrorist.prototype.takeBulletHit = function () {
     cx: this.cx,
     cy: this.cy,
   });
-    this.kill();
+  this.kill();
+  killedTerror += 1;
+};
 
+Terrorist.prototype.getKillCount = function () {
+  return killedTerror;
 };
 
 Terrorist.prototype.getRadius = function () {
