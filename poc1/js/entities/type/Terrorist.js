@@ -4,7 +4,7 @@
 /* global g_asset Entity keyCode g_viewport g_mouse g_canvas g_keys
 spatialManager entityManager g_world :true */
 
-function GenericEnemyTwo(cfg) {
+function Terrorist(cfg) {
   // Common inherited setup logic from Entity
   this.setup(cfg);
 
@@ -16,17 +16,17 @@ function GenericEnemyTwo(cfg) {
 }
 
 // Inherit from Entity
-GenericEnemyTwo.prototype = new Entity();
+Terrorist.prototype = new Entity();
 
-GenericEnemyTwo.prototype.rotation = 0;
-GenericEnemyTwo.prototype.cx = 200;
-GenericEnemyTwo.prototype.cy = 200;
-GenericEnemyTwo.prototype.velX = 0;
-GenericEnemyTwo.prototype.velY = 0;
-GenericEnemyTwo.prototype.acceleration = 0.3;
-GenericEnemyTwo.prototype.maxSpeed = 2;
-GenericEnemyTwo.prototype.hp = 1;
-GenericEnemyTwo.prototype.maxHP = 1;
+Terrorist.prototype.rotation = 0;
+Terrorist.prototype.cx = 200;
+Terrorist.prototype.cy = 200;
+Terrorist.prototype.velX = 0;
+Terrorist.prototype.velY = 0;
+Terrorist.prototype.acceleration = 0.3;
+Terrorist.prototype.maxSpeed = 2;
+Terrorist.prototype.hp = 100;
+Terrorist.prototype.maxHP = 100;
 
 
 // When the player stops accelerating then this
@@ -34,10 +34,11 @@ GenericEnemyTwo.prototype.maxHP = 1;
 // value it'll take a while to come to a halt,
 // like slowing down when ice skating, and a higher
 // value will cause it to halt quicker.
-GenericEnemyTwo.prototype.decay = 0.5;
-GenericEnemyTwo.prototype.attackCooldown = 50;
+Terrorist.prototype.decay = 0.5;
+Terrorist.prototype.attackCooldown = 50;
+Terrorist.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
-GenericEnemyTwo.prototype.update = function (du) {
+Terrorist.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);
 
@@ -46,7 +47,10 @@ GenericEnemyTwo.prototype.update = function (du) {
   // Find target
   const player = entityManager.getPlayer();
 
-  const directions = spatialManager.getDirection(this.cx - this.getRadius(), this.cy - this.getRadius());
+  const _gx = this.cx - this.getRadius();
+  const _gy = this.cy - this.getRadius();
+
+  const directions = spatialManager.getDirection(_gx, _gy);
 
   const cx = player.cx;
   const cy = player.cy;
@@ -71,23 +75,14 @@ GenericEnemyTwo.prototype.update = function (du) {
 
   const _dx = player.cx - this.cx;
   const _dy = player.cy - this.cy;
-  const _dist = _dx ** 2 + _dy ** 2;
+  const _distSq = _dx ** 2 + _dy ** 2;
   const _thresh = (g_viewport.getIW() * 1.5) ** 2;
 
-  if (_dist > _thresh) {
+  this._distSqPlayer = 0;
+
+  if (_distSq > _thresh) {
     dx = 0;
     dy = 0;
-  }
-
-  const newdx = Math.abs(player.cx - this.cx);
-  const newdy = Math.abs(player.cy - this.cy);
-  const diff = Math.sqrt((newdx * newdx) + (newdy* newdy));
-  if(diff < 30){
-    entityManager.generateTerrexplotion({
-      cx: this.cx,
-      cy: this.cy,
-    });
-    this.kill();
   }
 
 
@@ -96,10 +91,9 @@ GenericEnemyTwo.prototype.update = function (du) {
 
   const len = Math.sqrt(dx * dx + dy * dy);
 
-  if (len < 100) {
+  if (_distSq < 2 * this.getRadius() ** 2) {
     this.attack(du);
   }
-
 
 
   const udx = dx / len;
@@ -120,17 +114,13 @@ GenericEnemyTwo.prototype.update = function (du) {
 
   const EPS = 0.1;
 
-  if (this._soundRunning) {
-    const pr = Math.max(Math.abs(this.velX) / this.maxSpeed, Math.abs(this.velY) / this.maxSpeed);
-    this._soundRunning.playbackRate = pr;
-    this._soundRunning.volume = pr;
-  }
 
   if (Math.abs(this.velX) > EPS || Math.abs(this.velY) > EPS) {
     // In motion
     if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
     if (!this._soundRunning && len < 2 * g_viewport.getIW()) {
       this._soundRunning = audioManager.play(g_url.audio.running1, true);
+      if (this._soundRunning) this._soundRunning.volume = 0.1;
     }
   }
 
@@ -190,7 +180,7 @@ GenericEnemyTwo.prototype.update = function (du) {
       this._stuck = true;
       this.cx = oldX;
       this.cy = oldY;
-      spatialID = spatialManager.register(this);
+      spatialManager.register(this);
     }
   } else {
     this._stuck = false;
@@ -199,35 +189,30 @@ GenericEnemyTwo.prototype.update = function (du) {
   return 0;
 };
 
-GenericEnemyTwo.prototype.attack = function (du) {
-  this.attackCooldown -= 1.0 * du;
-
-  if (this.attackCooldown > 0) return;
-
-  this.attackCooldown += 50;
-
-  audioManager.play(g_url.audio.clawing);
+Terrorist.prototype.attack = function (du) {
+  entityManager.generateTerrexplosion({
+    cx: this.cx,
+    cy: this.cy,
+  });
+  const player = entityManager.getPlayer();
+  player.takeDamage();
+  this.kill();
 };
 
-GenericEnemyTwo.prototype.takeBulletHit = function () {
-  this.hp -= Player.prototype.getBulletDamage();
-  audioManager.play(g_url.audio.impact1);
-
-  if (this.hp <= 0) {
-    audioManager.play(g_url.audio.dying);
-    entityManager.generateTerrexplotion({
-      cx: this.cx,
-      cy: this.cy,
-    });
+Terrorist.prototype.takeBulletHit = function () {
+  entityManager.generateTerrexplosion({
+    cx: this.cx,
+    cy: this.cy,
+  });
     this.kill();
-  }
+
 };
 
-GenericEnemyTwo.prototype.getRadius = function () {
+Terrorist.prototype.getRadius = function () {
   return (this._scale * this.sprite.width / 2) * 0.9;
 };
 
-GenericEnemyTwo.prototype.render = function (ctx, cfg) {
+Terrorist.prototype.render = function (ctx, cfg) {
   // TODO: maybe we wan't the player to cast shadows,
   // sometimes.
 

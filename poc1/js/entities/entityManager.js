@@ -23,6 +23,7 @@ const entityManager = (function () {
     bullets: [],
     players: [],
     genericEnemiesOne: [],
+    terrorist: [],
     explosions: [],
     terrexplotions: [],
     blood: [],
@@ -72,8 +73,8 @@ const entityManager = (function () {
     categories.explosions.push(new AnimatedImage(descr));
   }
 
-  function generateTerrexplotion(descr) {
-    descr.sequence = g_asset.sequence.explosionSpritesheet5;
+  function generateTerrexplosion(descr){
+    descr.sequence = g_asset.sequence.terrorExplosion;
     categories.terrexplotions.push(new AnimatedImage(descr));
   }
 
@@ -84,6 +85,10 @@ const entityManager = (function () {
 
   function generateGenericEnemyOne(cfg) {
     categories.genericEnemiesOne.push(new GenericEnemyOne(cfg));
+  }
+
+  function generateTerrorist(cfg){
+    categories.terrorist.push(new Terrorist(cfg));
   }
 
 
@@ -122,15 +127,29 @@ const entityManager = (function () {
 
         for (let j = 0; j < spawnRegion.quantity; j += 1) {
 
-    
+
           const cx = spawnRegion.x + Math.random() * spawnRegion.w;
           const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
 
           generateGenericEnemyOne({
             cx, cy,
             sprite: g_asset.sprite.donkey
            });
           }
+
+          for (let j = 0; j < spawnRegion.quantity; j += 1) {
+
+
+            const cx = spawnRegion.x + Math.random() * spawnRegion.w;
+            const cy = spawnRegion.y + Math.random() * spawnRegion.h;
+
+
+            generateTerrorist({
+              cx, cy,
+              sprite: g_asset.sprite.terrorist
+             });
+            }
         }
     }
   }
@@ -150,6 +169,20 @@ const entityManager = (function () {
       if (cfg.categoryWhitelist && !cfg.categoryWhitelist.has(categoryName)) {
         continue;
       }
+
+      /*if(categories.terrorist.length < 10){
+        for(var k = 0; k<10; k++){
+          const cx = (Math.random() * g_world.getWidth());
+          const cy = (Math.random() * g_world.getHeight());
+          generateTerrorist({
+            cx,
+            cy,
+            sprite: g_asset.raw.image.terrorist,
+          });
+        }
+      }*/
+
+
 
       const items = categories[categoryName];
 
@@ -223,13 +256,14 @@ const entityManager = (function () {
     render,
     fireBullet,
     generateExplosion,
-    generateTerrexplotion,
+    generateTerrexplosion,
     generateBlood,
     generatePlayer,
     generateGenericEnemyOne,
+    generateTerrorist,
     OK,
     KILL_ME_NOW,
-    
+
 
     getPos: getPlayer,
     getPlayer,
