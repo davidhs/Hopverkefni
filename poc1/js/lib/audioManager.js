@@ -42,7 +42,6 @@ const audioManager = (function () {
   function mute() {
     if (muted) return;
     muted = true;
-    HUD.isMuted(true);
     console.log('muted');
 
     for (let i = 0, urls = Object.keys(aa); i < urls.length; i += 1) {
@@ -62,7 +61,6 @@ const audioManager = (function () {
   function unmute() {
     if (!muted) return;
     muted = false;
-    HUD.isMuted(false);
     console.log('unmuted');
   }
 

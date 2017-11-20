@@ -39,9 +39,6 @@ const HUD = (function () {
   let n_dw = 0;
   let n_dh = 0;
 
-  // other globals
-  let mute = false;
-
   // create images
   let background = new Image();
   let heart = new Image();
@@ -50,8 +47,6 @@ const HUD = (function () {
   let selected = new Image();
   let line = new Image();
   let guns = new Image();
-  let muted = new Image();
-  let unmute = new Image();
 
 
   // =================
@@ -73,16 +68,6 @@ const HUD = (function () {
   function damage(Damage) {
     if (hpLost < 0) {
       hpLost += Damage;
-    }
-  }
-
-
-  function isMuted(boolean){
-    if(boolean === true){
-      mute = true;
-    }
-    else{
-      mute = false;
     }
   }
 
@@ -171,17 +156,6 @@ const HUD = (function () {
     }
   }
 
-  function drawSoundloco(ctx){
-    if(mute){
-      ctx.beginPath();
-      ctx.drawImage(muted, H_width - 50, H_cy + 20, 30, 30);
-    }
-    else{
-      ctx.beginPath();
-      ctx.drawImage(unmute, H_width - 50, H_cy + 20, 30, 30);
-    }
-  }
-
   // draw the hud bar
   function draw(ctx) {
     ctx.clearRect(H_cx, H_cy, H_width, H_height);
@@ -207,7 +181,6 @@ const HUD = (function () {
     drawWeapon(ctx, W_cx, W_cy);
     drawAmmo(ctx, ammo, magazineSize, magazineAmmo);
     drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);
-    drawSoundloco(ctx);
   }
 
   function update(du) {
@@ -259,8 +232,6 @@ const HUD = (function () {
     selected = g_asset.raw.image.selected;
     line = g_asset.raw.image.Line;
     guns = g_asset.raw.image.guns;
-    unmute = g_asset.raw.image.sound;
-    muted = g_asset.raw.image.nosound;
   }
 
 
@@ -269,6 +240,5 @@ const HUD = (function () {
     update,
     render,
     damage,
-    isMuted,
   };
 }());
