@@ -567,7 +567,7 @@ function startGame() {
     });
 
     list1.addChild(button1);
-    list1.addChild(button2);
+    list1.addChild(new UIBlank());
     list1.addChild(new UIBlank());
     list1.addChild(button3);
 
