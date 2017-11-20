@@ -110,8 +110,8 @@
             "dep": ["raw.image.terroristExplosion"],
             "cfg": {
                 "image": "raw.image.terroristExplosion",
-                "tileWidth": 96,
-                "tileHeight": 96,
+                "tileWidth": 100,
+                "tileHeight": 100,
                 "nrOfTiles": 15,
                 "primaryDirection": "right",
                 "secondaryDirection": "down"
@@ -243,7 +243,7 @@
         "donkey": {
             "dep": ["raw.image.donkey"],
             "cfg": {
-                "scale": 0.2,
+                "scale": 0.15,
                 "image": "raw.image.donkey"
             }
         },
@@ -409,6 +409,7 @@
                 "Line": "line.png",
                 "blood": "blood.png",
                 "minimap3": "minimap3.png",
+                "minimap1": "minimap1.png",
                 "terrorist": "terrorist.png"
 
             }

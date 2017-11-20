@@ -21,16 +21,29 @@ const Minimap = (function () {
   }
 
   let minimap3 = new Image();
+  let minimap1 = new Image();
 
 
   function drawMinimap(ctx) {
-    ctx.beginPath();
-    ctx.drawImage(minimap3, cx, cy, width, height);
-    if (p_cx <= worldwidth && p_cx >= cx && p_cy <= height && p_cy >= 0) {
+    if (g_master.map.name === 'map3') {
       ctx.beginPath();
-      ctx.fillStyle = '#ff0000';
-      ctx.rect(p_cx, p_cy, 10, 10);
-      ctx.fill();
+      ctx.drawImage(minimap3, cx, cy, width, height);
+      if (p_cx <= worldwidth && p_cx >= cx && p_cy <= height && p_cy >= 0) {
+        ctx.beginPath();
+        ctx.fillStyle = '#ff0000';
+        ctx.rect(p_cx, p_cy, 5, 5);
+        ctx.fill();
+      }
+    }
+    else if(g_master.map.name === 'Yet another test! (2)'){
+      ctx.beginPath();
+      ctx.drawImage(minimap1, cx, cy, width, height);
+      if(p_cx <= worldwidth && p_cx >= cx && p_cy <= height && p_cy >= 0){
+        ctx.beginPath();
+        ctx.fillStyle = '#ff0000';
+        ctx.rect(p_cx, p_cy, 5, 5);
+        ctx.fill();
+      }
     }
   }
 
@@ -39,20 +52,19 @@ const Minimap = (function () {
     worldwidth = g_world.getWidth();
 
     worldheight = g_world.getHeight();
-    cx = (g_viewport.getIW() / 4) * 3;
+    cx = (g_viewport.getIW() / 8) * 5;
     cy = 0;
-    width = g_viewport.getIW() / 4;
-    height = g_viewport.getIH() / 4;
+    width = (g_viewport.getIW() / 8) * 3;
+    height = (g_viewport.getIH() / 8) * 3;
   }
 
   function render(ctx) {
-    if (g_master.map.name === 'map3') {
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.4;
       drawMinimap(ctx);
-    }
 
     // get images
     minimap3 = g_asset.raw.image.minimap3;
+    minimap1 = g_asset.raw.image.minimap1;
   }
 
 
