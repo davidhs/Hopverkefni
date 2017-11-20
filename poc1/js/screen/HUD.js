@@ -119,7 +119,9 @@ const HUD = (function () {
   // =================
 
   function damage(Damage) {
-    hpLost += Damage;
+    if(hpLost < 1){
+      hpLost += Damage;
+    }
   }
 
   // =================
@@ -217,8 +219,9 @@ const HUD = (function () {
     */
     const player = entityManager.getPlayer();
     const hpPercLost = 1.0 - player.health / 100;
-
+    if(hpPercLost < 1){
     draw_healthbar(ctx, xHP, yHP, hpPercLost, widthHP, heightHP);
+    }
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
 
     drawWeapon(ctx, W_cx, W_cy);
