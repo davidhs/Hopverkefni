@@ -279,8 +279,7 @@ const HUD = (function () {
     ammo = Player.prototype.getAmmoStatus();
     magazineAmmo = Player.prototype.getMagazineStatus();
     magazineSize = Player.prototype.getMagazineSize();
-    kills = GenericEnemyOne.prototype.getKillCount() +
-    Terrorist.prototype.getKillCount();
+    kills = Player.prototype.getKillCount();
   }
 
   function render(ctx) {
