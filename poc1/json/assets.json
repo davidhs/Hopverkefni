@@ -542,9 +542,7 @@
                 "blood": "blood.png",
                 "minimap3": "minimap3.png",
                 "minimap1": "minimap1.png",
-                "terrorist": "terrorist.png",
-                "sound": "sound.png",
-                "nosound": "nosound.png"
+                "terrorist": "terrorist.png"
 
             }
         }, {
