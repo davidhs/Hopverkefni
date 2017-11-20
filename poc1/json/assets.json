@@ -8,6 +8,17 @@
                 "tileHeight": 16
             }
         },
+        "muzzle": {
+            "dep": ["raw.image.muzzle"],
+            "cfg": {
+                "image": "raw.image.muzzle",
+                "tileWidth": 100,
+                "tileHeight": 100,
+                "nrOfTiles": 5,
+                "primaryDirection": "right",
+                "secondaryDirection": "down"
+            }
+        },
         "blood": {
             "dep": ["raw.image.blood"],
             "cfg": {
@@ -70,6 +81,17 @@
                 "tileWidth": 100,
                 "tileHeight": 100,
                 "nrOfTiles": 49,
+                "primaryDirection": "right",
+                "secondaryDirection": "down"
+            }
+        },
+        "explosionMedic": {
+            "dep": ["raw.image.explosionMedic"],
+            "cfg": {
+                "image": "raw.image.explosionMedic",
+                "tileWidth": 100,
+                "tileHeight": 100,
+                "nrOfTiles": 30,
                 "primaryDirection": "right",
                 "secondaryDirection": "down"
             }
@@ -155,6 +177,15 @@
         }
     },
     "sequence": {
+      "explosionMedic": {
+          "dep": ["textureAtlas.explosionMedic"],
+          "cfg": {
+              "all": true,
+              "primaryDirection": "right",
+              "secondaryDirection": "down",
+              "textureAtlas": "textureAtlas.explosionMedic"
+          }
+      },
         "explosion": {
             "dep": ["textureAtlas.explosion"],
             "cfg": {
@@ -190,6 +221,15 @@
                 "secondaryDirection": "down",
                 "textureAtlas": "textureAtlas.terroristExplosion"
           }
+        },
+        "muzzle": {
+            "dep": ["textureAtlas.muzzle"],
+            "cfg": {
+                "all": true,
+                "primaryDirection": "right",
+                "secondaryDirection": "down",
+                "textureAtlas": "textureAtlas.muzzle"
+            }
         },
         "blood": {
             "dep": ["textureAtlas.blood"],
@@ -240,6 +280,13 @@
                 "image": "raw.image.beam"
             }
         },
+        "muzzle": {
+            "dep": ["raw.image.muzzle"],
+            "cfg": {
+                "scale": 0.5,
+                "image": "raw.image.muzzle"
+            }
+        },
         "player": {
             "dep": ["raw.image.rifle"],
             "cfg": {
@@ -252,6 +299,13 @@
             "cfg": {
                 "scale": 0.2,
                 "image": "raw.image.donkey"
+            }
+        },
+        "medicpack": {
+            "dep": ["raw.image.medicpack"],
+            "cfg": {
+                "scale": 0.8,
+                "image": "raw.image.medicpack"
             }
         },
         "blood": {
@@ -411,6 +465,7 @@
                 "rifle": "survivor-shoot_rifle_0.png",
                 "blockMap": "block-map.png",
                 "donkey": "notdonkey.png",
+                "medicpack": "medic.png",
                 "crosshair": "crosshair.png",
                 "heart": "hp.png",
                 "Hbackground": "HUD.png",
@@ -423,6 +478,8 @@
         }, {
             "prefix": "img/spritesheets/explosions/",
             "paths": {
+                "muzzle": "muzzle.png",
+                "explosionMedic": "explosionMedic.png",
                 "blood": "blood.png",
                 "blood2": "blood2.png",
                 "blood3": "blood3.png",
