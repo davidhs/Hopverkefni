@@ -38,32 +38,17 @@ Player.prototype.RELOAD = keyCode('R');
 Player.prototype.acceleration = 0.5;
 Player.prototype.maxSpeed = 5;
 Player.prototype.health = 100;
+Player.prototype.kills = 0;
 
 const armory = [];
 let selectedWeaponID = 1;
-
-const knife = {
-  name: 'knife',
-  id: 0,
-  auto: true,
-  has: true,
-  damage: 150,
-  accuracy: 1,
-  bulletSpeed: Infinity,
-  fireRate: 5,
-  reloadTime: 0,
-  through: 0,
-  ammo: Infinity,
-  magazineSize: Infinity,
-  magazineAmmo: Infinity,
-};
 
 const pistol = {
   name: 'handgun',
   id: 1,
   auto: false,
   has: true,
-  damage: 24,
+  damage: 27,
   accuracy: 0.8,
   bulletSpeed: 15,
   fireRate: 4,
@@ -145,7 +130,7 @@ const ray = {
   has: true,
   damage: 1000,
   accuracy: 1,
-  bulletSpeed: 100,
+  bulletSpeed: 30,
   fireRate: 1,
   reloadTime: 1,
   through: 0,
@@ -154,7 +139,6 @@ const ray = {
   magazineAmmo: 10,
 };
 
-armory.push(knife);
 armory.push(pistol);
 armory.push(shotgun);
 armory.push(rifle);
@@ -171,8 +155,8 @@ function selectWeapons(evt) {
   for (let i = 0; i < armory.length; i += 1) {
     if (sel === armory[i].id) {
       if (armory[i].has) {
-        selectedWeaponID = armory[i].id;
-        HUD.whichWeapon(armory[i].id);
+        selectedWeaponID = i;
+        HUD.whichWeapon(i);
       }
       break;
     }
@@ -272,7 +256,7 @@ Player.prototype.update = function (du) {
   if (g_mouse.isDown) {
     if (armory[selectedWeaponID].magazineAmmo > 0) {
       this.fireBullet();
-      console.log(`Left in clip: ${armory[selectedWeaponID].magazineAmmo}`);
+      console.log(Player.prototype.kills);
       if (!armory[selectedWeaponID].auto) {
         g_mouse.isDown = false;
       }
@@ -335,6 +319,10 @@ Player.prototype.update = function (du) {
   }
 };
 
+Player.prototype.getSelectedWeapon = function () {
+  return armory[selectedWeaponID].id;
+};
+
 Player.prototype.getAmmoStatus = function () {
   return armory[selectedWeaponID].ammo;
 };
@@ -348,7 +336,6 @@ Player.prototype.getMagazineSize = function () {
 };
 
 Player.prototype.getBulletDamage = function () {
-  console.log(armory[selectedWeaponID].damage);
   return armory[selectedWeaponID].damage;
 };
 
@@ -357,8 +344,6 @@ Player.prototype.getRadius = function () {
 };
 
 Player.prototype.reloadWeapon = function () {
-  console.log(`Reload ${armory[selectedWeaponID].ammo} bullets left`);
-  console.log(`in ${armory[selectedWeaponID].name}`);
   this.bulletCooldown = armory[selectedWeaponID].reloadTime;
   if (armory[selectedWeaponID].ammo >= armory[selectedWeaponID].magazineSize) {
     armory[selectedWeaponID].magazineAmmo = armory[selectedWeaponID].magazineSize;

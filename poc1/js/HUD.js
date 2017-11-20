@@ -31,7 +31,6 @@ const HUD = (function () {
   let g_sh = 0;
 
 
-
   // globals for Numbers
   let n_sx = 0;
   let n_sy = 0;
@@ -47,32 +46,38 @@ const HUD = (function () {
 
 
   // toggle on or off weapon images
-  const Rifle = {
-    is: false,
-    has: true
-   };
-   const Handgun = {
-      is: true,
-      has: true
-    };
+  const Pistol = {
+    id: 1,
+    active: false,
+    has: true,
+  };
   const Shotgun = {
-     is: false,
-     has: true
-   };
+    id: 2,
+    active: true,
+    has: true,
+  };
+  const Rifle = {
+    id: 3,
+    active: false,
+    has: true,
+  };
   const Sniper = {
-     is: false,
-     has: true
-   };
-   const Smg = {
-      is: false,
-      has: true
-    };
-    const Raygun = {
-       is: false,
-       has: true
-     };
+    id: 4,
+    active: false,
+    has: true,
+  };
+  const Smg = {
+    id: 5,
+    active: false,
+    has: true,
+  };
+  const Raygun = {
+    id: 6,
+    active: false,
+    has: true,
+  };
 
-  weapons.push(Handgun);
+  weapons.push(Pistol);
   weapons.push(Shotgun);
   weapons.push(Rifle);
   weapons.push(Sniper);
@@ -99,7 +104,7 @@ const HUD = (function () {
 
   function resetweapons() {
     for (let i = 0; i < weapons.length; i += 1) {
-      weapons[i].is = false;
+      weapons[i].active = false;
     }
   }
 
@@ -108,18 +113,14 @@ const HUD = (function () {
   // id from Player.js
   function whichWeapon(id) {
     resetweapons();
-    if (id === 0) {
-      weapons[6].is = true;
-    } else {
-      weapons[id - 1].is = true;
-    }
+    weapons[id].active = true;
   }
 
   // =================
   // Hp handler
   // =================
 
-  function damage(Damage){
+  function damage(Damage) {
     hpLost += Damage;
   }
 
@@ -160,10 +161,17 @@ const HUD = (function () {
     ctx.drawImage(heart, x, y, width, size);
   }
 
+  function drawKills(ctx, x, y) {
+    ctx.beginPath();
+    ctx.font = '12px Georgia';
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText("Kills", x, y);
+  }
+
   // draw gun
   function drawWeapon(ctx, x, y) {
-    for(var i = 0; i<weapons.length; i++){
-      if(weapons[i].is){
+    for (let i = 0; i < weapons.length; i += 1) {
+      if (weapons[i].active) {
         ctx.drawImage(guns, g_sx, g_sy, g_sw, g_sh, x, y, 100, 50);
       }
       g_sx += g_sw;
@@ -189,7 +197,7 @@ const HUD = (function () {
 
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
     for (let i = 0; i < weapons.length; i += 1) {
-      if (weapons[i].is) {
+      if (weapons[i].active) {
         ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
       } else if (weapons[i].has) {
         ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
@@ -208,14 +216,14 @@ const HUD = (function () {
     ctx.drawImage(
       background,
       0, 0, background.width, background.height,
-      H_cx, H_cy, H_width, H_height
+      H_cx, H_cy, H_width, H_height,
     );
     // draw healthbar
     if (hpLost < 1) {
       draw_healthbar(ctx, xHP, yHP, hpLost, widthHP, heightHP);
     }
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
-
+    drawKills(ctx, 50, W_cy + 20);
     drawWeapon(ctx, W_cx, W_cy);
     drawAmmo(ctx, ammo, magazineSize, magazineAmmo);
     drawNumber(ctx, n_sx, n_sy, n_sw, n_sh, n_dx, n_dy, n_dw, n_dh);
@@ -245,7 +253,7 @@ const HUD = (function () {
     W_cy = H_cy + 35;
     g_sx = 0;
     g_sy = 0;
-    g_sw = guns.width/6;
+    g_sw = guns.width / 6;
     g_sh = guns.height;
 
     // update Numbers
@@ -253,12 +261,12 @@ const HUD = (function () {
     n_sy = 0;
     n_sw = exists.width / 8;
     n_sh = exists.height;
-    n_dx = (g_viewport.getIW()/10)*4;
+    n_dx = (g_viewport.getIW() / 10) * 4;
     n_dy = H_cy;
     n_dw = 30;
     n_dh = 30;
 
-    //update ammo
+    // update ammo
     ammo = Player.prototype.getAmmoStatus();
     magazineAmmo = Player.prototype.getMagazineStatus();
     magazineSize = Player.prototype.getMagazineSize();
@@ -282,6 +290,6 @@ const HUD = (function () {
     whichWeapon,
     update,
     render,
-    damage
+    damage,
   };
 }());
