@@ -40,7 +40,7 @@ Player.prototype.maxSpeed = 5;
 Player.prototype.health = 100;
 
 const ARMORY = [];
-let weaponID = 1;
+let weaponID = 0;
 let kills = 0;
 
 const PISTOL = {
@@ -49,9 +49,10 @@ const PISTOL = {
   auto: false,
   pickedUp: true,
   damage: 27,
-  accuracy: 10,
-  bulletSpeed: 15,
-  fireRate: 4,
+  accuracy: 2,
+  numBullets: 1,
+  bulletSpeed: 14,
+  fireRate: 5,
   reloadTime: 60,
   through: 0,
   ammo: 96,
@@ -64,12 +65,13 @@ const SHOTGUN = {
   id: 2,
   auto: false,
   pickedUp: true,
-  damage: 300,
-  accuracy: 40,
-  bulletSpeed: 10,
+  damage: 20,
+  accuracy: 7,
+  numBullets: 10,
+  bulletSpeed: 15,
   fireRate: 10,
   reloadTime: 180,
-  through: 3,
+  through: 0,
   ammo: 40,
   magazineSize: 8,
   magazineAmmo: 8,
@@ -81,8 +83,9 @@ const RIFLE = {
   auto: true,
   pickedUp: true,
   damage: 86,
-  accuracy: 20,
-  bulletSpeed: 20,
+  accuracy: 2,
+  numBullets: 1,
+  bulletSpeed: 16,
   fireRate: 3,
   reloadTime: 120,
   through: 2,
@@ -98,8 +101,9 @@ const SNIPER = {
   pickedUp: true,
   damage: 300,
   accuracy: 0,
-  bulletSpeed: 40,
-  fireRate: 1,
+  numBullets: 1,
+  bulletSpeed: 20,
+  fireRate: 15,
   reloadTime: 120,
   through: 5,
   ammo: 30,
@@ -113,9 +117,10 @@ const MG = {
   auto: true,
   pickedUp: true,
   damage: 70,
-  accuracy: 30,
-  bulletSpeed: 20,
-  fireRate: 8,
+  accuracy: 3,
+  numBullets: 1,
+  bulletSpeed: 14,
+  fireRate: 2,
   reloadTime: 300,
   through: 1,
   ammo: 300,
@@ -130,8 +135,9 @@ const RAY = {
   pickedUp: false,
   damage: 1000,
   accuracy: 0,
-  bulletSpeed: 30,
-  fireRate: 1,
+  numBullets: 1,
+  bulletSpeed: 20,
+  fireRate: 10,
   reloadTime: 1,
   through: 0,
   ammo: 30,
@@ -390,37 +396,36 @@ Player.prototype.fireBullet = function () {
   const dY = -Math.cos(angle);
 
   const launchDist = this.getRadius();
+  console.log(launchDist);
 
   const relVel = Math.max(this.velX, this.velY);
 
   const speed = ARMORY[weaponID].bulletSpeed;
 
   const red = 0.01;
-  const rannn = Math.random() * (ARMORY[weaponID].accuracy) - ARMORY[weaponID].accuracy / 2;
 
-  const cx = this.cx + dX * launchDist + rannn;
-  const cy = this.cy + dY * launchDist + rannn;
-
-  const velX = dX * speed;
-  const velY = dY * speed;
+  const cx = this.cx + dX * launchDist;
+  const cy = this.cy + dY * launchDist;
 
   const rotation = this.rotation;
 
-  console.log(`rotation: ${rotation}`);
+  for (let i = 0; i < ARMORY[weaponID].numBullets; i += 1) {
+    const weaponAccuracy = Math.random() *
+    (ARMORY[weaponID].accuracy) -
+    ARMORY[weaponID].accuracy / 2;
 
-  console.log('');
-
-  // TODO: Do this a bit different.
-  entityManager.fireBullet(
-    cx,
-    cy,
-    velX,
-    velY,
-    rotation,
-    ARMORY[weaponID].damage,
-    ARMORY[weaponID].through,
-    ARMORY[weaponID].accuracy,
-  );
+    const velX = dX * speed + weaponAccuracy;
+    const velY = dY * speed + weaponAccuracy;
+    entityManager.fireBullet(
+      cx,
+      cy,
+      velX,
+      velY,
+      rotation,
+      ARMORY[weaponID].damage,
+      ARMORY[weaponID].through,
+    );
+  }
   ARMORY[weaponID].magazineAmmo -= 1;
   this.updateKills();
 };
