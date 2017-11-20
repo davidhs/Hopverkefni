@@ -106,6 +106,17 @@
                 "tileHeight": 16
             }
         },
+        "terroristExplosion":{
+            "dep": ["raw.image.terroristExplosion"],
+            "cfg": {
+                "image": "raw.image.terroristExplosion",
+                "tileWidth": 100,
+                "tileHeight": 100,
+                "nrOfTiles": 15,
+                "primaryDirection": "right",
+                "secondaryDirection": "down"
+            }
+        },
         "spritesheet1": {
             "dep": ["raw.image.tileset3"],
             "cfg": {
@@ -170,6 +181,15 @@
                 "secondaryDirection": "down",
                 "textureAtlas": "textureAtlas.explosion3"
             }
+        },
+        "terrorExplosion":{
+            "dep": ["textureAtlas.terroristExplosion"],
+            "cfg": {
+                "all": true,
+                "primaryDirection": "right",
+                "secondaryDirection": "down",
+                "textureAtlas": "textureAtlas.terroristExplosion"
+          }
         },
         "blood": {
             "dep": ["textureAtlas.blood"],
@@ -404,7 +424,8 @@
                 "explosionSpritesheet2": "explosionSpritesheet2.png",
                 "explosionSpritesheet3": "explosionSpritesheet3.png",
                 "explosionSpritesheet5": "explosionSpritesheet5.png",
-                "explosionSpritesheet6": "explosionSpritesheet6.png"
+                "explosionSpritesheet6": "explosionSpritesheet6.png",
+                "terroristExplosion": "terroristExplosion.png"
             }
         }, {
             "prefix": "img/spritesheets/",

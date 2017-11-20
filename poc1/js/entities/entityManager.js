@@ -234,7 +234,7 @@ const entityManager = (function () {
     for (let i = 0; i < 0; i += 1) {
       const cx = g_world.getWidth() * Math.random();
       const cy = g_world.getHeight() * Math.random();
-  
+
       generateGenericEnemyOne({
         cx, cy,
         sprite: g_asset.sprite.donkey
