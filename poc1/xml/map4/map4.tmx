@@ -119,11 +119,11 @@
 </data>
  </layer>
  <objectgroup name="Object Layer 1">
-  <object id="1" type="spawnRegion" x="317.333" y="836" width="521.333" height="164">
+  <object id="1" type="spawnRegion" x="210.666" y="726.667" width="521.333" height="164">
    <properties>
     <property name="quantity" type="int" value="5"/>
     <property name="respawn" type="bool" value="true"/>
-    <property name="type" value="Terrorist"/>
+    <property name="type" value="terrorist"/>
    </properties>
   </object>
  </objectgroup>
