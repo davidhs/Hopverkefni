@@ -20,7 +20,7 @@ const HUD = (function () {
   // globals for WEAPONS
   let W_cx = 0;
   let W_cy = 0;
-  const WEAPONS = [];
+  const WEAPONS = Player.prototype.getArmory();
   let ammo = 0;
   let magazineSize = 0;
   let magazineAmmo = 0;
@@ -45,46 +45,6 @@ const HUD = (function () {
   const KEY_HPTEST = keyCode('G');
   let kills = 0;
 
-  // toggle on or off weapon images
-  const PISTOL = {
-    id: 1,
-    isActive: true,
-    has: true,
-  };
-  const SHOTGUN = {
-    id: 2,
-    isActive: false,
-    has: true,
-  };
-  const RIFLE = {
-    id: 3,
-    isActive: false,
-    has: true,
-  };
-  const SNIPER = {
-    id: 4,
-    isActive: false,
-    has: true,
-  };
-  const MG = {
-    id: 5,
-    isActive: false,
-    has: true,
-  };
-  const RAY = {
-    id: 6,
-    isActive: false,
-    has: false,
-  };
-
-  WEAPONS.push(PISTOL);
-  WEAPONS.push(SHOTGUN);
-  WEAPONS.push(RIFLE);
-  WEAPONS.push(SNIPER);
-  WEAPONS.push(MG);
-  WEAPONS.push(RAY);
-
-
   // create images
   let background = new Image();
   let heart = new Image();
@@ -99,21 +59,12 @@ const HUD = (function () {
   // Weapon_handler
   // =================
 
-  // reset weapon values to false so there
-  // won't be 2 guns true at the same time
-
-  function resetWEAPONS() {
+  // id from Player.js
+  function whichWeapon(id) {
     for (let i = 0; i < WEAPONS.length; i += 1) {
       WEAPONS[i].isActive = false;
     }
-  }
-
-  // id from Player.js
-  function whichWeapon(id) {
-    if (WEAPONS[id].has) {
-      resetWEAPONS();
-      WEAPONS[id].isActive = true;
-    }
+    WEAPONS[id].isActive = true;
   }
 
   // =================
@@ -121,7 +72,7 @@ const HUD = (function () {
   // =================
 
   function damage(Damage) {
-    if (hpLost < 1) {
+    if (hpLost < 0) {
       hpLost += Damage;
     }
   }
@@ -201,7 +152,7 @@ const HUD = (function () {
     for (let i = 0; i < WEAPONS.length; i += 1) {
       if (WEAPONS[i].isActive) {
         ctx.drawImage(selected, sx, sy, sw, sh, dx, dy, dw, dh);
-      } else if (WEAPONS[i].has) {
+      } else if (WEAPONS[i].pickedUp) {
         ctx.drawImage(exists, sx, sy, sw, sh, dx, dy, dw, dh);
       } else {
         ctx.drawImage(notexists, sx, sy, sw, sh, dx, dy, dw, dh);
