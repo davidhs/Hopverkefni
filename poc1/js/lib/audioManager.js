@@ -26,6 +26,19 @@ const audioManager = (function () {
 
   let muted = false;
 
+  const audioCtx = new AudioContext();
+
+
+// Create a compressor node
+// totaly not stolen
+var compressor = audioCtx.createDynamicsCompressor();
+compressor.threshold.value = -50;
+compressor.knee.value = 40;
+compressor.ratio.value = 12;
+compressor.attack.value = 0;
+compressor.release.value = 0.25;
+compressor.connect(audioCtx.destination);
+
   function mute() {
     if (muted) return;
     muted = true;
@@ -51,11 +64,9 @@ const audioManager = (function () {
     console.log('unmuted');
   }
 
+  function play(url) {
+    let buffer;
 
-  // Audio files are initially loaded by the asset manager.
-  // It appears by doing so the audio file is cached, so `new Audio(...)'
-  // appears to play the cached audio file.
-  function play(url, loop) {
     if (g_muted) {
       if (!muted) mute();
       return null;
@@ -63,51 +74,24 @@ const audioManager = (function () {
 
     if (muted) unmute();
 
-    loop = (typeof loop !== 'undefined') ? loop : false;
-
-    if (!aa[url]) {
-      const audio = new Audio(url);
-      aa[url] = {
-        idx: 0,
-        list: [audio],
-      };
-    }
-
-    let handle = null;
-
-    // Search for available audio
-    let found = false;
-    for (let i = 0; i < aa[url].list.length && !found; i += 1) {
-      if (!found && aa[url].list[i].paused) {
-        found = true;
-        const audio = aa[url].list[i];
-        handle = audio;
-
-        audio.playbackRate = 1.0;
-        audio.volume = 0.5;
-        audio.currentTime = 0;
-        audio.loop = loop;
-        audio.play();
+    // Fix this.
+    const audioNames = Object.keys(g_url.audio);
+    for (let i = 0; i < audioNames.length; i += 1) {
+      const audioName = audioNames[i];
+      const _url = g_url.audio[audioName]
+      if (_url === url) {
+        buffer = g_asset.raw.audio[audioName];
+        break;
       }
     }
 
-    const HARD_LIMIT = 8;
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    //source.connect(audioCtx.destination);
+    source.connect(compressor);
+    source.start();
 
-    // && aa[url].list.length <= 16
-
-    if (!found && aa[url].list.length < HARD_LIMIT) {
-      for (let i = 0; i < HARD_LIMIT; i += 1) {
-        const audio = new Audio(url);
-        aa[url].list.push(audio);
-      }
-
-
-      // TODO sound is too loud
-      // handle = audio;
-      // audio.play();
-    }
-
-    return handle;
+    return source;
   }
 
 
@@ -115,5 +99,6 @@ const audioManager = (function () {
   return {
     play,
     debug: aa,
+    ctx: audioCtx
   };
 }());

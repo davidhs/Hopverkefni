@@ -246,11 +246,6 @@ Player.prototype.update = function (du) {
   // AUDIO
   // =====
 
-  if (this._soundRunning) {
-    const pr = Math.max(Math.abs(this.velX) / this.maxSpeed, Math.abs(this.velY) / this.maxSpeed);
-    this._soundRunning.playbackRate = pr;
-  }
-
   if (Math.abs(this.velX) > EPS || Math.abs(this.velY) > EPS) {
     // In motion
     if (DEBUG_PLAYER) console.log('Player location: ', this.cx / 32, this.cy / 32);
