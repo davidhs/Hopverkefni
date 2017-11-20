@@ -4,11 +4,6 @@ function TiledMap(cfg) {
   const map = util.xml2json(cfg.map).map;
   const tilesets = cfg.tilesets;
 
-
-  // console.log(map);
-  // console.log(tilesets);
-
-
   // Safety
   for (let i = 0; i < tilesets.length; i += 1) {
     if (typeof tilesets[i] === 'string') {

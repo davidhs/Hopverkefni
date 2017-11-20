@@ -135,6 +135,7 @@ const MG = {
 
 const RAY = {
   name: 'ray',
+  type: 'beam',
   id: 6,
   auto: false,
   pickedUp: true,
@@ -429,6 +430,7 @@ Player.prototype.fireBullet = function () {
       rotation,
       ARMORY[weaponID].damage,
       ARMORY[weaponID].through,
+      ARMORY[weaponID].type,
     );
   }
   ARMORY[weaponID].magazineAmmo -= 1;
