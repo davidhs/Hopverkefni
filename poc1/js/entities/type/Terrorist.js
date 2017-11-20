@@ -25,8 +25,8 @@ Terrorist.prototype.velX = 0;
 Terrorist.prototype.velY = 0;
 Terrorist.prototype.acceleration = 0.3;
 Terrorist.prototype.maxSpeed = 2;
-Terrorist.prototype.hp = 100;
-Terrorist.prototype.maxHP = 100;
+Terrorist.prototype.hp = 200;
+Terrorist.prototype.maxHP = 200;
 
 
 // When the player stops accelerating then this
@@ -68,8 +68,6 @@ Terrorist.prototype.update = function (du) {
 
   const pdx = Math.sign(player.cx - this.cx);
   const pdy = Math.sign(player.cy - this.cy);
-
-
 
 
   if (this._stuck || dx === 0 && dy === 0) {
@@ -205,7 +203,7 @@ Terrorist.prototype.attack = function (du) {
     cy: this.cy,
   });
   const player = entityManager.getPlayer();
-  player.takeDamage();
+  player.takeDamage(30);
   this.kill();
 };
 
@@ -234,6 +232,6 @@ Terrorist.prototype.render = function (ctx, cfg) {
   const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   this.sprite.scale = this._scale;
-  this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation , cfg);
+  this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
   this.sprite.scale = origScale;
 };

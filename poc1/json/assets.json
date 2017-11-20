@@ -243,7 +243,7 @@
         "donkey": {
             "dep": ["raw.image.donkey"],
             "cfg": {
-                "scale": 0.15,
+                "scale": 0.2,
                 "image": "raw.image.donkey"
             }
         },
