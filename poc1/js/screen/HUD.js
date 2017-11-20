@@ -193,7 +193,7 @@ const HUD = (function () {
     ctx.beginPath();
     ctx.font = '16px Georgia';
     ctx.fillStyle = '#00ff00';
-    ctx.fillText('Kills: ' + counter, 50, W_cy + 30);
+    ctx.fillText(`Kills: ${counter}`, 50, W_cy + 30);
   }
 
 

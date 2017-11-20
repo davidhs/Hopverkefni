@@ -78,7 +78,7 @@ const audioManager = (function () {
     const audioNames = Object.keys(g_url.audio);
     for (let i = 0; i < audioNames.length; i += 1) {
       const audioName = audioNames[i];
-      const _url = g_url.audio[audioName]
+      const _url = g_url.audio[audioName];
       if (_url === url) {
         buffer = g_asset.raw.audio[audioName];
         break;

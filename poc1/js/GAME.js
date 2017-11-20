@@ -323,8 +323,7 @@ function renderSimulation(ctx) {
 
 
 function setup(_map) {
-
-  console.log("Loading...");
+  console.log('Loading..');
 
   g_map = _map;
 
@@ -334,7 +333,7 @@ function setup(_map) {
   };
 
   // --- Tiled Map ---
-  
+
   g_tm = assetLoader.getItem(g_asset, g_map.cfg.tiledMap);
 
   const width = g_tm.tileWidth * g_tm.widthInTiles;
@@ -369,7 +368,6 @@ function setup(_map) {
   g_viewport.setOH(viewportHeight);
 
 
-
   // Set canvas width and heights.
   g_background.width = g_canvas.width;
   g_background.height = g_canvas.height;
@@ -400,7 +398,6 @@ function setup(_map) {
 
   g_hudbar.width = g_canvas.width;
   g_hudbar.height = g_canvas.height;
-
 
 
   // --- Mouse ---
@@ -514,8 +511,8 @@ function startGame() {
 
   loader.load({
     json: {
-      assets: 'json/assets.json'
-    }
+      assets: 'json/assets.json',
+    },
   }, (response) => {
     const assets = response.json.assets;
     assetLoader.load(assets, (response) => {
@@ -610,7 +607,7 @@ function startGame() {
 
       // Except that I do want to create a bunch of functions!
       btn.addEventListener('press', (evt) => {
-        console.log('Loading: ' + mapKey);
+        console.log(`Loading: ${mapKey}`);
         canvas.removeEventListener('mousedown', mel);
         mapHandler.openMap(mapKey, setup);
       });
