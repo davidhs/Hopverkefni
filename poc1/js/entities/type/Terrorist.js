@@ -52,6 +52,7 @@ Terrorist.prototype.update = function (du) {
   const _gx = this.cx - this.getRadius();
   const _gy = this.cy - this.getRadius();
 
+
   const directions = spatialManager.getDirection(_gx, _gy);
 
   const cx = player.cx;
@@ -68,6 +69,9 @@ Terrorist.prototype.update = function (du) {
   const pdx = Math.sign(player.cx - this.cx);
   const pdy = Math.sign(player.cy - this.cy);
 
+
+
+
   if (this._stuck || dx === 0 && dy === 0) {
     // dx = pdx;
     // dy = pdy;
@@ -80,6 +84,8 @@ Terrorist.prototype.update = function (du) {
   const _distSq = _dx ** 2 + _dy ** 2;
   const _thresh = (g_viewport.getIW() * 1.5) ** 2;
 
+
+  this.rotation = Math.atan2(_dy, _dx);
   this._distSqPlayer = 0;
 
   if (_distSq > _thresh) {
@@ -226,6 +232,6 @@ Terrorist.prototype.render = function (ctx, cfg) {
   const origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   this.sprite.scale = this._scale;
-  this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation, cfg);
+  this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation , cfg);
   this.sprite.scale = origScale;
 };
