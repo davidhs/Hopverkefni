@@ -73,9 +73,23 @@ const loader = (function () {
   // Process audio, most likely not needed.
   processor.audio = function (handle, url, callback) {
     if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Processing audio: ${url}`);
-    const audio = new Audio(url, 'audio');
+    // const audio = new Audio(url, 'audio');
     if (DEBUG) console.log(`${util.timestamp()}: ${FILENAME}: Done processing audio: ${url}`);
-    callback(audio, 'audio', handle, url);
+    // callback(audio, 'audio', handle, url);
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('GET', url, true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function (evt) {
+      const req = evt.target;
+      audioManager.ctx.decodeAudioData(req.response, function (buffer)
+      {
+        callback(buffer, 'audio', handle, url);
+      });
+      
+    };
+    xhr.send();
   };
 
   // Processes text
