@@ -5,8 +5,8 @@ function TiledMap(cfg) {
   const tilesets = cfg.tilesets;
 
 
-  console.log(map);
-  console.log(tilesets);
+  // console.log(map);
+  // console.log(tilesets);
 
 
   // Safety

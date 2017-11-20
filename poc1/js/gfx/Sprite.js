@@ -90,22 +90,23 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation, cfg) {
   ctx.rotate(rotation);
   ctx.scale(this.scale, this.scale);
 
+  
+
   // drawImage expects "top-left" coords, so we offset our destination
   // coords accordingly, to draw our sprite centred at the origin
   if (cfg.occlusion) {
     const occlusion = this._getOcclusion();
     ctx.drawImage(occlusion, -w / 2, -h / 2);
+  } else if (this.states[this.state].update) {
+    const state = this.states[this.state];
+    state.cx = this.cx;
+    state.cy = this.cy;
+    if (cfg.flip) ctx.scale(-1, 1);
+    state.render(ctx);
   } else {
-    // Is this a static image or animation?
-    if (this.states[this.state].update) {
-      const state = this.states[this.state];
-      state.cx = this.cx;
-      state.cy = this.cy;
-      state.render(ctx);
-    } else {
-      const image = this.states[this.state];
-      ctx.drawImage(image, -w / 2, -h / 2);
-    }
+    const image = this.states[this.state];
+    if (cfg.flip) ctx.scale(-1, 1);
+    ctx.drawImage(image, -w / 2, -h / 2);
   }
 
 
