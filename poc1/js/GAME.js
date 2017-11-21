@@ -18,6 +18,7 @@ let g_asset = {}; // Assets are loaded here.
 let g_manifest;
 
 let audioBuffer;
+const menuAudio = new Audio('audio/menu.ogg');
 
 const screenManager = new UIFrame();
 
@@ -574,13 +575,14 @@ function startGame() {
 
     const list1 = new UIList();
 
-    const button1 = new UIButton('Select Map');
-    const button2 = new UIButton('About');
-    const button3 = new UIButton('Exit');
+    const button1 = new UIButton(' Select Map ');
+    const button2 = new UIButton(' About ');
+    const button3 = new UIButton(' Exit ');
 
     button1.setWidth(300);
 
     button1.addEventListener('press', (evt) => {
+      menuAudio.play();
       screenManager.selectCard(1);
       screenManager.render(ctx);
     });
@@ -589,6 +591,9 @@ function startGame() {
     list1.addChild(new UIBlank());
     list1.addChild(new UIBlank());
     list1.addChild(button3);
+    button3.addEventListener('press', (evt) => {
+      window.location = 'http://deaz.dk/';
+    });
 
     startScreen.addChild(list1);
 
@@ -628,6 +633,7 @@ function startGame() {
 
       // Except that I do want to create a bunch of functions!
       btn.addEventListener('press', (evt) => {
+        menuAudio.play();
         console.log(`Loading: ${mapKey}`);
         canvas.removeEventListener('mousedown', mel);
         mapHandler.openMap(mapKey, setup);
@@ -635,10 +641,11 @@ function startGame() {
       list2.addChild(btn);
     }
 
-    const button7 = new UIButton('Back');
+    const button7 = new UIButton(' Back ');
     list2.addChild(new UIBlank());
     list2.addChild(button7);
     button7.addEventListener('press', (evt) => {
+      menuAudio.play();
       screenManager.selectCard(0);
       screenManager.render(ctx);
     });
