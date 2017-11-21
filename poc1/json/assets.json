@@ -592,7 +592,8 @@
                 "running1": "running1.ogg",
                 "impact1": "impact1.ogg",
                 "explosion1": "explosion.ogg",
-                "clawing": "clawing.ogg"
+                "clawing": "clawing.ogg",
+                "ambiance": "ambiance.ogg"
             }
         }],
         "text": [{
