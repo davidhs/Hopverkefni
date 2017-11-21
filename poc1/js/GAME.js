@@ -17,6 +17,8 @@ let g_asset = {}; // Assets are loaded here.
 // Which map to open.
 let g_manifest;
 
+let audioBuffer;
+
 const screenManager = new UIFrame();
 
 let g_lights = [];
@@ -76,6 +78,21 @@ function gatherInputs() {}
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+
+  if (!audioBuffer) {
+    if (!g_muted) {
+      audioBuffer = audioManager.play(g_url.audio.ambiance);
+      audioBuffer.loop = true;
+    }
+  }
+
+  if (g_muted) {
+    if (audioBuffer) {
+      audioBuffer.stop();
+      audioBuffer = null;
+    }
+  }
+
   spatialManager.update(du);
 
   // Update entities.
@@ -487,6 +504,8 @@ function setup(_map) {
       g_lights.push(po);
     }
   }
+
+  console.log(g_url);
 
 
   // --- Start Game ---

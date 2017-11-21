@@ -99,5 +99,8 @@ const audioManager = (function () {
     play,
     debug: aa,
     ctx: audioCtx,
+    isMuted: () => {
+      return muted;
+    }
   };
 }());
