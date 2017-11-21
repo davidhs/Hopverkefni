@@ -7,3 +7,11 @@ http://www.freepngimg.com/thumb/bullets/1-bullets-png-image-thumb.png
 https://draeton.github.io/stitches/
 http://explosiongenerator.com/
 https://textcraft.net/
+Quake Audio Files
+
+Tools
+- Atom
+- Audacity
+- Photoshop
+- Git
+- Tiled
