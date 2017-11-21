@@ -40,6 +40,10 @@ Terrorist.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
 let killedTerror = 0;
 
+Terrorist.prototype._reset = function () {
+  killedTerror = 0;
+};
+
 Terrorist.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);

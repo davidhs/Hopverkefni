@@ -40,6 +40,10 @@ GenericEnemyOne.prototype._distSqPlayer = Number.POSITIVE_INFINITY;
 
 let killedGeneric = 0;
 
+GenericEnemyOne.prototype._reset = function () {
+  killedGeneric = 0;
+};
+
 GenericEnemyOne.prototype.update = function (du) {
   // Unregister from spatial manager.
   spatialManager.unregister(this);

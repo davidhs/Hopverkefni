@@ -27,6 +27,8 @@ Player.prototype._reset = function () {
   this.cy = this.originalY;
   this.health = 100;
   kills = 0;
+  GenericEnemyOne.prototype._reset();
+  Terrorist.prototype._reset();
 };
 
 // Movements
@@ -458,7 +460,9 @@ Player.prototype.fireBullet = function () {
 
 Player.prototype.takeDamage = function (hp) {
   this.health -= hp;
-  if (this.health < 0) this._reset();
+  if (this.health < 0) {
+    this._reset();
+  }
 };
 
 Player.prototype.pickupLife = function (hp) {
