@@ -11,8 +11,8 @@ function UIButton(text) {
   this._ctx = ctx;
 
   this._text = text || '';
-  this._fontSize = 40;
-  this._fontType = 'Arial';
+  this._fontSize = 60;
+  this._fontType = 'umbrageregular';
 }
 
 // UIButton.prototype = new UIElement();

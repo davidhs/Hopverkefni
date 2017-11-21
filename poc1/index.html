@@ -4,26 +4,29 @@
     <meta charset="utf-8">
     <title>PoC: Top-down shooter</title>
     <link rel="stylesheet" type="text/css" href="css/normalize.css"/>
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css" charset="utf-8"/>
 </head>
 <body>
 
     <div class="center" style="width: 100%">
         <div id="canvi">
+          <p>
+          <img id="img" src="https://i.imgur.com/Dqg9zlo.png"/>
+          <p>
             <canvas id="myCanvas" width="300" height="200">
                 Sorry, your browser does not support the HTML5 canvas tag.
             </canvas>
         </div>
       </div>
-
         <div>
-        <p>
+          <p id="objective">What's the objective? Don't die. Kill everything.
+        <p id="text">
             W: move up<br>
             A: move left<br>
             S: move down<br>
             D: move right<br>
         </p>
-        <p>
+        <p id="text">
             T: toggle timer <br>
 
             <br>
@@ -35,7 +38,7 @@
 
             P: toggle pause mode <br>
         </p>
-
+        <p id="text">
             C: toggle clear <br>
             B: toggle box <br>
             U: toggle undo box <br>
