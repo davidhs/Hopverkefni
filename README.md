@@ -1,6 +1,8 @@
 # Hopverkefni
 Lokaverkefni TOL308G
 
+Play at https://dingolfsson.github.io/Hopverkefni/poc1/
+
 # PoC
 ## Left 4K Dead
 You have infinite lives.

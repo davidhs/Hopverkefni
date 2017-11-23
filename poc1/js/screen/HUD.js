@@ -23,6 +23,7 @@ const HUD = (function () {
   let ammo = 0;
   let magazineSize = 0;
   let magazineAmmo = 0;
+  let reloading = 0;
 
   let g_sx = 0;
   let g_sy = 0;
@@ -59,6 +60,10 @@ const HUD = (function () {
       WEAPONS[i].isActive = false;
     }
     WEAPONS[id].isActive = true;
+  }
+
+  function getReloadTimer(time) {
+    reloading = time;
   }
 
   // =================
@@ -141,6 +146,19 @@ const HUD = (function () {
     ctx.fillText(`Kills: ${counter}`, 50, W_cy + 30);
   }
 
+  function reloadNotify(ctx) {
+    ctx.beginPath();
+    ctx.font = '16px Georgia';
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText(`RELOAD! (press 'R')`, W_cx - 50, W_cy - 50);
+  }
+
+  function reloadingNotify(ctx) {
+    ctx.beginPath();
+    ctx.font = '16px Georgia';
+    ctx.fillStyle = '#00ff00';
+    ctx.fillText(`- RELOADING -`, W_cx - 50, W_cy - 50);
+  }
 
   function drawNumber(ctx, sx, sy, sw, sh, dx, dy, dw, dh) {
     for (let i = 0; i < WEAPONS.length; i += 1) {
@@ -175,6 +193,13 @@ const HUD = (function () {
     const hpPercLost = 1.0 - player.health / 100;
     if (hpPercLost < 1) {
       draw_healthbar(ctx, xHP, yHP, hpPercLost, widthHP, heightHP);
+    }
+    if (magazineAmmo === 0) {
+      reloadNotify(ctx);
+    }
+
+    if (reloading > 0) {
+      reloadingNotify(ctx);
     }
     draw_heart(ctx, xHP - 22, yHP + 1, 20, 15);
     drawKillCount(ctx, kills);
@@ -237,6 +262,7 @@ const HUD = (function () {
 
   return {
     whichWeapon,
+    getReloadTimer,
     update,
     render,
     damage,
