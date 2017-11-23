@@ -204,11 +204,15 @@ function selectWeapons(evt) {
 Player.prototype.decay = 0.5;
 
 Player.prototype.bulletCooldown = 0;
+Player.prototype.reloadCooldown = 0;
 
 Player.prototype.update = function (du) {
   spatialManager.unregister(this);
 
   this.bulletCooldown = Math.max(this.bulletCooldown - du, 0);
+  this.reloadCooldown = Math.max(this.reloadCooldown - du, 0);
+
+  HUD.getReloadTimer(this.reloadCooldown);
 
   // Convert Viewport/Canvas coordinates to World coordinates.
   const mx = g_viewport.getOCX() + g_mouse.x - g_canvas.width / 2;
@@ -347,6 +351,10 @@ Player.prototype.update = function (du) {
   }
 };
 
+Player.prototype.getCooldown = function () {
+  return this.reloadCooldown;
+};
+
 Player.prototype.getArmory = function () {
   return ARMORY;
 };
@@ -392,6 +400,7 @@ Player.prototype.reloadWeapon = function () {
     return;
   }
   this.bulletCooldown = ARMORY[weaponID].reloadTime;
+  this.reloadCooldown = ARMORY[weaponID].reloadTime;
   //
   if (ARMORY[weaponID].magazineAmmo !== 0) {
     ARMORY[weaponID].ammo += ARMORY[weaponID].magazineAmmo;
