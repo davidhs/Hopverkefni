@@ -1,5 +1,6 @@
-# Hopverkefni
-Lokaverkefni TOL308G
+# Hopverkefni: Lokaverkefni TOL308G
+
+![](res/cover.png)
 
 Play at https://dingolfsson.github.io/Hopverkefni/poc1/
 
