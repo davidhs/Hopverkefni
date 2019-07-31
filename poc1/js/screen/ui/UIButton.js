@@ -47,13 +47,14 @@ UIButton.prototype._updateUI = function () {
   const tw = this._getTextWidth(fontStyle, text);
   const res = this._getFontHeight(fontStyle);
 
-  const th = this._fontSize;
+  // const th = this._fontSize;
+  const th = res.height;
+  
 
   const topPadding = res.top;
-  const bottomPadding = res.bottom - th;
 
   const rectW = tw;
-  const rectH = th + bottomPadding;
+  const rectH = th + 2 * topPadding;
 
   const padX = (w - rectW) / 2;
   const padY = (h - rectH) / 2;
@@ -67,13 +68,14 @@ UIButton.prototype._updateUI = function () {
   // ctx.textBaseline = 'top';
   ctx.fillStyle = this.backgroundColor;
   ctx.strokeStyle = this.borderColor;
+  // ctx.fillRect(aX, aY, aW, aH);
   ctx.fillRect(aX, aY, aW, aH);
   ctx.rect(aX, aY, aW, aH);
   ctx.stroke();
 
   ctx.fillStyle = this.foregroundColor;
   ctx.font = fontStyle;
-  ctx.fillText(text, aX, aY + th - topPadding);
+  ctx.fillText(text, aX, aY + th + topPadding);
 };
 
 UIButton.prototype.render = function (ctx) {

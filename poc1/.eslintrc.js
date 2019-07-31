@@ -9,9 +9,9 @@ module.exports = {
         // Every file should start with 'use strict';
         "strict": [0, "global"],
         // Ignore this prefered ES6 feature.
-        "prefer-destructuring": ["error", {"object": false, "array": false}],
+        "prefer-destructuring": ["error", { "object": false, "array": false }],
         // Global variables start with g_
-        "camelcase": [0, {"properties": "never"}],
+        "camelcase": [0, { "properties": "never" }],
         // Allow instantaneous calling of anonymous functions.
         "wrap-iife": [0],
         // Start with underscore to indicate private function / method.
@@ -42,7 +42,7 @@ module.exports = {
         // =====
         // OTHER
         // =====
-        
+
         "no-undef": [0, { "vars": "local" }],
         //"no-underscore-dangle": [0, { "vars": "local" }],
         //"camelcase": [0, "global"],

@@ -70,12 +70,15 @@ UIElement.prototype._setup = function (obj) {
 
 
 /**
- *
+ * To get the maximum size of the font as the end user would perceive it
+ * we draw the text to canvas and measure it.
+ * 
  * @param {string} fontStyle
  *
  * @returns {top: number, bottom: number}
  */
 UIElement.prototype._getFontHeight = function (fontStyle) {
+  console.info(fontStyle);
   if (this._fontHeightCache[fontStyle]) {
     return this._fontHeightCache[fontStyle];
   }
@@ -84,6 +87,7 @@ UIElement.prototype._getFontHeight = function (fontStyle) {
   const ctx = canvas.getContext('2d');
   const w = canvas.width;
   const h = canvas.height;
+  ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, w, h);
   ctx.textBaseline = 'top';
   ctx.fillStyle = '#fff';
@@ -92,6 +96,8 @@ UIElement.prototype._getFontHeight = function (fontStyle) {
   const pixels = ctx.getImageData(0, 0, w, h).data;
 
 
+  let left = canvas.width;
+  let right = 0;
   let top = h;
   let bottom = 0;
 
@@ -100,20 +106,53 @@ UIElement.prototype._getFontHeight = function (fontStyle) {
       const idx = 4 * (x + y * w);
       const r = pixels[idx];
 
-      if (r === 255) {
+      if (r !== 0) {
         if (top > y) {
           top = y;
         }
         if (bottom < y) {
           bottom = y;
         }
+        if (x < left) {
+          left = x;
+        }
+        if (x > right) {
+          right = x;
+        }
       }
     }
   }
 
-  const result = { top, bottom };
+  const result = { 
+    top,
+    bottom,
+    left,
+    right,
+    height: bottom - top + 1,
+  };
 
   this._fontHeightCache[fontStyle] = result;
+
+  if (false) {
+    // Draw bounding box
+    // Check if it works as expected.
+    ctx.strokeStyle = "#0f0";
+
+    // offset
+    const oy = 0.5;
+    const ox = 0.5;
+
+    // Upper left corner
+    ctx.moveTo(ox + left,  oy + top);
+    ctx.lineTo(ox + right, oy + top);
+    ctx.lineTo(ox + right, oy + bottom);
+    ctx.lineTo(ox + left,  oy + bottom);
+    ctx.lineTo(ox + left,  oy + top);
+    ctx.stroke();
+    
+    document.querySelector("body").appendChild(canvas);
+  }
+  
 
   return result;
 };
@@ -129,7 +168,14 @@ UIElement.prototype._getTextWidth = function (fontStyle, text) {
   const ctx = canvas.getContext('2d');
   ctx.font = fontStyle;
 
-  return ctx.measureText(text).width;
+  const tm = ctx.measureText(text);
+
+  if (false) {
+    // Debug
+    console.info(tm);
+  }
+
+  return tm.width;
 };
 
 
