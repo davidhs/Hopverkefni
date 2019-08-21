@@ -1,3 +1,4 @@
+/*
 module.exports = {
     "extends": "airbnb-base",
     "rules": {
@@ -49,3 +50,4 @@ module.exports = {
         //"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     }
 };
+*/
